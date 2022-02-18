@@ -1,9 +1,7 @@
 package account.controller;
 
-import account.entity.User;
-import account.route.v1.ChangePass;
+import account.entity.Person;
 import account.route.v1.Signup;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,8 +18,8 @@ public class UserController {
 
 
     @PostMapping(path = Signup.PATH)
-    public ResponseEntity<User> signup(@Valid @RequestBody User user) {
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<Person> signup(@Valid @RequestBody Person person) {
+        return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
 

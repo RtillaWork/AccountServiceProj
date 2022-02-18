@@ -7,15 +7,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Person extends UserDetailsImpl {
 
     private static final String
             EMAIL_REGEXP = "@" + Api.VALID_DOMAINS.get("Corporate") + "$";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
     @NotEmpty
     private String name;

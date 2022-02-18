@@ -1,42 +1,57 @@
 package account.entity;
 
 import account.route.Api;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.Id;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.annotation.processing.Generated;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 
+@MappedSuperclass
 public class UserDetailsImpl implements UserDetails {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private long id;
+
     @NotEmpty
+    @JsonIgnore
     protected String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotEmpty
     protected String password;
 
-    @NotEmpty
+    //    @NotEmpty
+    @JsonIgnore
     protected boolean accountNonExpired;
 
-    @NotEmpty
+    //    @NotEmpty
+    @JsonIgnore
     protected boolean accountNonlocked;
 
-    @NotEmpty
+    //    @NotEmpty
+    @JsonIgnore
     protected boolean credentialstNonExpired;
 
-    @NotEmpty
+    //    @NotEmpty
+    @JsonIgnore
     protected boolean enabled;
 
-    @NotEmpty
+    //    @NotEmpty
+    @ElementCollection
+    @JsonIgnore
     protected Collection<GrantedAuthority> authorities;
 
 
-    public UserDetailsImpl(){  }
+    public UserDetailsImpl() {
+    }
 
     public UserDetailsImpl(String username, String password) {
 
@@ -64,6 +79,10 @@ public class UserDetailsImpl implements UserDetails {
         this.enabled = enabled;
 
         this.authorities = authorities;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getPassword() {
@@ -164,4 +183,5 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return this.enabled;
     }
+
 }

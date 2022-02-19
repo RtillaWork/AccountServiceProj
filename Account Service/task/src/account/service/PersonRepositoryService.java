@@ -22,8 +22,7 @@ public class PersonRepositoryService {
         } else if (personRepository.findByEmail(person.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException();
         } else {
-            // NOTE .email is case-insensitive
-            person.setEmail(person.getEmail().toLowerCase());
+            person.normalized();
             return personRepository.save(person);
         }
     }

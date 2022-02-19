@@ -20,7 +20,7 @@ public class Person extends UserDetailsImpl {
     private String lastname;
 
     @NotEmpty
-    @Email(regexp = "^(.+)@acme.com$" )
+    @Email(regexp = "^(.+)@acme.com$")
     private String email;
 
     public Person() { }
@@ -61,6 +61,11 @@ public class Person extends UserDetailsImpl {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void normalized() {
+        // NOTE .email is case-insensitive
+        setEmail(this.getEmail().toLowerCase());
     }
 
 }

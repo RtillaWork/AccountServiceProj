@@ -5,6 +5,7 @@ import account.route.v1.Signup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,6 +23,9 @@ public class SecurityConfigImpl extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    UserDetailsServiceImpl udsImpl;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -85,8 +89,12 @@ public class SecurityConfigImpl extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        super.configure(auth);
-//        auth.jdbcAuthentication().getUserDetails
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(udsImpl);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        auth.authenticationProvider(daoAuthenticationProvider);
+
 
     }
 }

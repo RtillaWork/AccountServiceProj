@@ -1,8 +1,14 @@
 package account.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
-public class GrantedAuthorityImpl implements GrantedAuthority {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+public class EmployeeGrantedAuthorityImpl implements GrantedAuthority {
     /**
      * If the <code>GrantedAuthority</code> can be represented as a <code>String</code>
      * and that <code>String</code> is sufficient in precision to be relied upon for an
@@ -19,8 +25,23 @@ public class GrantedAuthorityImpl implements GrantedAuthority {
      * granted authority cannot be expressed as a <code>String</code> with sufficient
      * precision).
      */
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "authority")
+    private String authority = "EMPLOYEE";
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
     @Override
     public String getAuthority() {
-        return null;
+        return authority;
     }
 }

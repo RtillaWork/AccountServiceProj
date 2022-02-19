@@ -1,6 +1,8 @@
 package account.entity;
 
 import account.route.Api;
+import account.security.EmployeeGrantedAuthorityImpl;
+import account.security.RegisteredUserGrantedAuthorityImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +13,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @MappedSuperclass
 public class UserDetailsImpl implements UserDetails {
@@ -39,12 +43,17 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     protected boolean enabled;
 
-    @ElementCollection
     @JsonIgnore
-    protected Collection<GrantedAuthority> authorities;
+    @ElementCollection(fetch = FetchType.EAGER)
+    protected Set<GrantedAuthority> authorities;
 
 
     public UserDetailsImpl() {
+        this.accountNonExpired = true;
+        this.accountNonlocked = true;
+        this.credentialstNonExpired = true;
+        this.enabled = true;
+        this.authorities = Set.of(new RegisteredUserGrantedAuthorityImpl());
     }
 
     public UserDetailsImpl(String username, String password) {
@@ -63,7 +72,7 @@ public class UserDetailsImpl implements UserDetails {
                            boolean accountNonlocked,
                            boolean credentialstNonExpired,
                            boolean enabled,
-                           Collection<GrantedAuthority> authorities) {
+                           Set<GrantedAuthority> authorities) {
 
         this.username = username;
         this.password = password;
@@ -179,7 +188,7 @@ public class UserDetailsImpl implements UserDetails {
         this.enabled = enabled;
     }
 
-    public void setAuthorities(Collection<GrantedAuthority> authorities) {
+    public void setAuthorities(Set<GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
 

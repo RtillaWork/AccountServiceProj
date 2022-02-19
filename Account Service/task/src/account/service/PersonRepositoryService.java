@@ -30,11 +30,11 @@ public class PersonRepositoryService {
     }
 
     public Optional<Person> findByEmail(Person person) {
-            return personRepository.findByEmail(person.getEmail());
+            return findByEmail(person.getEmail());
     }
 
     public Optional<Person> findByUsername(String username) {
-        return personRepository.findByEmail(username);
+        return findByEmail(username);
     }
 
 

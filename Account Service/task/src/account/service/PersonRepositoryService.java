@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
+import java.util.Locale;
 
 @Service
 public class PersonRepositoryService {
@@ -21,6 +22,8 @@ public class PersonRepositoryService {
         } else if (personRepository.findByEmail(person.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException();
         } else {
+            // NOTE .email is case-insensitive
+            person.setEmail(person.getEmail().toLowerCase());
             return personRepository.save(person);
         }
     }

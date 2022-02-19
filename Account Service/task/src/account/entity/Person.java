@@ -65,6 +65,7 @@ public class Person extends UserDetailsImpl {
 
     public void normalized() {
         // NOTE .email is case-insensitive
+        // NOTE .email will never be null because of validation rules
         setEmail(this.getEmail().toLowerCase());
     }
 

@@ -20,7 +20,6 @@ public class UserDetailsImpl implements UserDetails {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
-    @NotEmpty
     @JsonIgnore
     protected String username;
 
@@ -28,23 +27,18 @@ public class UserDetailsImpl implements UserDetails {
     @NotEmpty
     protected String password;
 
-    //    @NotEmpty
     @JsonIgnore
     protected boolean accountNonExpired;
 
-    //    @NotEmpty
     @JsonIgnore
     protected boolean accountNonlocked;
 
-    //    @NotEmpty
     @JsonIgnore
     protected boolean credentialstNonExpired;
 
-    //    @NotEmpty
     @JsonIgnore
     protected boolean enabled;
 
-    //    @NotEmpty
     @ElementCollection
     @JsonIgnore
     protected Collection<GrantedAuthority> authorities;
@@ -77,7 +71,6 @@ public class UserDetailsImpl implements UserDetails {
         this.accountNonlocked = accountNonlocked;
         this.credentialstNonExpired = credentialstNonExpired;
         this.enabled = enabled;
-
         this.authorities = authorities;
     }
 
@@ -87,6 +80,78 @@ public class UserDetailsImpl implements UserDetails {
 
     public String getPassword() {
         return password;
+    }
+
+      /**
+     * Returns the authorities granted to the user. Cannot return <code>null</code>.
+     *
+     * @return the authorities, sorted by natural key (never <code>null</code>)
+     */
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
+
+    /**
+     * Returns the username used to authenticate the user. Cannot return <code>null</code>.
+     *
+     * @return the username (never <code>null</code>)
+     */
+    @Override
+    @JsonIgnore
+    public String getUsername() {
+        return this.username;
+    }
+
+    /**
+     * Indicates whether the user's account has expired. An expired account cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user's account is valid (ie non-expired),
+     * <code>false</code> if no longer valid (ie expired)
+     */
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return this.accountNonExpired;
+    }
+
+    /**
+     * Indicates whether the user is locked or unlocked. A locked user cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
+     */
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return this.accountNonlocked;
+    }
+
+    /**
+     * Indicates whether the user's credentials (password) has expired. Expired
+     * credentials prevent authentication.
+     *
+     * @return <code>true</code> if the user's credentials are valid (ie non-expired),
+     * <code>false</code> if no longer valid (ie expired)
+     */
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return this.credentialstNonExpired;
+    }
+
+    /**
+     * Indicates whether the user is enabled or disabled. A disabled user cannot be
+     * authenticated.
+     *
+     * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
+     */
+    @Override
+    @JsonIgnore
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
     public void setPassword(String password) {
@@ -116,72 +181,6 @@ public class UserDetailsImpl implements UserDetails {
 
     public void setAuthorities(Collection<GrantedAuthority> authorities) {
         this.authorities = authorities;
-    }
-
-    /**
-     * Returns the authorities granted to the user. Cannot return <code>null</code>.
-     *
-     * @return the authorities, sorted by natural key (never <code>null</code>)
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
-    }
-
-    /**
-     * Returns the username used to authenticate the user. Cannot return <code>null</code>.
-     *
-     * @return the username (never <code>null</code>)
-     */
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    /**
-     * Indicates whether the user's account has expired. An expired account cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user's account is valid (ie non-expired),
-     * <code>false</code> if no longer valid (ie expired)
-     */
-    @Override
-    public boolean isAccountNonExpired() {
-        return this.accountNonExpired;
-    }
-
-    /**
-     * Indicates whether the user is locked or unlocked. A locked user cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
-     */
-    @Override
-    public boolean isAccountNonLocked() {
-        return this.accountNonlocked;
-    }
-
-    /**
-     * Indicates whether the user's credentials (password) has expired. Expired
-     * credentials prevent authentication.
-     *
-     * @return <code>true</code> if the user's credentials are valid (ie non-expired),
-     * <code>false</code> if no longer valid (ie expired)
-     */
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return this.credentialstNonExpired;
-    }
-
-    /**
-     * Indicates whether the user is enabled or disabled. A disabled user cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
-     */
-    @Override
-    public boolean isEnabled() {
-        return this.enabled;
     }
 
 }

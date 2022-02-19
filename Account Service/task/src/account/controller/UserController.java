@@ -20,15 +20,12 @@ public class UserController {
     PersonRepositoryService prs;
 
     @PostMapping(path = Signup.PATH)
-    @ResponseStatus(code = HttpStatus.I_AM_A_TEAPOT, reason = "I'm a Teatpot indeed!")
     public ResponseEntity<Person> signup(@Valid @RequestBody Person person) {
 
-        Optional<Person> p = prs.save(person);
-
-        if (p.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>(person, HttpStatus.OK);
-        }
+        Person p = prs.save(person);
+        return new ResponseEntity<>(person, HttpStatus.OK);
     }
 }
+
+
+

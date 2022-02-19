@@ -25,13 +25,14 @@ public class PersonRepositoryService {
         return Optional.ofNullable(personRepository.save(person));
     }
 
+    public Optional<Person> findByEmail(String username) {
+        return personRepository.findByEmail(username.toLowerCase());
+    }
+
     public Optional<Person> findByEmail(Person person) {
             return personRepository.findByEmail(person.getEmail());
     }
 
-    public Optional<Person> findByEmail(String username) {
-        return personRepository.findByEmail(username);
-    }
     public Optional<Person> findByUsername(String username) {
         return personRepository.findByEmail(username);
     }

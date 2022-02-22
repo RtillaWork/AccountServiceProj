@@ -2,7 +2,9 @@ package account.controller;
 
 import account.entity.Person;
 //import account.exception.UserAlreadyExistsException;
+import account.route.v1.ChangePass;
 import account.route.v1.Signup;
+import account.security.entity.PasswordEntity;
 import account.service.PersonRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.security.InvalidParameterException;
+import java.security.Principal;
 import java.util.Optional;
 
 @RestController
@@ -22,6 +25,9 @@ public class UserController {
 
     @Autowired
     PersonRepositoryService prs;
+
+    @Autowired
+    PasswordEntity passwordEntity;
 
     @PostMapping(path = Signup.PATH)
     @ResponseBody
@@ -35,6 +41,16 @@ public class UserController {
             Person p = prs.save(person).orElseThrow();
             return new ResponseEntity<Person>(p, HttpStatus.OK);
         }
+    }
+
+    @PostMapping(path = ChangePass.PATH)
+    @ResponseBody
+    public ResponseEntity<Person> changePassword(@Valid @RequestBody PasswordEntity newPasswordEntity,
+                                                 Principal principal) {
+        Person p =  prs.updatePassword(principal, newPasswordEntity).orElseThrow();
+        return new ResponseEntity<>(p, HttpStatus.OK);
+
+
     }
 }
 

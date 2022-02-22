@@ -22,8 +22,8 @@ public class EmployeeController {
     @GetMapping(path = Payment.PATH)
     @ResponseBody
     public Person getEmployeePayment(Principal principal) {
-        Optional<Person> employee = prs.findByUsername(principal.getName());
-        Person p = employee.orElseThrow();
+//        Optional<Person> employee = prs.findByUsername(principal.getName());
+        Person p = prs.findByPrincipal(principal).orElseThrow();
         return p;
     }
 }

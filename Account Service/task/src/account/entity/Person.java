@@ -2,8 +2,8 @@ package account.entity;
 
 import account.route.Api;
 import account.security.EmployeeGrantedAuthorityImpl;
-import account.security.RegisteredUserGrantedAuthorityImpl;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import account.security.entity.PasswordEntity;
+import account.security.entity.UserDetailsImpl;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -99,5 +99,24 @@ public class Person extends UserDetailsImpl {
             setPassword(passwordEncoder.encode(this.getPassword()));
         }
     }
+
+    public void build(GrantedAuthority grantedAuthority) {
+        setAuthorities(Set.of(grantedAuthority));
+        // NOTE .email is case-insensitive
+        // NOTE .email will never be null because of validation rules
+        // NOTE run normalized(...) only one, by checking if .id has already been set != null
+        if (this.getPassword() != null) {
+            setPassword(this.getPassword());
+        }
+
+        if (this.getEmail() != null) {
+            setEmail(this.getEmail().toLowerCase());
+        }
+//        if (this.getId() != null) {
+//            setPassword(this.getPassword());
+//        }
+    }
+
+
 
 }

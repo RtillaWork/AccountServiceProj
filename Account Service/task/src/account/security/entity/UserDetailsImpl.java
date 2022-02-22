@@ -1,4 +1,4 @@
-package account.entity;
+package account.security.entity;
 
 import account.route.Api;
 import account.security.EmployeeGrantedAuthorityImpl;
@@ -10,13 +10,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.annotation.processing.Generated;
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 @MappedSuperclass
+@Transactional
 public class UserDetailsImpl implements UserDetails {
 
     @Id
@@ -28,8 +31,15 @@ public class UserDetailsImpl implements UserDetails {
     protected String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotEmpty
+//    @NotEmpty
+//    @Size(min = 12)
+    @Transient
     protected String password;
+
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
+    protected PasswordEntity passwordEntity;
 
     @JsonIgnore
     protected boolean accountNonExpired;
@@ -54,12 +64,13 @@ public class UserDetailsImpl implements UserDetails {
         this.credentialstNonExpired = true;
         this.enabled = true;
         this.authorities = Set.of(new RegisteredUserGrantedAuthorityImpl());
+        this.passwordEntity = new PasswordEntity();
     }
 
     public UserDetailsImpl(String username, String password) {
 
         this.username = username;
-        this.password = password;
+        this.passwordEntity = new PasswordEntity(password);
 
         this.accountNonExpired = true;
         this.accountNonlocked = true;
@@ -75,7 +86,7 @@ public class UserDetailsImpl implements UserDetails {
                            Set<GrantedAuthority> authorities) {
 
         this.username = username;
-        this.password = password;
+        this.passwordEntity = new PasswordEntity(password);
         this.accountNonExpired = accountNonExpired;
         this.accountNonlocked = accountNonlocked;
         this.credentialstNonExpired = credentialstNonExpired;
@@ -83,12 +94,44 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
+    public UserDetailsImpl(String username, PasswordEntity passwordEntity) {
+
+        this.username = username;
+        this.passwordEntity = passwordEntity;
+
+        this.accountNonExpired = true;
+        this.accountNonlocked = true;
+        this.credentialstNonExpired = true;
+        this.enabled = true;
+    }
+
+    public UserDetailsImpl(String username, PasswordEntity passwordEntity,
+                           boolean accountNonExpired,
+                           boolean accountNonlocked,
+                           boolean credentialstNonExpired,
+                           boolean enabled,
+                           Set<GrantedAuthority> authorities) {
+
+        this.username = username;
+        this.passwordEntity = passwordEntity;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonlocked = accountNonlocked;
+        this.credentialstNonExpired = credentialstNonExpired;
+        this.enabled = enabled;
+        this.authorities = authorities;
+    }
+
+
     public Long getId() {
         return id;
     }
 
     public String getPassword() {
-        return password;
+        return passwordEntity.getPassword();
+    }
+
+    public PasswordEntity getPasswordEntity() {
+        return passwordEntity;
     }
 
       /**
@@ -163,8 +206,16 @@ public class UserDetailsImpl implements UserDetails {
         return this.enabled;
     }
 
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
+//
     public void setPassword(String password) {
-        this.password = password;
+        this.passwordEntity = new PasswordEntity(password);
+    }
+
+    public void setPassword(PasswordEntity passwordEntity) {
+        this.passwordEntity = passwordEntity;
     }
 
 

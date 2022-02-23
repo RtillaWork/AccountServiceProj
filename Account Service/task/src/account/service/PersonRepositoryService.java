@@ -28,7 +28,7 @@ public class PersonRepositoryService {
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
-        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDTO());
+        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
         Optional<PersonDto> p = Optional.ofNullable(personRepository.save(personDTO));
         return p;
 

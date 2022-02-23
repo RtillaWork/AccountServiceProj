@@ -9,7 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @MappedSuperclass
@@ -24,24 +27,18 @@ public class UserDetailsDto implements UserDetails {
     @JsonIgnore
     protected String username;
 
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-////    @NotEmpty
-////    @Size(min = 12)
-//    @Transient
-//    protected String password;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotEmpty
+    @Size(min = 12, message = "The password length must be at least 12 chars!")
+    @Transient
+    private String transientPassword;
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 //    @JsonIgnore
     @Valid
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
-    protected PasswordDto passwordDTO;
-
-    //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//    @Transient
-//    @NotEmpty
-//    @Size(min = 12, message = "The password length must be at least 12 chars!")
-    @Transient
-    private String password;
+//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    protected List<PasswordDto> passwordDto;
 
     @JsonIgnore
     protected boolean accountNonExpired;
@@ -66,20 +63,20 @@ public class UserDetailsDto implements UserDetails {
         this.credentialstNonExpired = true;
         this.enabled = true;
         this.authorities = Set.of(new RegisteredUserGrantedAuthorityImpl());
-        this.passwordDTO = new PasswordDto();
+        this.passwordDto = new PasswordDto();
     }
 
-    public UserDetailsDto(String username, String password) {
+    public UserDetailsDto(String username, String transientPassword) {
 
         this.username = username;
-        this.passwordDTO = new PasswordDto(password);
+        this.passwordDto = new PasswordDto(transientPassword);
         this.accountNonExpired = true;
         this.accountNonlocked = true;
         this.credentialstNonExpired = true;
         this.enabled = true;
     }
 
-    public UserDetailsDto(String username, String password,
+    public UserDetailsDto(String username, String transientPassword,
                           boolean accountNonExpired,
                           boolean accountNonlocked,
                           boolean credentialstNonExpired,
@@ -87,7 +84,7 @@ public class UserDetailsDto implements UserDetails {
                           Set<GrantedAuthority> authorities) {
 
         this.username = username;
-        this.passwordDTO = new PasswordDto(password);
+        this.passwordDto = new PasswordDto(transientPassword);
         this.accountNonExpired = accountNonExpired;
         this.accountNonlocked = accountNonlocked;
         this.credentialstNonExpired = credentialstNonExpired;
@@ -95,10 +92,10 @@ public class UserDetailsDto implements UserDetails {
         this.authorities = authorities;
     }
 
-    public UserDetailsDto(String username, PasswordDto passwordDTO) {
+    public UserDetailsDto(String username, PasswordDto passwordDto) {
 
         this.username = username;
-        this.passwordDTO = passwordDTO;
+        this.passwordDto = passwordDto;
 
         this.accountNonExpired = true;
         this.accountNonlocked = true;
@@ -106,7 +103,7 @@ public class UserDetailsDto implements UserDetails {
         this.enabled = true;
     }
 
-    public UserDetailsDto(String username, PasswordDto passwordDTO,
+    public UserDetailsDto(String username, PasswordDto passwordDto,
                           boolean accountNonExpired,
                           boolean accountNonlocked,
                           boolean credentialstNonExpired,
@@ -114,7 +111,7 @@ public class UserDetailsDto implements UserDetails {
                           Set<GrantedAuthority> authorities) {
 
         this.username = username;
-        this.passwordDTO = passwordDTO;
+        this.passwordDto = passwordDto;
         this.accountNonExpired = accountNonExpired;
         this.accountNonlocked = accountNonlocked;
         this.credentialstNonExpired = credentialstNonExpired;
@@ -127,31 +124,27 @@ public class UserDetailsDto implements UserDetails {
         return id;
     }
 
-    //    public String getPassword() {
-//        return passwordDTO.getPassword();
-//    }
-
-    //    @JsonIgnore
-    public String getTransientPassword() {
-        return this.password;
-    }
-
     //    @JsonProperty
-    public PasswordDto getPasswordDTO() {
-        return this.passwordDTO;
+    public PasswordDto getPasswordDto() {
+        return this.passwordDto;
     }
 
     //    @JsonIgnore
     public String getPassword() {
-        return getPasswordDTO().getPassword();
+        return getPasswordDto().getPassword();
+    }
+
+    //    @JsonIgnore
+    public String getTransientPassword() {
+        return this.transientPassword;
     }
 
     @Valid
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
-    public void setPassword(@Valid String transientPassword) {
-        this.password = transientPassword;
-        this.passwordDTO = new PasswordDto(transientPassword);
+    public void setTransientPassword(@Valid String transientPassword) {
+        this.transientPassword = transientPassword;
+        this.passwordDto = new PasswordDto(transientPassword);
     }
 
 //    public void setPasswordDTO(PasswordDTO passwordDTO) {

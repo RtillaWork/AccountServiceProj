@@ -1,5 +1,7 @@
 package account.security.entity;
 
+import account.entity.PersonDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -19,9 +22,13 @@ public class PasswordDto {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-//    @NotEmpty
-//    @OneToOne(fetch = FetchType.EAGER, optional = false, orphanRemoval = false, cascade = CascadeType.ALL)
-//    private PersonDTO personDTO;
+    @JsonIgnore
+    @NotNull
+    private boolean isCurrent;
+
+    @JsonIgnore
+    @ManyToOne
+    private PersonDto user;
 
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 

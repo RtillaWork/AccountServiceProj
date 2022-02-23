@@ -1,12 +1,11 @@
 package account.service;
 
-import account.entity.Person;
+import account.entity.PersonDTO;
 //import account.exception.UserAlreadyExistsException;
 import account.repository.PersonRepository;
 import account.security.EmployeeGrantedAuthorityImpl;
-import account.security.entity.PasswordEntity;
+import account.security.entity.PasswordDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,35 +23,35 @@ public class PersonRepositoryService {
     PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Optional<Person> save(Person person) {
+    public Optional<PersonDTO> save(PersonDTO personDTO) {
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 
-        person.build(new EmployeeGrantedAuthorityImpl());
-        return Optional.ofNullable(personRepository.save(person));
+        personDTO.build(new EmployeeGrantedAuthorityImpl());
+        return Optional.ofNullable(personRepository.save(personDTO));
     }
 
-    public Optional<Person> findByEmail(String username) {
+    public Optional<PersonDTO> findByEmail(String username) {
         return personRepository.findByEmail(username.toLowerCase());
     }
 
-    public Optional<Person> findByEmail(Person person) {
-            return findByEmail(person.getEmail());
+    public Optional<PersonDTO> findByEmail(PersonDTO personDTO) {
+            return findByEmail(personDTO.getEmail());
     }
 
-    public Optional<Person> findByUsername(String username) {
+    public Optional<PersonDTO> findByUsername(String username) {
         return findByEmail(username);
     }
 
-    public Optional<Person> findByPrincipal(Principal principal) {
-        Optional<Person> person = findByUsername(principal.getName());
+    public Optional<PersonDTO> findByPrincipal(Principal principal) {
+        Optional<PersonDTO> person = findByUsername(principal.getName());
         return person;
     }
 
-    public Optional<Person>  updatePassword(Principal principal, PasswordEntity newPasswordEntity) {
-        Person person = findByPrincipal(principal).orElseThrow();
-        if (newPasswordEntity.isValid()) {
-            person.setPassword(newPasswordEntity);
-            Optional<Person> p = save(person);
+    public Optional<PersonDTO>  updatePassword(Principal principal, PasswordDTO newPasswordDTO) {
+        PersonDTO personDTO = findByPrincipal(principal).orElseThrow();
+        if (newPasswordDTO.isValid()) {
+            personDTO.setPassword(newPasswordDTO);
+            Optional<PersonDTO> p = save(personDTO);
             return p;
         } else {
             return Optional.empty();

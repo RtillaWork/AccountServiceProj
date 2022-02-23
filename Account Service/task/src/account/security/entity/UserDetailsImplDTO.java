@@ -1,26 +1,19 @@
 package account.security.entity;
 
-import account.route.Api;
-import account.security.EmployeeGrantedAuthorityImpl;
 import account.security.RegisteredUserGrantedAuthorityImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.annotation.processing.Generated;
 import javax.persistence.*;
 import javax.transaction.Transactional;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @MappedSuperclass
 @Transactional
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImplDTO implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,16 +23,16 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     protected String username;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//    @NotEmpty
-//    @Size(min = 12)
-    @Transient
-    protected String password;
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+////    @NotEmpty
+////    @Size(min = 12)
+//    @Transient
+//    protected String password;
 
 //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
-    protected PasswordEntity passwordEntity;
+    protected PasswordDTO passwordDTO;
 
     @JsonIgnore
     protected boolean accountNonExpired;
@@ -58,19 +51,19 @@ public class UserDetailsImpl implements UserDetails {
     protected Set<GrantedAuthority> authorities;
 
 
-    public UserDetailsImpl() {
+    public UserDetailsImplDTO() {
         this.accountNonExpired = true;
         this.accountNonlocked = true;
         this.credentialstNonExpired = true;
         this.enabled = true;
         this.authorities = Set.of(new RegisteredUserGrantedAuthorityImpl());
-        this.passwordEntity = new PasswordEntity();
+        this.passwordDTO = new PasswordDTO();
     }
 
-    public UserDetailsImpl(String username, String password) {
+    public UserDetailsImplDTO(String username, String password) {
 
         this.username = username;
-        this.passwordEntity = new PasswordEntity(password);
+        this.passwordDTO = new PasswordDTO(password);
 
         this.accountNonExpired = true;
         this.accountNonlocked = true;
@@ -78,15 +71,15 @@ public class UserDetailsImpl implements UserDetails {
         this.enabled = true;
     }
 
-    public UserDetailsImpl(String username, String password,
-                           boolean accountNonExpired,
-                           boolean accountNonlocked,
-                           boolean credentialstNonExpired,
-                           boolean enabled,
-                           Set<GrantedAuthority> authorities) {
+    public UserDetailsImplDTO(String username, String password,
+                              boolean accountNonExpired,
+                              boolean accountNonlocked,
+                              boolean credentialstNonExpired,
+                              boolean enabled,
+                              Set<GrantedAuthority> authorities) {
 
         this.username = username;
-        this.passwordEntity = new PasswordEntity(password);
+        this.passwordDTO = new PasswordDTO(password);
         this.accountNonExpired = accountNonExpired;
         this.accountNonlocked = accountNonlocked;
         this.credentialstNonExpired = credentialstNonExpired;
@@ -94,10 +87,10 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public UserDetailsImpl(String username, PasswordEntity passwordEntity) {
+    public UserDetailsImplDTO(String username, PasswordDTO passwordDTO) {
 
         this.username = username;
-        this.passwordEntity = passwordEntity;
+        this.passwordDTO = passwordDTO;
 
         this.accountNonExpired = true;
         this.accountNonlocked = true;
@@ -105,15 +98,15 @@ public class UserDetailsImpl implements UserDetails {
         this.enabled = true;
     }
 
-    public UserDetailsImpl(String username, PasswordEntity passwordEntity,
-                           boolean accountNonExpired,
-                           boolean accountNonlocked,
-                           boolean credentialstNonExpired,
-                           boolean enabled,
-                           Set<GrantedAuthority> authorities) {
+    public UserDetailsImplDTO(String username, PasswordDTO passwordDTO,
+                              boolean accountNonExpired,
+                              boolean accountNonlocked,
+                              boolean credentialstNonExpired,
+                              boolean enabled,
+                              Set<GrantedAuthority> authorities) {
 
         this.username = username;
-        this.passwordEntity = passwordEntity;
+        this.passwordDTO = passwordDTO;
         this.accountNonExpired = accountNonExpired;
         this.accountNonlocked = accountNonlocked;
         this.credentialstNonExpired = credentialstNonExpired;
@@ -127,11 +120,11 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public String getPassword() {
-        return passwordEntity.getPassword();
+        return passwordDTO.getPassword();
     }
 
-    public PasswordEntity getPasswordEntity() {
-        return passwordEntity;
+    public PasswordDTO getPasswordEntity() {
+        return passwordDTO;
     }
 
       /**
@@ -211,11 +204,11 @@ public class UserDetailsImpl implements UserDetails {
 //    }
 //
     public void setPassword(String password) {
-        this.passwordEntity = new PasswordEntity(password);
+        this.passwordDTO = new PasswordDTO(password);
     }
 
-    public void setPassword(PasswordEntity passwordEntity) {
-        this.passwordEntity = passwordEntity;
+    public void setPassword(PasswordDTO passwordDTO) {
+        this.passwordDTO = passwordDTO;
     }
 
 

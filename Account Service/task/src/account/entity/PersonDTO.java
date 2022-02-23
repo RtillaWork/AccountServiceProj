@@ -2,8 +2,7 @@ package account.entity;
 
 import account.route.Api;
 import account.security.EmployeeGrantedAuthorityImpl;
-import account.security.entity.PasswordEntity;
-import account.security.entity.UserDetailsImpl;
+import account.security.entity.UserDetailsImplDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Entity
-public class Person extends UserDetailsImpl {
+public class PersonDTO extends UserDetailsImplDTO {
 
     private static final String
             EMAIL_REGEXP = "@" + Api.VALID_DOMAINS.get("Corporate") + "$";
@@ -30,18 +29,18 @@ public class Person extends UserDetailsImpl {
     @Email(regexp = "^(.+)@acme.com$")
     private String email;
 
-    public Person() {
+    public PersonDTO() {
        setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl()));
     }
 
-    public Person(String name, String lastname, String email, String password) {
+    public PersonDTO(String name, String lastname, String email, String password) {
         super(email, password);
         this.name = name;
         this.lastname = lastname;
         this.email = email;
     }
 
-    public Person(String username, String password, String name, String lastname, String email) {
+    public PersonDTO(String username, String password, String name, String lastname, String email) {
         super(username, password);
         this.name = name;
         this.lastname = lastname;

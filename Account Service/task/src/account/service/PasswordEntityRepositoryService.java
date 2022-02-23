@@ -1,33 +1,31 @@
 package account.service;
 
-import account.entity.Person;
+import account.entity.PersonDTO;
 import account.repository.PasswordEntityRepository;
-import account.security.entity.PasswordEntity;
+import account.security.entity.PasswordDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
 
 public class PasswordEntityRepositoryService {
 
     @Autowired
     private PasswordEntityRepository per;
 
-    Person findByPerson(Person person) {
-        PasswordEntity p = per.findByPerson(person).orElseThrow();
+    PersonDTO findByPerson(PersonDTO personDTO) {
+        PasswordDTO p = per.findByPerson(personDTO).orElseThrow();
         return null;
 
     }
 
-    Person findByUserName(Person person) {
+    PersonDTO findByUserName(PersonDTO personDTO) {
 return null;
     }
 
-    Person findByEmail(Person person) {
+    PersonDTO findByEmail(PersonDTO personDTO) {
         return null;
 
     }
 
-    Person findByPrincipal(Person person) {
+    PersonDTO findByPrincipal(PersonDTO personDTO) {
         return null;
 
     }

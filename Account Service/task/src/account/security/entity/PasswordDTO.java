@@ -1,6 +1,6 @@
 package account.security.entity;
 
-import account.entity.Person;
+import account.entity.PersonDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Service
-public class PasswordEntity {
+public class PasswordDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -21,7 +21,7 @@ public class PasswordEntity {
 
     @NotEmpty
     @OneToOne(fetch = FetchType.EAGER, optional = false, orphanRemoval = false, cascade = CascadeType.ALL)
-    private Person person;
+    private PersonDTO personDTO;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotEmpty
@@ -34,9 +34,9 @@ public class PasswordEntity {
     @Transient
     private String new_password;
 
-    public PasswordEntity() { }
+    public PasswordDTO() { }
 
-    public PasswordEntity(String password) {
+    public PasswordDTO(String password) {
         this.password = this.passwordEncoderImpl().encode(password);
     }
 

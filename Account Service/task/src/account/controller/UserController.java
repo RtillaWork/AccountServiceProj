@@ -1,10 +1,10 @@
 package account.controller;
 
-import account.entity.Person;
+import account.entity.PersonDTO;
 //import account.exception.UserAlreadyExistsException;
 import account.route.v1.ChangePass;
 import account.route.v1.Signup;
-import account.security.entity.PasswordEntity;
+import account.security.entity.PasswordDTO;
 import account.service.PersonRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import java.security.InvalidParameterException;
 import java.security.Principal;
-import java.util.Optional;
 
 @RestController
 @Validated
@@ -27,27 +25,27 @@ public class UserController {
     PersonRepositoryService prs;
 
     @Autowired
-    PasswordEntity passwordEntity;
+    PasswordDTO passwordDTO;
 
     @PostMapping(path = Signup.PATH)
     @ResponseBody
-    public ResponseEntity<Person> signup(@Valid @RequestBody Person person) {
-        if (person == null) {
+    public ResponseEntity<PersonDTO> signup(@Valid @RequestBody PersonDTO personDTO) {
+        if (personDTO == null) {
             throw new ValidationException("EXCEPTION: person object is null");
-        } else  if (prs.findByEmail(person).isPresent()) {
+        } else  if (prs.findByEmail(personDTO).isPresent()) {
             throw new DataIntegrityViolationException("EXCEPTION: email already exists");
         }
         else {
-            Person p = prs.save(person).orElseThrow();
-            return new ResponseEntity<Person>(p, HttpStatus.OK);
+            PersonDTO p = prs.save(personDTO).orElseThrow();
+            return new ResponseEntity<PersonDTO>(p, HttpStatus.OK);
         }
     }
 
     @PostMapping(path = ChangePass.PATH)
     @ResponseBody
-    public ResponseEntity<Person> changePassword(@Valid @RequestBody PasswordEntity newPasswordEntity,
-                                                 Principal principal) {
-        Person p =  prs.updatePassword(principal, newPasswordEntity).orElseThrow();
+    public ResponseEntity<PersonDTO> changePassword(@Valid @RequestBody PasswordDTO newPasswordDTO,
+                                                    Principal principal) {
+        PersonDTO p =  prs.updatePassword(principal, newPasswordDTO).orElseThrow();
         return new ResponseEntity<>(p, HttpStatus.OK);
 
 

@@ -7,16 +7,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
 @MappedSuperclass
-@Transactional
+//@Transactional
 public class UserDetailsImplDTO implements UserDetails {
 
     @Id
@@ -35,13 +37,15 @@ public class UserDetailsImplDTO implements UserDetails {
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 //    @JsonIgnore
+    @Valid
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
     protected PasswordDTO passwordDTO;
 
     //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @Transient
+//    @NotEmpty
+//    @Size(min = 12, message = "The password length must be at least 12 chars!")
     @Transient
-    @NotEmpty
-    @Size(min = 12, message = "The password length must be at leat 12 chars!")
     private String password;
 
     @JsonIgnore
@@ -67,7 +71,7 @@ public class UserDetailsImplDTO implements UserDetails {
         this.credentialstNonExpired = true;
         this.enabled = true;
         this.authorities = Set.of(new RegisteredUserGrantedAuthorityImpl());
-        this.passwordDTO = new PasswordDTO();
+        this.passwordDTO = null; //new PasswordDTO();
     }
 
     public UserDetailsImplDTO(String username, String password) {
@@ -132,31 +136,27 @@ public class UserDetailsImplDTO implements UserDetails {
 //        return passwordDTO.getPassword();
 //    }
 
-//    @JsonIgnore
+    //    @JsonIgnore
     public String getTransientPassword() {
         return this.password;
     }
 
-//    @JsonProperty
+    //    @JsonProperty
     public PasswordDTO getPasswordDTO() {
         return this.passwordDTO;
     }
 
-//    @JsonIgnore
+    //    @JsonIgnore
     public String getPassword() {
         return getPasswordDTO().getPassword();
     }
 
-
-    //    public void setPassword(String password) {
-//        this.password = password;
-//    }
-//
+    @Validated
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
-    public void setPassword(String password) {
-        this.password = password;
-        this.passwordDTO = new PasswordDTO(password);
+    public void setPassword(@Validated String transientPassword) {
+        this.password = transientPassword;
+        this.passwordDTO = new PasswordDTO(transientPassword);
     }
 
 //    public void setPasswordDTO(PasswordDTO passwordDTO) {
@@ -183,7 +183,6 @@ public class UserDetailsImplDTO implements UserDetails {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
 
 
     public void setAuthorities(Set<GrantedAuthority> authorities) {

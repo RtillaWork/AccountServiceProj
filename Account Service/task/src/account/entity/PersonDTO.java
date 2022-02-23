@@ -29,7 +29,7 @@ public class PersonDTO extends UserDetailsImplDTO {
 
     @NotEmpty
     @Column(unique = true)
-    @Email(regexp = "^(.+)@acme.com$")
+    @Email(regexp = "^(.+)@acme.com$", message = "email must be valid")
     @JsonProperty
     private String email;
 

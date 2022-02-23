@@ -1,4 +1,4 @@
 package account.entity;
 
-public class PaymentDTO {
+public class PayrollDto {
 }

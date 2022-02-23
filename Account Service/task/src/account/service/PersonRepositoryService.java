@@ -1,9 +1,9 @@
 package account.service;
 
-import account.entity.PersonDTO;
+import account.entity.PersonDto;
 //import account.exception.UserAlreadyExistsException;
-import account.repository.PersonDTORepository;
-import account.security.entity.PasswordDTO;
+import account.repository.PersonRepository;
+import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,34 +15,34 @@ import java.util.Optional;
 public class PersonRepositoryService {
 
     @Autowired
-    PersonDTORepository personDTORepository;
+    PersonRepository personRepository;
 
     @Autowired
-    PasswordDTORepositoryService passwordDTOrs;
+    PasswordRepositoryService passwordDTOrs;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Optional<PersonDTO> save(PersonDTO personDTO) {
+    public Optional<PersonDto> save(PersonDto personDTO) {
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
-        PasswordDTO password = passwordDTOrs.save(personDTO.getPasswordDTO());
-        Optional<PersonDTO> p = Optional.ofNullable(personDTORepository.save(personDTO));
+        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDTO());
+        Optional<PersonDto> p = Optional.ofNullable(personRepository.save(personDTO));
         return p;
 
     }
 //
-    public Optional<PersonDTO> findByEmail(String username) {
-        return personDTORepository.findByEmail(username.toLowerCase());
+    public Optional<PersonDto> findByEmail(String username) {
+        return personRepository.findByEmail(username.toLowerCase());
     }
 
-    public Optional<PersonDTO> findByEmail(PersonDTO personDTO) {
+    public Optional<PersonDto> findByEmail(PersonDto personDTO) {
             return findByEmail(personDTO.getEmail());
     }
 
-    public Optional<PersonDTO> findByUsername(String username) {
+    public Optional<PersonDto> findByUsername(String username) {
         return findByEmail(username);
     }
 //

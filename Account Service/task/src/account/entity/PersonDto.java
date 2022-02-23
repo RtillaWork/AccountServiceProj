@@ -2,10 +2,8 @@ package account.entity;
 
 import account.route.Api;
 import account.security.EmployeeGrantedAuthorityImpl;
-import account.security.entity.UserDetailsImplDTO;
+import account.security.entity.UserDetailsDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -13,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Entity
-public class PersonDTO extends UserDetailsImplDTO {
+public class PersonDto extends UserDetailsDto {
 
     private static final String
             EMAIL_REGEXP = "@" + Api.VALID_DOMAINS.get("Corporate") + "$";
@@ -33,18 +31,18 @@ public class PersonDTO extends UserDetailsImplDTO {
     @JsonProperty
     private String email;
 
-    public PersonDTO() {
+    public PersonDto() {
        setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl()));
     }
 
-    public PersonDTO(String name, String lastname, String email, String password) {
+    public PersonDto(String name, String lastname, String email, String password) {
         super(email, password);
         this.name = name;
         this.lastname = lastname;
         this.email = email;
     }
 
-    public PersonDTO(String username, String password, String name, String lastname, String email) {
+    public PersonDto(String username, String password, String name, String lastname, String email) {
         super(username, password);
         this.name = name;
         this.lastname = lastname;

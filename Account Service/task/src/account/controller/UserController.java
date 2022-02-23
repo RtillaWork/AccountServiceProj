@@ -1,10 +1,9 @@
 package account.controller;
 
-import account.entity.PersonDTO;
+import account.entity.PersonDto;
 //import account.exception.UserAlreadyExistsException;
-import account.route.v1.ChangePass;
 import account.route.v1.Signup;
-import account.security.entity.PasswordDTO;
+import account.security.entity.PasswordDto;
 import account.service.PersonRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import java.security.Principal;
 
 @RestController
 @Validated
@@ -25,20 +23,20 @@ public class UserController {
     PersonRepositoryService prs;
 
     @Autowired
-    PasswordDTO passwordDTO;
+    PasswordDto passwordDTO;
 
     @PostMapping(path = Signup.PATH)
     @ResponseBody
-    public ResponseEntity<PersonDTO> signup(@Valid @RequestBody PersonDTO personDTO) {
+    public ResponseEntity<PersonDto> signup(@Valid @RequestBody PersonDto personDTO) {
         if (personDTO == null) {
             throw new ValidationException("EXCEPTION: person object is null");
         } else  if (prs.findByEmail(personDTO).isPresent()) {
             throw new DataIntegrityViolationException("EXCEPTION: email already exists");
         }
         else {
-            PersonDTO p = prs.save(personDTO).orElseThrow();
+            PersonDto p = prs.save(personDTO).orElseThrow();
 //            PersonDTO p = personDTO; // temp deleteme
-            return new ResponseEntity<PersonDTO>(p, HttpStatus.OK);
+            return new ResponseEntity<PersonDto>(p, HttpStatus.OK);
         }
     }
 

@@ -20,11 +20,11 @@ public class PasswordDTO {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @NotEmpty
-    @OneToOne(fetch = FetchType.EAGER, optional = false, orphanRemoval = false, cascade = CascadeType.ALL)
-    private PersonDTO personDTO;
+//    @NotEmpty
+//    @OneToOne(fetch = FetchType.EAGER, optional = false, orphanRemoval = false, cascade = CascadeType.ALL)
+//    private PersonDTO personDTO;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotEmpty
     @Size(min = 12)
     private String password;
@@ -49,7 +49,7 @@ public class PasswordDTO {
 //        this.id = id;
 //    }
 
-    @JsonIgnore
+//    @JsonIgnore
     public String getPassword() {
         return password;
     }

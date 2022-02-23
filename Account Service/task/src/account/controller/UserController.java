@@ -36,8 +36,8 @@ public class UserController {
             throw new DataIntegrityViolationException("EXCEPTION: email already exists");
         }
         else {
-//            PersonDTO p = prs.save(personDTO).orElseThrow();
-            PersonDTO p = personDTO; // temp deleteme
+            PersonDTO p = prs.save(personDTO).orElseThrow();
+//            PersonDTO p = personDTO; // temp deleteme
             return new ResponseEntity<PersonDTO>(p, HttpStatus.OK);
         }
     }

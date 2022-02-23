@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
@@ -18,7 +20,7 @@ import java.util.Set;
 public class UserDetailsImplDTO implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
@@ -32,12 +34,14 @@ public class UserDetailsImplDTO implements UserDetails {
 //    protected String password;
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @JsonIgnore
+//    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
     protected PasswordDTO passwordDTO;
 
+    //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotEmpty
+    @Size(min = 12, message = "The password length must be at leat 12 chars!")
     private String password;
 
     @JsonIgnore
@@ -128,16 +132,17 @@ public class UserDetailsImplDTO implements UserDetails {
 //        return passwordDTO.getPassword();
 //    }
 
-    @JsonIgnore
+//    @JsonIgnore
     public String getTransientPassword() {
         return this.password;
     }
 
+//    @JsonProperty
     public PasswordDTO getPasswordDTO() {
         return this.passwordDTO;
     }
 
-    @JsonIgnore
+//    @JsonIgnore
     public String getPassword() {
         return getPasswordDTO().getPassword();
     }

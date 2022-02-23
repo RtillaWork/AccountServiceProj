@@ -1,6 +1,7 @@
 package account.security.entity;
 
 import account.entity.PersonDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,11 +29,11 @@ public class PasswordDTO {
     @Size(min = 12)
     private String password;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotEmpty
-    @Size(min = 12)
-    @Transient
-    private String new_password;
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @NotEmpty
+//    @Size(min = 12)
+//    @Transient
+//    private String new_password;
 
     public PasswordDTO() { }
 
@@ -40,14 +41,15 @@ public class PasswordDTO {
         this.password = this.passwordEncoderImpl().encode(password);
     }
 
-    public Long getId() {
-        return id;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -56,13 +58,13 @@ public class PasswordDTO {
         this.password = password;
     }
 
-    public String getNew_password() {
-        return new_password;
-    }
-
-    public void setNew_password(String new_password) {
-        this.new_password = new_password;
-    }
+//    public String getNew_password() {
+//        return new_password;
+//    }
+//
+//    public void setNew_password(String new_password) {
+//        this.new_password = new_password;
+//    }
 
     public boolean isValid() {
         // TODO

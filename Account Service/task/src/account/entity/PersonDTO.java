@@ -3,6 +3,7 @@ package account.entity;
 import account.route.Api;
 import account.security.EmployeeGrantedAuthorityImpl;
 import account.security.entity.UserDetailsImplDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,14 +20,17 @@ public class PersonDTO extends UserDetailsImplDTO {
 
 
     @NotEmpty
+    @JsonProperty
     private String name;
 
     @NotEmpty
+    @JsonProperty
     private String lastname;
 
     @NotEmpty
     @Column(unique = true)
     @Email(regexp = "^(.+)@acme.com$")
+    @JsonProperty
     private String email;
 
     public PersonDTO() {
@@ -47,26 +51,27 @@ public class PersonDTO extends UserDetailsImplDTO {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public String getLastname() {
+//        return lastname;
+//    }
+//
+//    public void setLastname(String lastname) {
+//        this.lastname = lastname;
+//    }
 
     public String getEmail() {
         return email;
     }
 
+    @JsonProperty
     public void setEmail(String email) {
         this.username = email;
         this.email = email;
@@ -78,43 +83,43 @@ public class PersonDTO extends UserDetailsImplDTO {
 //        setEmail(this.getEmail().toLowerCase());
 //    }
 
-    public void init(PasswordEncoder passwordEncoder) {
-        // NOTE .email is case-insensitive
-        // NOTE .email will never be null because of validation rules
-        // NOTE run normalized(...) only one, by checking if .id has already been set != null
-        if (this.getId() != null) {
-            setEmail(this.getEmail().toLowerCase());
-            setPassword(passwordEncoder.encode(this.getPassword()));
-        }
-    }
-
-    public void init(PasswordEncoder passwordEncoder, GrantedAuthority grantedAuthority) {
-        setAuthorities(Set.of(grantedAuthority));
-        // NOTE .email is case-insensitive
-        // NOTE .email will never be null because of validation rules
-        // NOTE run normalized(...) only one, by checking if .id has already been set != null
-        if (this.getId() != null) {
-            setEmail(this.getEmail().toLowerCase());
-            setPassword(passwordEncoder.encode(this.getPassword()));
-        }
-    }
-
-    public void build(GrantedAuthority grantedAuthority) {
-        setAuthorities(Set.of(grantedAuthority));
-        // NOTE .email is case-insensitive
-        // NOTE .email will never be null because of validation rules
-        // NOTE run normalized(...) only one, by checking if .id has already been set != null
-        if (this.getPassword() != null) {
-            setPassword(this.getPassword());
-        }
-
-        if (this.getEmail() != null) {
-            setEmail(this.getEmail().toLowerCase());
-        }
+//    public void init(PasswordEncoder passwordEncoder) {
+//        // NOTE .email is case-insensitive
+//        // NOTE .email will never be null because of validation rules
+//        // NOTE run normalized(...) only one, by checking if .id has already been set != null
 //        if (this.getId() != null) {
+//            setEmail(this.getEmail().toLowerCase());
+//            setPassword(passwordEncoder.encode(this.getPassword()));
+//        }
+//    }
+//
+//    public void init(PasswordEncoder passwordEncoder, GrantedAuthority grantedAuthority) {
+//        setAuthorities(Set.of(grantedAuthority));
+//        // NOTE .email is case-insensitive
+//        // NOTE .email will never be null because of validation rules
+//        // NOTE run normalized(...) only one, by checking if .id has already been set != null
+//        if (this.getId() != null) {
+//            setEmail(this.getEmail().toLowerCase());
+//            setPassword(passwordEncoder.encode(this.getPassword()));
+//        }
+//    }
+
+//    public void build(GrantedAuthority grantedAuthority) {
+//        setAuthorities(Set.of(grantedAuthority));
+//        // NOTE .email is case-insensitive
+//        // NOTE .email will never be null because of validation rules
+//        // NOTE run normalized(...) only one, by checking if .id has already been set != null
+//        if (this.getPassword() != null) {
 //            setPassword(this.getPassword());
 //        }
-    }
+//
+//        if (this.getEmail() != null) {
+//            setEmail(this.getEmail().toLowerCase());
+//        }
+////        if (this.getId() != null) {
+////            setPassword(this.getPassword());
+////        }
+//    }
 
 
 

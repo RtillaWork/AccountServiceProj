@@ -36,20 +36,21 @@ public class UserController {
             throw new DataIntegrityViolationException("EXCEPTION: email already exists");
         }
         else {
-            PersonDTO p = prs.save(personDTO).orElseThrow();
+//            PersonDTO p = prs.save(personDTO).orElseThrow();
+            PersonDTO p = personDTO; // temp deleteme
             return new ResponseEntity<PersonDTO>(p, HttpStatus.OK);
         }
     }
 
-    @PostMapping(path = ChangePass.PATH)
-    @ResponseBody
-    public ResponseEntity<PersonDTO> changePassword(@Valid @RequestBody PasswordDTO newPasswordDTO,
-                                                    Principal principal) {
-        PersonDTO p =  prs.updatePassword(principal, newPasswordDTO).orElseThrow();
-        return new ResponseEntity<>(p, HttpStatus.OK);
-
-
-    }
+//    @PostMapping(path = ChangePass.PATH)
+//    @ResponseBody
+//    public ResponseEntity<PersonDTO> changePassword(@Valid @RequestBody PasswordDTO newPasswordDTO,
+//                                                    Principal principal) {
+//        PersonDTO p =  prs.updatePassword(principal, newPasswordDTO).orElseThrow();
+//        return new ResponseEntity<>(p, HttpStatus.OK);
+//
+//
+//    }
 }
 
 

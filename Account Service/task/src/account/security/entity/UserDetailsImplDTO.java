@@ -1,8 +1,10 @@
 package account.security.entity;
 
 import account.security.RegisteredUserGrantedAuthorityImpl;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -29,10 +31,14 @@ public class UserDetailsImplDTO implements UserDetails {
 //    @Transient
 //    protected String password;
 
-//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
     protected PasswordDTO passwordDTO;
+
+    @Transient
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
 
     @JsonIgnore
     protected boolean accountNonExpired;
@@ -64,7 +70,6 @@ public class UserDetailsImplDTO implements UserDetails {
 
         this.username = username;
         this.passwordDTO = new PasswordDTO(password);
-
         this.accountNonExpired = true;
         this.accountNonlocked = true;
         this.credentialstNonExpired = true;
@@ -119,15 +124,68 @@ public class UserDetailsImplDTO implements UserDetails {
         return id;
     }
 
+    //    public String getPassword() {
+//        return passwordDTO.getPassword();
+//    }
+
+    @JsonIgnore
+    public String getTransientPassword() {
+        return this.password;
+    }
+
+    public PasswordDTO getPasswordDTO() {
+        return this.passwordDTO;
+    }
+
+    @JsonIgnore
     public String getPassword() {
-        return passwordDTO.getPassword();
+        return getPasswordDTO().getPassword();
     }
 
-    public PasswordDTO getPasswordEntity() {
-        return passwordDTO;
+
+    //    public void setPassword(String password) {
+//        this.password = password;
+//    }
+//
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonAlias("new_password")
+    public void setPassword(String password) {
+        this.password = password;
+        this.passwordDTO = new PasswordDTO(password);
     }
 
-      /**
+//    public void setPasswordDTO(PasswordDTO passwordDTO) {
+//        this.passwordDTO = passwordDTO;
+//    }
+
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    public void setAccountNonlocked(boolean accountNonlocked) {
+        this.accountNonlocked = accountNonlocked;
+    }
+
+    public void setCredentialstNonExpired(boolean credentialstNonExpired) {
+        this.credentialstNonExpired = credentialstNonExpired;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+
+
+    public void setAuthorities(Set<GrantedAuthority> authorities) {
+        this.authorities = authorities;
+    }
+
+    /**
      * Returns the authorities granted to the user. Cannot return <code>null</code>.
      *
      * @return the authorities, sorted by natural key (never <code>null</code>)
@@ -197,43 +255,6 @@ public class UserDetailsImplDTO implements UserDetails {
     @JsonIgnore
     public boolean isEnabled() {
         return this.enabled;
-    }
-
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-//
-    public void setPassword(String password) {
-        this.passwordDTO = new PasswordDTO(password);
-    }
-
-    public void setPassword(PasswordDTO passwordDTO) {
-        this.passwordDTO = passwordDTO;
-    }
-
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setAccountNonExpired(boolean accountNonExpired) {
-        this.accountNonExpired = accountNonExpired;
-    }
-
-    public void setAccountNonlocked(boolean accountNonlocked) {
-        this.accountNonlocked = accountNonlocked;
-    }
-
-    public void setCredentialstNonExpired(boolean credentialstNonExpired) {
-        this.credentialstNonExpired = credentialstNonExpired;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setAuthorities(Set<GrantedAuthority> authorities) {
-        this.authorities = authorities;
     }
 
 }

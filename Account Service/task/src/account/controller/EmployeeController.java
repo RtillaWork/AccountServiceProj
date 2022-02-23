@@ -18,11 +18,11 @@ public class EmployeeController {
     @Autowired
     PersonRepositoryService prs;
 
-    @GetMapping(path = Payment.PATH)
-    @ResponseBody
-    public PersonDTO getEmployeePayment(Principal principal) {
-//        Optional<Person> employee = prs.findByUsername(principal.getName());
-        PersonDTO p = prs.findByPrincipal(principal).orElseThrow();
-        return p;
-    }
+//    @GetMapping(path = Payment.PATH)
+//    @ResponseBody
+//    public PersonDTO getEmployeePayment(Principal principal) {
+////        Optional<Person> employee = prs.findByUsername(principal.getName());
+//        PersonDTO p = prs.findByPrincipal(principal).orElseThrow();
+//        return p;
+//    }
 }

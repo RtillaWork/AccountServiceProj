@@ -1,17 +1,12 @@
-package account.exception;
+package account.exception.password;
 
-import account.exception.password.PasswordInsufficientLengthException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
-
-import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ControllerExceptions {
@@ -36,17 +31,17 @@ public class ControllerExceptions {
 
     }
 
-//    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The password is in the hacker's database!")
-//    @ExceptionHandler(PasswordInsufficientLengthException.class)
-//    public void passwordInsufficientLengthExceptionHandler(){
-//
-//    }
-//
-//    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The passwords must be different!")
-//    @ExceptionHandler(PasswordInsufficientLengthException.class)
-//    public void passwordInsufficientLengthExceptionHandler(){
-//
-//    }
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The password is in the hacker's database!")
+    @ExceptionHandler(PasswordPresentInDictionaryException.class)
+    public void passwordPresentInDictionaryExceptionHandler(){
+
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The passwords must be different!")
+    @ExceptionHandler(PasswordReuseException.class)
+    public void passwordReuseExceptionHandler(){
+
+    }
 
 
 

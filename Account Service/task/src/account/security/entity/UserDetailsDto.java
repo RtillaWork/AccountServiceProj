@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.List;
@@ -33,9 +34,10 @@ public class UserDetailsDto implements UserDetails {
     @Transient
     private String transientPassword;
 
-    //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, mappedBy = "user", fetch = FetchType.EAGER)
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     protected PasswordDto passwordDto;
 
@@ -138,7 +140,8 @@ public class UserDetailsDto implements UserDetails {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("password")
-    public void setTransientPassword(String transientPassword) {
+    @Validated
+    public void setTransientPassword( String transientPassword) {
         this.passwordDto = new PasswordDto(transientPassword);
     }
 

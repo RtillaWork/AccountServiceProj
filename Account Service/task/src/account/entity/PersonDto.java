@@ -4,6 +4,8 @@ import account.route.Api;
 import account.security.EmployeeGrantedAuthorityImpl;
 import account.security.entity.UserDetailsDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -75,6 +77,28 @@ public class PersonDto extends UserDetailsDto {
         this.email = email;
     }
 
+
+    public void make(@Autowired GrantedAuthority grantedAuthority) {
+        setAuthorities(Set.of(grantedAuthority));
+        // NOTE .email is case-insensitive
+        // NOTE .email will never be null because of validation rules
+        // NOTE run normalized(...) only one, by checking if .id has already been set != null
+
+        if (this.getEmail() != null) {
+            setEmail(this.getEmail().toLowerCase());
+        }
+
+//        if (this.getPassword() != null) {
+//            setPassword(this.getPassword());
+//        }
+//
+//
+//        if (this.getId() != null) {
+//            setPassword(this.getPassword());
+//        }
+    }
+
+
 //    public void normalized() {
 //        // NOTE .email is case-insensitive
 //        // NOTE .email will never be null because of validation rules
@@ -118,7 +142,6 @@ public class PersonDto extends UserDetailsDto {
 ////            setPassword(this.getPassword());
 ////        }
 //    }
-
 
 
 }

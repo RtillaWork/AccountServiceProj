@@ -19,6 +19,7 @@ import javax.validation.constraintvalidation.SupportedValidationTarget;
 
 @Entity
 @Service
+@Validated
 public class PasswordDto {
 
     @Id
@@ -85,7 +86,7 @@ public class PasswordDto {
         return this.transientPassword;
     }
 //
-    public void setTransientPassword( String transientPassword) {
+    public void setTransientPassword( @Valid String transientPassword) {
         this.transientPassword = transientPassword;
     }
 

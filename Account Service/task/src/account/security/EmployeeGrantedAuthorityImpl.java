@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+
+@Component
 public class EmployeeGrantedAuthorityImpl implements GrantedAuthority {
     /**
      * If the <code>GrantedAuthority</code> can be represented as a <code>String</code>
@@ -40,6 +42,7 @@ public class EmployeeGrantedAuthorityImpl implements GrantedAuthority {
     public Long getId() {
         return id;
     }
+
     @Override
     public String getAuthority() {
         return authority;

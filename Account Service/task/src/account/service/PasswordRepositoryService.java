@@ -1,13 +1,13 @@
 package account.service;
 
 import account.entity.PersonDto;
+import account.exception.PasswordRequirementException;
 import account.repository.PasswordRepository;
 import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionSystemException;
 
-import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 
 @Service
@@ -37,14 +37,18 @@ return null;
 
     }
 
-    PasswordDto save(PasswordDto passwordDTO) {
+    PasswordDto save(PasswordDto passwordDTO) throws PasswordRequirementException {
         // validate passwordDTO
         try {
             return passwordRepository.saveAndFlush(passwordDTO);
         } catch (ConstraintViolationException ex) {
             throw ex;
         } catch (TransactionSystemException tex) {
-            throw new TransactionSystemException("DEBUG EXCEPTION TYPE TransactionSystemExceotion in PasswordRepositoryService");
+            var ex= tex.getApplicationException();
+            throw new PasswordRequirementException(
+                    "DEBUG EXCEPTION TYPE TransactionSystemExceotion in PasswordRepositoryService",
+                    ex);
+//            throw new TransactionSystemException("DEBUG EXCEPTION TYPE TransactionSystemExceotion in PasswordRepositoryService");
         }
     }
 }

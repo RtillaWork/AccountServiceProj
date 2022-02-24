@@ -3,13 +3,17 @@ package account.service;
 import account.entity.PersonDto;
 //import account.exception.UserAlreadyExistsException;
 import account.repository.PersonRepository;
+import account.security.EmployeeGrantedAuthorityImpl;
 import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 //@Transactional(Transactional.TxType.NEVER)
@@ -27,12 +31,12 @@ public class PersonRepositoryService {
 //    @Transactional(Transactional.TxType.NEVER)
     public PersonDto save(PersonDto personDTO) {
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
-
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
-        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
+        personDTO.make(new EmployeeGrantedAuthorityImpl());
+//        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
 //        PersonDto p = personRepository.save(personDTO);
-        return p;
-
+//        return p;
+return personDTO;
     }
 //
     public Optional<PersonDto> findByEmail(String username) {
@@ -62,6 +66,10 @@ public class PersonRepositoryService {
 ////            return Optional.empty();
 ////        }
 ////    }
+
+
+
+
 
 
 }

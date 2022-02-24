@@ -23,13 +23,13 @@ public class PersonRepositoryService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public Optional<PersonDto> save(PersonDto personDTO) {
+//    @Transactional
+    public PersonDto save(PersonDto personDTO) {
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
         PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
-        Optional<PersonDto> p = Optional.ofNullable(personRepository.save(personDTO));
+        PersonDto p = personRepository.save(personDTO);
         return p;
 
     }

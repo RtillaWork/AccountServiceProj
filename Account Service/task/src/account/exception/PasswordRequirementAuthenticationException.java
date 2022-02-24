@@ -10,6 +10,5 @@ public class PasswordRequirementAuthenticationException extends ValidationExcept
     }
 
     public PasswordRequirementAuthenticationException() {
-        super();
     }
 }

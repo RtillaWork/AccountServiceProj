@@ -20,6 +20,6 @@ public interface PasswordRepository extends JpaRepository<PasswordDto, Long> {
      * @return the saved entity; will never be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
-    @Override
+
     <S extends PasswordDto> S save(S entity);
 }

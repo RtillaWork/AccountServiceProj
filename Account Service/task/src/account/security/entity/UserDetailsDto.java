@@ -33,7 +33,7 @@ public class UserDetailsDto implements UserDetails {
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, mappedBy = "user", fetch = FetchType.EAGER)
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     protected PasswordDto passwordDto;
 

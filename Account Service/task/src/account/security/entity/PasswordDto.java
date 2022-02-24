@@ -1,6 +1,7 @@
 package account.security.entity;
 
 import account.entity.PersonDto;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,16 +25,21 @@ public class PasswordDto {
 
     @JsonIgnore
     @NotNull
-    private boolean isCurrent;
+    private static boolean isCurrent = true;  // future use, onetoMany user-> passwords
 
     @JsonIgnore
-    @ManyToOne
+    @OneToOne
     private PersonDto user;
 
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 
     @NotEmpty
     private String password;
+
+    @Transient
+    private String new_password;
+//    @JsonAlias("new_password")
+
 
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 //    @NotEmpty
@@ -88,7 +94,6 @@ public class PasswordDto {
 
     @Bean
     public PasswordEncoder passwordEncoderImpl() {
-
         return new BCryptPasswordEncoder();
 //        return NoOpPasswordEncoder.getInstance();
     }

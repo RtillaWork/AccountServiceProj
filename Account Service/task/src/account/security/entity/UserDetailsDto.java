@@ -34,11 +34,11 @@ public class UserDetailsDto implements UserDetails {
     private String transientPassword;
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-//    @JsonIgnore
+    @JsonIgnore
     @Valid
-//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    protected List<PasswordDto> passwordDto;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER, mappedBy = "user")
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    protected PasswordDto passwordDto;
 
     @JsonIgnore
     protected boolean accountNonExpired;
@@ -124,12 +124,12 @@ public class UserDetailsDto implements UserDetails {
         return id;
     }
 
-    //    @JsonProperty
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public PasswordDto getPasswordDto() {
         return this.passwordDto;
     }
 
-    //    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getPassword() {
         return getPasswordDto().getPassword();
     }
@@ -139,9 +139,8 @@ public class UserDetailsDto implements UserDetails {
         return this.transientPassword;
     }
 
-    @Valid
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JsonAlias("new_password")
+//    @JsonAlias("new_password")
     public void setTransientPassword(@Valid String transientPassword) {
         this.transientPassword = transientPassword;
         this.passwordDto = new PasswordDto(transientPassword);

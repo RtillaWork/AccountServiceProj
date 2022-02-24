@@ -1,5 +1,8 @@
-package account.exception.password;
+package account.exception;
 
+import account.exception.password.PasswordInsufficientLengthException;
+import account.exception.password.PasswordPresentInDictionaryException;
+import account.exception.password.PasswordReuseException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

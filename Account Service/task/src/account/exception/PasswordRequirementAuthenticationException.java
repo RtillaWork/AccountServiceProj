@@ -1,4 +1,4 @@
-package account.exception.password;
+package account.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

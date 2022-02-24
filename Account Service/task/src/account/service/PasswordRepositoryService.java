@@ -5,8 +5,13 @@ import account.repository.PasswordRepository;
 import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
+
+import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
 
 @Service
+//@Transactional(Transactional.TxType.NEVER)
 public class PasswordRepositoryService {
 
     @Autowired
@@ -34,6 +39,12 @@ return null;
 
     PasswordDto save(PasswordDto passwordDTO) {
         // validate passwordDTO
-        return passwordRepository.save(passwordDTO);
+        try {
+            return passwordRepository.saveAndFlush(passwordDTO);
+        } catch (ConstraintViolationException ex) {
+            throw ex;
+        } catch (TransactionSystemException tex) {
+            throw new TransactionSystemException("DEBUG EXCEPTION TYPE TransactionSystemExceotion in PasswordRepositoryService");
+        }
     }
 }

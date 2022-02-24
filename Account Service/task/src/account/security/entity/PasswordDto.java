@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.constraintvalidation.SupportedValidationTarget;
 
 @Entity
 @Service
@@ -24,18 +25,19 @@ public class PasswordDto {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @JsonIgnore
-    @NotNull
-    private static boolean isCurrent = true;  // future use, onetoMany user-> passwords
+//    @JsonIgnore
+//    @NotNull
+//    private static boolean isCurrent = true;  // future use, onetoMany user-> passwords
 
     @JsonIgnore
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private PersonDto user;
 
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 
 
-    @NotEmpty
+    @JsonIgnore
+//    @NotEmpty
     private String password;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -73,7 +75,8 @@ public class PasswordDto {
         return password;
     }
 
-    public void setPassword(@Valid  @Size(min = 12, message = "The password length must be at leat 12 chars!")
+    @JsonIgnore
+    public void setPassword(@Valid
                                     String transientPassword) {
         this.password = this.passwordEncoderImpl().encode(transientPassword);
     }
@@ -82,14 +85,14 @@ public class PasswordDto {
         return this.transientPassword;
     }
 //
-    public void setTransientPassword(@Valid String transientPassword) {
+    public void setTransientPassword( String transientPassword) {
         this.transientPassword = transientPassword;
     }
 
-    public boolean isValid() {
-        // TODO
-        return true;
-    }
+//    public boolean isValid() {
+//        // TODO
+//        return true;
+//    }
 
 //    setPassword(passwordEncoder.encode(this.getPassword()));
 

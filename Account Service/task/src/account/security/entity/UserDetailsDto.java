@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -16,8 +17,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+
+//@Transactional(Transactional.TxType.NEVER)
 @MappedSuperclass
-//@Transactional
 public class UserDetailsDto implements UserDetails {
 
     @Id

@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
+//@Transactional(Transactional.TxType.NEVER)
 public class PersonRepositoryService {
 
     @Autowired
@@ -23,13 +24,13 @@ public class PersonRepositoryService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-//    @Transactional
+//    @Transactional(Transactional.TxType.NEVER)
     public PersonDto save(PersonDto personDTO) {
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
         PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
-        PersonDto p = personRepository.save(personDTO);
+//        PersonDto p = personRepository.save(personDTO);
         return p;
 
     }

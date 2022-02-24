@@ -3,6 +3,7 @@ package account.security.entity;
 import account.entity.PersonDto;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,12 +34,15 @@ public class PasswordDto {
 
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 
+
     @NotEmpty
     private String password;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 12, message = "The password length must be at least 12 chars!")
     @Transient
-    private String new_password;
-//    @JsonAlias("new_password")
+    @JsonAlias("new_password")
+    private String transientPassword;
 
 
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -47,15 +51,13 @@ public class PasswordDto {
 //    @Transient
 //    private String new_password;
 
-    @Valid
     public PasswordDto() {
     }
 
     @Valid
-    public PasswordDto(@Validated @NotEmpty(message = "The password cannot be empty")
-                       @Size(min = 12, message = "The password length must be at leat 12 chars!")
-                               String transientPassword) {
-        this.password = this.passwordEncoderImpl().encode(transientPassword);
+    public PasswordDto(@Valid String transientPassword) {
+        this.setTransientPassword(transientPassword);
+        this.setPassword(transientPassword);
     }
 
 //    public Long getId() {
@@ -71,19 +73,18 @@ public class PasswordDto {
         return password;
     }
 
-    public void setPassword(@Validated @NotEmpty(message = "The password cannot be empty")
-                            @Size(min = 12, message = "The password length must be at leat 12 chars!")
+    public void setPassword(@Valid  @Size(min = 12, message = "The password length must be at leat 12 chars!")
                                     String transientPassword) {
         this.password = this.passwordEncoderImpl().encode(transientPassword);
     }
 
-//    public String getNew_password() {
-//        return new_password;
-//    }
+    public String getTransientPassword() {
+        return this.transientPassword;
+    }
 //
-//    public void setNew_password(String new_password) {
-//        this.new_password = new_password;
-//    }
+    public void setTransientPassword(@Valid String transientPassword) {
+        this.transientPassword = transientPassword;
+    }
 
     public boolean isValid() {
         // TODO

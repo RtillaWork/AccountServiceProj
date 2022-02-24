@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -27,16 +28,12 @@ public class UserDetailsDto implements UserDetails {
     @JsonIgnore
     protected String username;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotEmpty
-    @Size(min = 12, message = "The password length must be at least 12 chars!")
     @Transient
     private String transientPassword;
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
-    @Valid
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true, mappedBy = "user")
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     protected PasswordDto passwordDto;
 
@@ -63,7 +60,7 @@ public class UserDetailsDto implements UserDetails {
         this.credentialstNonExpired = true;
         this.enabled = true;
         this.authorities = Set.of(new RegisteredUserGrantedAuthorityImpl());
-        this.passwordDto = new PasswordDto();
+//        this.passwordDto = new PasswordDto();
     }
 
     public UserDetailsDto(String username, String transientPassword) {
@@ -76,12 +73,7 @@ public class UserDetailsDto implements UserDetails {
         this.enabled = true;
     }
 
-    public UserDetailsDto(String username, String transientPassword,
-                          boolean accountNonExpired,
-                          boolean accountNonlocked,
-                          boolean credentialstNonExpired,
-                          boolean enabled,
-                          Set<GrantedAuthority> authorities) {
+    public UserDetailsDto(String username, String transientPassword, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
 
         this.username = username;
         this.passwordDto = new PasswordDto(transientPassword);
@@ -103,12 +95,7 @@ public class UserDetailsDto implements UserDetails {
         this.enabled = true;
     }
 
-    public UserDetailsDto(String username, PasswordDto passwordDto,
-                          boolean accountNonExpired,
-                          boolean accountNonlocked,
-                          boolean credentialstNonExpired,
-                          boolean enabled,
-                          Set<GrantedAuthority> authorities) {
+    public UserDetailsDto(String username, PasswordDto passwordDto, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
 
         this.username = username;
         this.passwordDto = passwordDto;
@@ -129,6 +116,14 @@ public class UserDetailsDto implements UserDetails {
         return this.passwordDto;
     }
 
+    public void updatePasswordDto(PasswordDto passwordDto) {
+        this.passwordDto = passwordDto;
+    }
+
+    public void updatePassword(String transientPassword) {
+        this.passwordDto.setPassword(transientPassword);
+    }
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getPassword() {
         return getPasswordDto().getPassword();
@@ -140,9 +135,8 @@ public class UserDetailsDto implements UserDetails {
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//    @JsonAlias("new_password")
-    public void setTransientPassword(@Valid String transientPassword) {
-        this.transientPassword = transientPassword;
+    @JsonAlias("password")
+    public void setTransientPassword(String transientPassword) {
         this.passwordDto = new PasswordDto(transientPassword);
     }
 

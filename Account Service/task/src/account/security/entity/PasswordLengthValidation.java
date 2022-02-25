@@ -18,5 +18,9 @@ public @interface PasswordLengthValidation {
     // payload
     public Class<? extends Payload>[] payload() default {};
 
+    // default min  and max sizes, inclusive
+    int min() default 8; // 8 characters is the smallest acceptable password char size
+    int max() default Byte.MAX_VALUE;
+
 
 }

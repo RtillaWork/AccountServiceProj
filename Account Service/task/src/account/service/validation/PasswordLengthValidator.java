@@ -7,6 +7,10 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Validation;
 
 public class PasswordLengthValidator implements ConstraintValidator<PasswordLengthValidation, String> {
+    private int min;
+    private int max;
+    private String message;
+
     /**
      * Implements the validation logic.
      * The state of {@code value} must not be altered.
@@ -20,8 +24,16 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return false;
+        if (value.length() < min || value.length() > max) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(message);
+
+            return false;
+        } else {
+            return true;
+        }
     }
+
 
     /**
      * Initializes the validator in preparation for
@@ -39,5 +51,8 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
     @Override
     public void initialize(PasswordLengthValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
+        this.min = constraintAnnotation.min();
+        this.max = constraintAnnotation.max();
+        this.message = constraintAnnotation.message();
     }
 }

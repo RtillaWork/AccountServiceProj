@@ -2,6 +2,7 @@ package account.controller;
 
 import account.entity.PersonDto;
 //import account.exception.UserAlreadyExistsException;
+import account.exception.PasswordRequirementException;
 import account.route.v1.Signup;
 import account.security.entity.PasswordDto;
 import account.service.PersonRepositoryService;
@@ -27,10 +28,16 @@ public class UserController {
 
     @PostMapping(path = Signup.PATH)
     @ResponseBody
-    public ResponseEntity<PersonDto> signup(@Valid @RequestBody PersonDto personDTO) {
+    public ResponseEntity<PersonDto> signup(@Validated @RequestBody PersonDto personDTO) {
         if (personDTO == null) {
             throw new ValidationException("EXCEPTION: person object is null");
-        } else  if (prs.findByEmail(personDTO).isPresent()) {
+
+        }
+//        else if (personDTO.getPasswordDto() == null) {
+//            throw new PasswordRequirementException("EPTION: CONTROLLER PASSWORDDTO NULL");
+//
+//        }
+        else  if (prs.findByEmail(personDTO).isPresent()) {
             throw new DataIntegrityViolationException("EXCEPTION: email already exists");
         }
         else {

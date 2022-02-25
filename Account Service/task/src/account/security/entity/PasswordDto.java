@@ -19,7 +19,7 @@ import javax.validation.constraintvalidation.SupportedValidationTarget;
 
 @Entity
 @Service
-@Validated
+//@Validated
 public class PasswordDto {
 
     @Id
@@ -45,6 +45,7 @@ public class PasswordDto {
     @Size(min = 12, message = "The password length must be at least 12 chars!")
     @Transient
     @JsonAlias("new_password")
+    @PasswordLengthValidation
     private String transientPassword;
 
 

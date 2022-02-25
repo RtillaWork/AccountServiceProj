@@ -21,6 +21,7 @@ import java.util.Set;
 
 //@Transactional(Transactional.TxType.NEVER)
 @MappedSuperclass
+@Validated
 public class UserDetailsDto implements UserDetails {
 
     @Id
@@ -139,8 +140,7 @@ public class UserDetailsDto implements UserDetails {
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JsonAlias("password")
-    @Validated
+    @JsonAlias("passwd")
     public void setTransientPassword( String transientPassword) {
         this.passwordDto = new PasswordDto(transientPassword);
     }

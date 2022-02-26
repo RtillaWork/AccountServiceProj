@@ -18,34 +18,24 @@ import javax.validation.constraints.Size;
 import javax.validation.constraintvalidation.SupportedValidationTarget;
 
 @Entity
-@Service
-@Validated
 public class PasswordDto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-//    @JsonIgnore
-//    @NotNull
-//    private static boolean isCurrent = true;  // future use, onetoMany user-> passwords
-
     @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private PersonDto user;
 
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-
-
-    @JsonIgnore
-//    @NotEmpty
+//    @JsonIgnore
+    @NotEmpty
     private String password;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 12, message = "The password length must be at least 12 chars!")
-    @Transient
+@PasswordLength    @Transient
     @JsonAlias("new_password")
-    private String transientPassword;
+    private String newClearTextPassword;
 
 
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

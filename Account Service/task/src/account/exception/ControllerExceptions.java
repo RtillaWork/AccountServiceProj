@@ -35,7 +35,7 @@ public class ControllerExceptions {
 //
 //    }
 
-//    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    //    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> constraintViolationExceptionnHandler(ConstraintViolationException ex){
 

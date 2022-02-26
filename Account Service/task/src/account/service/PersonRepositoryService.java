@@ -28,26 +28,20 @@ public class PersonRepositoryService {
     @Autowired
     PasswordRepositoryService passwordRepositoryService;
 
-    @Transactional
+//    @Transactional
     public PersonDto save(@Validated PersonDto personDTO) {
+        System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
+        System.out.println(" System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
+
+        PasswordDto passwd = personDTO.getPasswordDto();
+        passwd.setUser(personDTO);
         PersonDto p = personDTO;
-        try {
-            System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
-            PasswordDto passwordDto = passwordRepositoryService.save(personDTO.getPasswordDto());
-            System.out.println(" AFTER SAVE System.out.println(personDTO.getCleartextTransientPassword());: " + passwordDto.getHashedPassword());
-            personDTO.setPassword(passwordDto);
-            p =  personRepository.save(personDTO);
-        }
-        catch (TransactionSystemException ex) {
-            System.out.println("TransactionSystemException");
-            throw ex;
-        }
 
-//        catch (RollbackException ex) {
-//            System.out.println("RollbackException");
-//            throw ex;
-//        }
 
+             p= personRepository.save(personDTO);
+
+
+return p;
 
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
@@ -56,8 +50,7 @@ public class PersonRepositoryService {
 //        PersonDto p = personRepository.save(personDTO);
 //        return p;
 //        personDTO
-return p;
-    }
+     }
 //
     public Optional<PersonDto> findByEmail(String username) {
         return personRepository.findByEmail(username.toLowerCase());

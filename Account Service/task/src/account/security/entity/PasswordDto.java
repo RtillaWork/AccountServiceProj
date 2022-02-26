@@ -6,6 +6,7 @@ import account.security.PasswordEncoderImpl;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
@@ -13,21 +14,21 @@ import javax.validation.Valid;
 import java.util.Random;
 
 @Entity
-//@Validated
+@Validated
 public class PasswordDto {
 
     // TODO DELETEME AFTER TESTING
-    private static final String DEFAULT_CLEARTEXT_PASSWORD = ""; //""DEBUG_PASSWORD123456789012";
+    private static final String DEFAULT_CLEARTEXT_PASSWORD = "DEBUG_PASSWORD123456789012";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-//    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToOne(mappedBy = "password")
     private PersonDto user;
 
-    //    @JsonIgnore
+        @JsonIgnore
     private String hashedPassword;
 
     // starts with a
@@ -35,8 +36,8 @@ public class PasswordDto {
     private boolean isHashedPasswordReady;
 
     @Transient
-    @PasswordLengthValidation
-    private String clearTextPassword;
+    @PasswordLengthValidation(message =  "The password length must be at least 12 chars!")
+    private String clearTextPassword="";
 
 
     public PasswordDto() {
@@ -52,16 +53,19 @@ public class PasswordDto {
         return id;
     }
 
-    //    @JsonIgnore
+//        @JsonIgnore
     @JsonProperty(value = "DEBUGdtohashedpassword", access = JsonProperty.Access.READ_ONLY)
     public String getHashedPassword() {
         return this.hashedPassword;
     }
 
     @JsonIgnore
+    @Validated
     public void setHashedPassword(@Valid  @PasswordLengthValidation String clearTextPassword) {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
-        this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
+//        this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
+        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(clearTextPassword);
+
         setIsHashedPasswordReady(true);
         System.out.println(" setIsHashedPasswordReady(true): "+ clearTextPassword + " hashed: " + this.hashedPassword);
 //        setClearTextPassword(null);
@@ -69,13 +73,13 @@ public class PasswordDto {
 
     }
 
-    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE)//, access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)//, access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
     public String getCleartextPassword() {
         return this.clearTextPassword;
     }
 
-    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE)//, access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)//, access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
     public void setClearTextPassword( @PasswordLengthValidation
                                                  String clearTextPassword) {
@@ -84,8 +88,8 @@ public class PasswordDto {
 
     // Utility methods
 
-//    @JsonIgnore
-@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
+//@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 public PersonDto getUser() {
         return user;
     }
@@ -112,6 +116,7 @@ public boolean isIsHashedPasswordReady() {
         if (isRandom) {} else {
             PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
             this.hashedPassword = passwordEncoder.passwordEncoder().encode(DEFAULT_CLEARTEXT_PASSWORD);
+            this.hashedPassword = "HASHED"; //TODO DEBUG DELETEME
             setIsHashedPasswordReady(false);
         }
     }

@@ -38,7 +38,7 @@ public class PasswordRepositoryService {
 //
 //    }
 
-    public PasswordDto save(@Valid PasswordDto passwordDTO) { // throws PasswordRequirementException {
+    public PasswordDto save( PasswordDto passwordDTO) { // throws PasswordRequirementException {
 
         PasswordDto password = passwordRepository.save(passwordDTO);
         return password;

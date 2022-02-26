@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 //@Transactional(Transactional.TxType.NEVER)
 @MappedSuperclass
+@Validated
 public class UserDetailsDto implements UserDetails {
 
     @Id
@@ -27,7 +29,9 @@ public class UserDetailsDto implements UserDetails {
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
 //    @NotNull
 //    @Valid
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "password_id")
     protected PasswordDto password;
 
     protected boolean accountNonExpired;
@@ -41,8 +45,9 @@ public class UserDetailsDto implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     protected Set<GrantedAuthority> authorities;
 
+//    @PasswordLengthValidation(message =  "The password length must be at least 12!")
     @Transient
-    private String cleartextTransientPassword;
+    private String cleartextTransientPassword = "";
 
 
 
@@ -119,7 +124,7 @@ public class UserDetailsDto implements UserDetails {
     @JsonProperty(value="newpassword", access = JsonProperty.Access.READ_WRITE)
     public void setCleartextTransientPassword(String cleartextTransientPassword) {
         this.cleartextTransientPassword = cleartextTransientPassword;
-        password.setHashedPassword(this.cleartextTransientPassword);
+        password.setHashedPassword( this.cleartextTransientPassword);
         if (password.isIsHashedPasswordReady()) {
             this.makeFullyActivated();
 //            setCleartextTransientPassword(null);

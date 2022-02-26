@@ -22,8 +22,6 @@ public class UserController {
     @Autowired
     PersonRepositoryService prs;
 
-    @Autowired
-    PasswordDto passwordDTO;
 
     @PostMapping(path = Signup.PATH)
     @ResponseBody

@@ -23,7 +23,7 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value.length() < min || value.length() > max) {
-            context.disableDefaultConstraintViolation();
+//            context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message);
 
             return false;

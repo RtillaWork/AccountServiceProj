@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
@@ -25,17 +26,15 @@ public class PersonRepositoryService {
     @Autowired
     PasswordRepositoryService passwordDTOrs;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
 //    @Transactional(Transactional.TxType.NEVER)
-    public PersonDto save(PersonDto personDTO) {
+    public PersonDto save(@Validated PersonDto personDTO) {
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
-        personDTO.make(new EmployeeGrantedAuthorityImpl());
+//        personDTO.make(new EmployeeGrantedAuthorityImpl());
 //        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
 //        PersonDto p = personRepository.save(personDTO);
 //        return p;
+//        personDTO
 return personDTO;
     }
 //

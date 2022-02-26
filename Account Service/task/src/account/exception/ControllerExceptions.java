@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 
 @ControllerAdvice
 public class ControllerExceptions {
@@ -37,9 +38,17 @@ public class ControllerExceptions {
 
     //    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> constraintViolationExceptionnHandler(ConstraintViolationException ex){
+    public ResponseEntity<String> constraintViolationExceptionHandler(ConstraintViolationException ex){
 
-        String message = ex.getMessage();
+        String message = "ConstraintViolationException" + ex.getMessage();
+        return new ResponseEntity<>(message,  HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<String> validationExceptionHandler(ValidationException ex){
+
+        String message = "ValidationException" + ex.getMessage();
         return new ResponseEntity<>(message,  HttpStatus.BAD_REQUEST);
 
     }

@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.RollbackException;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import java.util.Optional;
@@ -24,10 +26,29 @@ public class PersonRepositoryService {
     PersonRepository personRepository;
 
     @Autowired
-    PasswordRepositoryService passwordDTOrs;
+    PasswordRepositoryService passwordRepositoryService;
 
-//    @Transactional(Transactional.TxType.NEVER)
+    @Transactional
     public PersonDto save(@Validated PersonDto personDTO) {
+        PersonDto p = personDTO;
+        try {
+            System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
+            PasswordDto passwordDto = passwordRepositoryService.save(personDTO.getPasswordDto());
+            System.out.println(" AFTER SAVE System.out.println(personDTO.getCleartextTransientPassword());: " + passwordDto.getHashedPassword());
+            personDTO.setPassword(passwordDto);
+            p =  personRepository.save(personDTO);
+        }
+        catch (TransactionSystemException ex) {
+            System.out.println("TransactionSystemException");
+            throw ex;
+        }
+
+//        catch (RollbackException ex) {
+//            System.out.println("RollbackException");
+//            throw ex;
+//        }
+
+
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
 //        personDTO.make(new EmployeeGrantedAuthorityImpl());
@@ -35,7 +56,7 @@ public class PersonRepositoryService {
 //        PersonDto p = personRepository.save(personDTO);
 //        return p;
 //        personDTO
-return personDTO;
+return p;
     }
 //
     public Optional<PersonDto> findByEmail(String username) {

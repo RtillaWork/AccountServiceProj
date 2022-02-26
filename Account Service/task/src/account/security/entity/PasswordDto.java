@@ -17,7 +17,7 @@ import java.util.Random;
 public class PasswordDto {
 
     // TODO DELETEME AFTER TESTING
-    private static final String DEFAULT_CLEARTEXT_PASSWORD = "DEBUG_PASSWORD123456789012";
+    private static final String DEFAULT_CLEARTEXT_PASSWORD = ""; //""DEBUG_PASSWORD123456789012";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -31,20 +31,22 @@ public class PasswordDto {
     private String hashedPassword;
 
     // starts with a
+    @Transient
     private boolean isHashedPasswordReady;
 
-    @PasswordLengthValidation
     @Transient
+    @PasswordLengthValidation
     private String clearTextPassword;
 
 
     public PasswordDto() {
+        this.clearTextPassword = DEFAULT_CLEARTEXT_PASSWORD;
         setHashedPasswordRandomOrDefault(false);
     }
 
-    public PasswordDto(@Valid  @PasswordLengthValidation String clearTextPassword) {
-        this.setHashedPassword(clearTextPassword);
-    }
+//    public PasswordDto(String clearTextPassword) {
+//        this.setHashedPassword(clearTextPassword);
+//    }
 
     public Long getId() {
         return id;
@@ -57,10 +59,14 @@ public class PasswordDto {
     }
 
     @JsonIgnore
-    public void setHashedPassword(@Valid String clearTextPassword) {
+    public void setHashedPassword(@Valid  @PasswordLengthValidation String clearTextPassword) {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
         this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
         setIsHashedPasswordReady(true);
+        System.out.println(" setIsHashedPasswordReady(true): "+ clearTextPassword + " hashed: " + this.hashedPassword);
+//        setClearTextPassword(null);
+//        System.out.println("setClearTextPassword(null);");
+
     }
 
     @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE)//, access = JsonProperty.Access.WRITE_ONLY)
@@ -71,10 +77,9 @@ public class PasswordDto {
 
     @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE)//, access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
-    public void setClearTextPassword(@Valid     @PasswordLengthValidation
+    public void setClearTextPassword( @PasswordLengthValidation
                                                  String clearTextPassword) {
         this.clearTextPassword = clearTextPassword;
-        setHashedPassword(clearTextPassword);
     }
 
     // Utility methods

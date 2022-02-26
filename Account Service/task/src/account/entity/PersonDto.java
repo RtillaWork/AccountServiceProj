@@ -34,19 +34,19 @@ public class PersonDto extends UserDetailsDto {
        setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl()));
     }
 
-    public PersonDto(String name, String lastname, String email, String password) {
-        super(email, password);
-        this.name = name;
-        this.lastname = lastname;
-        this.email = email;
-    }
-
-    public PersonDto(String username, String password, String name, String lastname, String email) {
-        super(username, password);
-        this.name = name;
-        this.lastname = lastname;
-        this.email = email;
-    }
+//    public PersonDto(String name, String lastname, String email, String password) {
+//        super(email, password);
+//        this.name = name;
+//        this.lastname = lastname;
+//        this.email = email;
+//    }
+//
+//    public PersonDto(String username, String password, String name, String lastname, String email) {
+//        super(username, password);
+//        this.name = name;
+//        this.lastname = lastname;
+//        this.email = email;
+//    }
 
     @JsonProperty(value="name")
     public String getName() {

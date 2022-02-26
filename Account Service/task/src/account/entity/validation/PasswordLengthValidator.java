@@ -22,9 +22,9 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value.length() < min || value.length() > max) {
-//            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(message);
+        if (value == null || value.length() < min || value.length() > max) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
 
             return false;
         } else {

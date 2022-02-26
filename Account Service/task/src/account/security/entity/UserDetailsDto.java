@@ -24,9 +24,10 @@ public class UserDetailsDto implements UserDetails {
 
     protected String username;
 
-//    @NotNull
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+//    @NotNull
+//    @Valid
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     protected PasswordDto password;
 
     protected boolean accountNonExpired;
@@ -40,7 +41,6 @@ public class UserDetailsDto implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     protected Set<GrantedAuthority> authorities;
 
-    @PasswordLengthValidation
     @Transient
     private String cleartextTransientPassword;
 
@@ -53,39 +53,39 @@ public class UserDetailsDto implements UserDetails {
         makeFullyDeactivated();
     }
 
-    public UserDetailsDto(String username, String transientPassword) {
-        this.username = username;
-        this.password = new PasswordDto(transientPassword);
-        makeFullyActivated();
+//    public UserDetailsDto(String username, String transientPassword) {
+//        this.username = username;
+//        this.password = new PasswordDto(transientPassword);
+//        makeFullyActivated();
+//
+//    }
 
-    }
-
-    public UserDetailsDto(String username, String transientPassword, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
-
-        this.username = username;
-        this.password = new PasswordDto(transientPassword);
-        this.accountNonExpired = accountNonExpired;
-        this.accountNonlocked = accountNonlocked;
-        this.credentialstNonExpired = credentialstNonExpired;
-        this.enabled = enabled;
-        setAuthorities(authorities);
-    }
-
-    public UserDetailsDto(String username, PasswordDto password) {
-        this.username = username;
-        this.password = password;
-        makeFullyActivated();
-    }
-
-    public UserDetailsDto(String username, PasswordDto password, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
-        this.username = username;
-        this.password = password;
-        this.accountNonExpired = accountNonExpired;
-        this.accountNonlocked = accountNonlocked;
-        this.credentialstNonExpired = credentialstNonExpired;
-        this.enabled = enabled;
-        setAuthorities(authorities);
-    }
+//    public UserDetailsDto(String username, String transientPassword, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
+//
+//        this.username = username;
+//        this.password = new PasswordDto(transientPassword);
+//        this.accountNonExpired = accountNonExpired;
+//        this.accountNonlocked = accountNonlocked;
+//        this.credentialstNonExpired = credentialstNonExpired;
+//        this.enabled = enabled;
+//        setAuthorities(authorities);
+//    }
+//
+//    public UserDetailsDto(String username, PasswordDto password) {
+//        this.username = username;
+//        this.password = password;
+//        makeFullyActivated();
+//    }
+//
+//    public UserDetailsDto(String username, PasswordDto password, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
+//        this.username = username;
+//        this.password = password;
+//        this.accountNonExpired = accountNonExpired;
+//        this.accountNonlocked = accountNonlocked;
+//        this.credentialstNonExpired = credentialstNonExpired;
+//        this.enabled = enabled;
+//        setAuthorities(authorities);
+//    }
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public Long getId() {
@@ -107,7 +107,7 @@ public class UserDetailsDto implements UserDetails {
         return this.password.getHashedPassword();
     }
 
-    public void updatePassword(@Valid String newCleartextPasswor) {
+    public void updatePassword(String newCleartextPasswor) {
         this.password.setHashedPassword(newCleartextPasswor);
     }
 
@@ -119,9 +119,10 @@ public class UserDetailsDto implements UserDetails {
     @JsonProperty(value="newpassword", access = JsonProperty.Access.READ_WRITE)
     public void setCleartextTransientPassword(String cleartextTransientPassword) {
         this.cleartextTransientPassword = cleartextTransientPassword;
-        password.setHashedPassword(cleartextTransientPassword);
+        password.setHashedPassword(this.cleartextTransientPassword);
         if (password.isIsHashedPasswordReady()) {
             this.makeFullyActivated();
+//            setCleartextTransientPassword(null);
         }
     }
 
@@ -142,7 +143,7 @@ public class UserDetailsDto implements UserDetails {
      * @return the username (never <code>null</code>)
      */
     @Override
-    @JsonIgnore
+//    @JsonIgnore
     public String getUsername() {
         return this.username;
     }
@@ -155,7 +156,7 @@ public class UserDetailsDto implements UserDetails {
      * <code>false</code> if no longer valid (ie expired)
      */
     @Override
-    @JsonIgnore
+//    @JsonIgnore
     public boolean isAccountNonExpired() {
         return this.accountNonExpired;
     }
@@ -167,7 +168,7 @@ public class UserDetailsDto implements UserDetails {
      * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
      */
     @Override
-    @JsonIgnore
+//    @JsonIgnore
     public boolean isAccountNonLocked() {
         return this.accountNonlocked;
     }
@@ -180,7 +181,7 @@ public class UserDetailsDto implements UserDetails {
      * <code>false</code> if no longer valid (ie expired)
      */
     @Override
-    @JsonIgnore
+//    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return this.credentialstNonExpired;
     }
@@ -192,7 +193,7 @@ public class UserDetailsDto implements UserDetails {
      * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
      */
     @Override
-    @JsonIgnore
+//    @JsonIgnore
     public boolean isEnabled() {
         return this.enabled;
     }

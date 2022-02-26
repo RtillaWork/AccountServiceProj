@@ -27,21 +27,24 @@ public class ControllerExceptions {
     @ExceptionHandler(UsernameNotFoundException.class)
     public void usernameNotFoundExceptionHandler(){}
 
-////    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Transaction system exception")
-//    @ExceptionHandler(TransactionSystemException.class)
-//    public ResponseEntity<Object> transactionSystemExceptionnHandler(TransactionSystemException ex){
-//        System.out.println("DEBUG Transaction System Exception Hander: RE-THROWING original exception: " + ex.toString());
-////        throw new RuntimeException(ex.getOriginalException());
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-//
-//    }
+//    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Transaction system exception")
+    @ExceptionHandler(TransactionSystemException.class)
+    public ResponseEntity<String> transactionSystemExceptionnHandler(TransactionSystemException ex){
+        System.out.println("DEBUG Transaction System Exception Hander: getMessage " + ex.toString());
+//        throw new RuntimeException(ex.getOriginalException());
+        String rootcauseMessage = ex.getMessage();
+//                getOriginalException().getMessage();
+//                ex.getOriginalException().getCause().getMessage();
+        return new ResponseEntity<>(rootcauseMessage, HttpStatus.BAD_REQUEST);
+
+    }
 
     //    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> constraintViolationExceptionHandler(ConstraintViolationException ex){
 
         String message = "ConstraintViolationException" + ex.getMessage();
-        return new ResponseEntity<>(message,  HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getConstraintViolations().toString(),  HttpStatus.BAD_REQUEST);
 
     }
 
@@ -49,14 +52,14 @@ public class ControllerExceptions {
     public ResponseEntity<String> validationExceptionHandler(ValidationException ex){
 
         String message = "ValidationException" + ex.getMessage();
-        return new ResponseEntity<>(message,  HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.toString(),  HttpStatus.BAD_REQUEST);
 
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PasswordRequirementException.class)
     public ResponseEntity<String> passwordRequirementExceptionHandler(PasswordRequirementException ex){
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("ex.getMessage()," , HttpStatus.BAD_REQUEST);
     }
 
 //    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The password length must be at leat 12 chars!")

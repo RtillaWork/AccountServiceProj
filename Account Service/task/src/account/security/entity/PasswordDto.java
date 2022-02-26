@@ -2,8 +2,11 @@ package account.security.entity;
 
 import account.entity.PersonDto;
 import account.entity.validation.PasswordLengthValidation;
+import account.security.PasswordEncoderImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.service.spi.InjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,7 +55,8 @@ public class PasswordDto {
 
     @JsonIgnore
     public void setHashedPassword(@Valid String clearTextPassword) {
-        this.hashedPassword = this.passwordEncoderImpl().encode(clearTextPassword);
+        PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
+        this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
     }
 
     @JsonProperty(value = "new_password")//, access = JsonProperty.Access.WRITE_ONLY)
@@ -66,9 +70,5 @@ public class PasswordDto {
     }
 
 
-    @Bean
-    public PasswordEncoder passwordEncoderImpl() {
-        return new BCryptPasswordEncoder();
-//        return NoOpPasswordEncoder.getInstance();
-    }
+
 }

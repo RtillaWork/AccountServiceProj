@@ -22,7 +22,7 @@ public class SecurityConfigImpl extends WebSecurityConfigurerAdapter {
     private AuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoderImpl passwordEncoder;
 
     @Autowired
     UserDetailsServiceImpl udsImpl;
@@ -91,7 +91,7 @@ public class SecurityConfigImpl extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(udsImpl);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder.passwordEncoder());
 
         auth.authenticationProvider(daoAuthenticationProvider);
 

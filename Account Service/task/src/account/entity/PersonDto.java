@@ -20,17 +20,14 @@ public class PersonDto extends UserDetailsDto {
 
 
     @NotEmpty
-    @JsonProperty
     private String name;
 
     @NotEmpty
-    @JsonProperty
     private String lastname;
 
     @NotEmpty
     @Column(unique = true)
     @Email(regexp = "^(.+)@acme.com$", message = "email must be valid")
-    @JsonProperty
     private String email;
 
     public PersonDto() {
@@ -51,27 +48,32 @@ public class PersonDto extends UserDetailsDto {
         this.email = email;
     }
 
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public String getLastname() {
-//        return lastname;
-//    }
-//
-//    public void setLastname(String lastname) {
-//        this.lastname = lastname;
-//    }
+    @JsonProperty(value="name")
+    public String getName() {
+        return name;
+    }
 
+    @JsonProperty(value="name")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @JsonProperty(value="lastname")
+    public String getLastname() {
+        return lastname;
+    }
+
+    @JsonProperty(value="lastname")
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    @JsonProperty(value="email")
     public String getEmail() {
         return email;
     }
 
-    @JsonProperty
+    @JsonProperty(value="email")
     public void setEmail(String email) {
         this.username = email;
         this.email = email;

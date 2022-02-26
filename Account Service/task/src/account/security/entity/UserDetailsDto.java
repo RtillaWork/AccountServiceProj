@@ -1,21 +1,15 @@
 package account.security.entity;
 
 import account.security.RegisteredUserGrantedAuthorityImpl;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 
@@ -32,7 +26,7 @@ public class UserDetailsDto implements UserDetails {
     @NotNull
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    protected PasswordDto passwordDto;
+    protected PasswordDto password;
 
     protected boolean accountNonExpired;
 
@@ -57,7 +51,7 @@ public class UserDetailsDto implements UserDetails {
     public UserDetailsDto(String username, String transientPassword) {
 
         this.username = username;
-        this.passwordDto = new PasswordDto(transientPassword);
+        this.password = new PasswordDto(transientPassword);
         this.accountNonExpired = true;
         this.accountNonlocked = true;
         this.credentialstNonExpired = true;
@@ -67,7 +61,7 @@ public class UserDetailsDto implements UserDetails {
     public UserDetailsDto(String username, String transientPassword, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
 
         this.username = username;
-        this.passwordDto = new PasswordDto(transientPassword);
+        this.password = new PasswordDto(transientPassword);
         this.accountNonExpired = accountNonExpired;
         this.accountNonlocked = accountNonlocked;
         this.credentialstNonExpired = credentialstNonExpired;
@@ -75,10 +69,10 @@ public class UserDetailsDto implements UserDetails {
         this.authorities = authorities;
     }
 
-    public UserDetailsDto(String username, PasswordDto passwordDto) {
+    public UserDetailsDto(String username, PasswordDto password) {
 
         this.username = username;
-        this.passwordDto = passwordDto;
+        this.password = password;
 
         this.accountNonExpired = true;
         this.accountNonlocked = true;
@@ -86,10 +80,10 @@ public class UserDetailsDto implements UserDetails {
         this.enabled = true;
     }
 
-    public UserDetailsDto(String username, PasswordDto passwordDto, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
+    public UserDetailsDto(String username, PasswordDto password, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
 
         this.username = username;
-        this.passwordDto = passwordDto;
+        this.password = password;
         this.accountNonExpired = accountNonExpired;
         this.accountNonlocked = accountNonlocked;
         this.credentialstNonExpired = credentialstNonExpired;
@@ -104,21 +98,21 @@ public class UserDetailsDto implements UserDetails {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public PasswordDto getPasswordDto() {
-        return this.passwordDto;
+        return this.password;
     }
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public void setPasswordDto(PasswordDto passwordDto) {
-        this.passwordDto = passwordDto;
+    public void setPassword(PasswordDto passwordDto) {
+        this.password = passwordDto;
     }
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getPassword() {
-        return this.passwordDto.getPassword();
+        return this.password.getHashedPassword();
     }
 
     public void updatePassword(@Valid String newCleartextPasswor) {
-        this.passwordDto.setPassword(newCleartextPasswor);
+        this.password.setHashedPassword(newCleartextPasswor);
     }
 
 

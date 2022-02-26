@@ -1,21 +1,16 @@
 package account.security.entity;
 
 import account.entity.PersonDto;
-import com.fasterxml.jackson.annotation.JsonAlias;
+import account.entity.validation.PasswordLengthValidation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.validation.constraintvalidation.SupportedValidationTarget;
 
 @Entity
 public class PasswordDto {
@@ -28,64 +23,48 @@ public class PasswordDto {
     @OneToOne(fetch = FetchType.EAGER)
     private PersonDto user;
 
-//    @JsonIgnore
+    //    @JsonIgnore
     @NotEmpty
-    private String password;
+    private String hashedPassword;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-@PasswordLength    @Transient
-    @JsonAlias("new_password")
-    private String newClearTextPassword;
+    @PasswordLengthValidation
+    @Transient
+    private String clearTextPassword;
 
-
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//    @NotEmpty
-//    @Size(min = 12)
-//    @Transient
-//    private String new_password;
 
     public PasswordDto() {
+//        create random password
     }
 
     @Valid
-    public PasswordDto(@Valid String transientPassword) {
-        this.setTransientPassword(transientPassword);
-        this.setPassword(transientPassword);
+    public PasswordDto(@Valid String clearTextPassword) {
+        this.setHashedPassword(clearTextPassword);
     }
 
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    public Long getId() {
+        return id;
+    }
 
     //    @JsonIgnore
-    public String getPassword() {
-        return password;
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
     @JsonIgnore
-    public void setPassword(@Valid
-                                    String transientPassword) {
-        this.password = this.passwordEncoderImpl().encode(transientPassword);
+    public void setHashedPassword(@Valid String clearTextPassword) {
+        this.hashedPassword = this.passwordEncoderImpl().encode(clearTextPassword);
     }
 
-    public String getTransientPassword() {
-        return this.transientPassword;
-    }
-//
-    public void setTransientPassword( @Valid String transientPassword) {
-        this.transientPassword = transientPassword;
+    @JsonProperty(value = "new_password")//, access = JsonProperty.Access.WRITE_ONLY)
+    public String getCleartextPassword() {
+        return this.clearTextPassword;
     }
 
-//    public boolean isValid() {
-//        // TODO
-//        return true;
-//    }
+    @JsonProperty(value = "new_password")//, access = JsonProperty.Access.WRITE_ONLY)
+    public void setClearTextPassword(@Valid String clearTextPassword) {
+        this.clearTextPassword = clearTextPassword;
+    }
 
-//    setPassword(passwordEncoder.encode(this.getPassword()));
 
     @Bean
     public PasswordEncoder passwordEncoderImpl() {

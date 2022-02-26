@@ -30,7 +30,7 @@ public class PersonRepositoryService {
 
 //    @Transactional
     public PersonDto save(@Validated PersonDto personDTO) {
-        System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
+//        System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
         System.out.println(" System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
 
         PasswordDto passwd = personDTO.getPasswordDto();

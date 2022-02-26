@@ -9,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -32,7 +30,7 @@ public class UserDetailsDto implements UserDetails {
 //    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "password_id")
-    protected PasswordDto password;
+    protected PasswordDto passwordDto;
 
     protected boolean accountNonExpired;
 
@@ -45,15 +43,14 @@ public class UserDetailsDto implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     protected Set<GrantedAuthority> authorities;
 
-//    @PasswordLengthValidation(message =  "The password length must be at least 12!")
+    @PasswordLengthValidation(message =  "The password length must be at least 12!")
     @Transient
     private String cleartextTransientPassword = "";
 
 
-
     public UserDetailsDto() {
         setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl()));
-        this.password = new PasswordDto();
+        this.passwordDto = new PasswordDto();
 //        this.password = new PasswordDto(cleartextTransientPassword);
         makeFullyDeactivated();
     }
@@ -97,35 +94,48 @@ public class UserDetailsDto implements UserDetails {
         return id;
     }
 
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+//    public PasswordDto getPassword(boolean withHashRemoved) {
+//        withHashRemoved = false; // TODO verify if it's safe default
+//        String hash_removed = "HASH_REMOVED";
+//        if (withHashRemoved) {
+//            this.passwordDto.setHashedPassword(hash_removed);
+//            return this.passwordDto;
+//        }
+//        else {
+//            return this.passwordDto;
+//        }
+//    }
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public PasswordDto getPasswordDto() {
-        return this.password;
+    public void setPasswordDto(PasswordDto passwordDto) {
+        this.passwordDto = passwordDto;
     }
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public void setPassword(PasswordDto passwordDto) {
-        this.password = passwordDto;
+    public PasswordDto getPasswordDto() {
+        return this.passwordDto;
     }
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getPassword() {
-        return this.password.getHashedPassword();
+        return this.passwordDto.getHashedPassword();
     }
 
     public void updatePassword(String newCleartextPasswor) {
-        this.password.setHashedPassword(newCleartextPasswor);
+        this.passwordDto.setHashedPassword(newCleartextPasswor);
     }
 
-    @JsonProperty(value="newpassword", access = JsonProperty.Access.READ_WRITE)
-    public String getCleartextTransientPassword() {
-        return cleartextTransientPassword;
-    }
+//    @JsonProperty(value="password", access = JsonProperty.Access.READ_ONLY)
+//    public String getCleartextTransientPassword() {
+//        return cleartextTransientPassword;
+//    }
 
-    @JsonProperty(value="newpassword", access = JsonProperty.Access.READ_WRITE)
-    public void setCleartextTransientPassword(String cleartextTransientPassword) {
+    @JsonProperty(value="password", access = JsonProperty.Access.WRITE_ONLY)
+    public void setPassword(String cleartextTransientPassword) {
         this.cleartextTransientPassword = cleartextTransientPassword;
-        password.setHashedPassword( this.cleartextTransientPassword);
-        if (password.isIsHashedPasswordReady()) {
+        passwordDto.setHashedPassword(this.cleartextTransientPassword);
+        if (passwordDto.isIsHashedPasswordReady()) {
             this.makeFullyActivated();
 //            setCleartextTransientPassword(null);
         }

@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import java.util.Random;
 
 @Entity
 @Validated
@@ -25,7 +24,7 @@ public class PasswordDto {
     private Long id;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "password")
+    @OneToOne(mappedBy = "passwordDto")
     private PersonDto user;
 
         @JsonIgnore

@@ -22,13 +22,20 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null || value.length() < min || value.length() > max) {
+        if (value == null) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+            System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
+
+            return false;
+        } else  if (value.length() < min || value.length() > max) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             System.out.println("DEBUG ISVALID VALUE = " + value);
 
             return false;
-        } else {
+        }
+        else {
             return true;
         }
     }

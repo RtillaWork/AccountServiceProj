@@ -1,8 +1,5 @@
 package account.exception;
 
-import account.exception.password.PasswordInsufficientLengthException;
-import account.exception.password.PasswordPresentInDictionaryException;
-import account.exception.password.PasswordReuseException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ControllerExceptions {
@@ -44,8 +38,8 @@ public class ControllerExceptions {
 
     }
 
-    //    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<String> constraintViolationExceptionHandler(ConstraintViolationException ex){
 
 

@@ -14,9 +14,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ControllerExceptions {
+
+    public static final String MESSAGES_DELIMITER = ", ";
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "User exist!") // NOTE : HttpStatus.CONFLICT, 409 preferred
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -43,8 +48,18 @@ public class ControllerExceptions {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> constraintViolationExceptionHandler(ConstraintViolationException ex){
 
-        String message = "ConstraintViolationException" + ex.getMessage();
-        return new ResponseEntity<>(ex.getConstraintViolations().toString(),  HttpStatus.BAD_REQUEST);
+
+//        String message = "ConstraintViolationException" + ex.getMessage();
+//        List<String> messages;
+        var messages = ex.getConstraintViolations().stream()
+                .map(constraintViolation -> constraintViolation.getMessage())
+                .reduce((constraintViolationMsg, constraintViolationMsg2) -> {
+                    var msg = constraintViolationMsg + MESSAGES_DELIMITER + constraintViolationMsg2;
+                    return msg;
+                })
+                .orElse("DEBUG UNEXPECTED EXCEPTION DURING CONSTRAINTVIOLATIONS .getMessage()");
+
+        return new ResponseEntity<>(messages,  HttpStatus.BAD_REQUEST);
 
     }
 

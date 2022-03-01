@@ -14,16 +14,17 @@ import java.util.Collection;
 import java.util.Set;
 
 
-//@Transactional(Transactional.TxType.NEVER)
 @MappedSuperclass
-//@Validated
+@Validated
 public class UserDetailsDto implements UserDetails {
+
+    public static final String NULL_USERNAME = "NULL_USERNAME";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    protected String username;
+    protected String username = NULL_USERNAME;
 
     //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
 //    @NotNull

@@ -9,13 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Set;
 
 
 //@Transactional(Transactional.TxType.NEVER)
 @MappedSuperclass
-@Validated
+//@Validated
 public class UserDetailsDto implements UserDetails {
 
     @Id
@@ -24,12 +25,13 @@ public class UserDetailsDto implements UserDetails {
 
     protected String username;
 
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
 //    @NotNull
 //    @Valid
 //    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "password_id")
+    @Valid
     protected PasswordDto passwordDto;
 
     protected boolean accountNonExpired;
@@ -43,7 +45,7 @@ public class UserDetailsDto implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     protected Set<GrantedAuthority> authorities;
 
-    @PasswordLengthValidation(message =  "The password length must be at least 12!")
+    @PasswordLengthValidation(message = "The password length must be at least 12!")
     @Transient
     private String cleartextTransientPassword = "";
 
@@ -131,7 +133,7 @@ public class UserDetailsDto implements UserDetails {
 //        return cleartextTransientPassword;
 //    }
 
-    @JsonProperty(value="password", access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     public void setPassword(String cleartextTransientPassword) {
         this.cleartextTransientPassword = cleartextTransientPassword;
         passwordDto.setHashedPassword(this.cleartextTransientPassword);
@@ -141,72 +143,44 @@ public class UserDetailsDto implements UserDetails {
         }
     }
 
-    /**
-     * Returns the authorities granted to the user. Cannot return <code>null</code>.
-     *
-     * @return the authorities, sorted by natural key (never <code>null</code>)
-     */
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.authorities != null) {
         return this.authorities;
+        } else {
+            throw new RuntimeException("NULL VALUE EXCEPTION: this.authorities CANNOT BE NULL!");
+        }
     }
 
-    /**
-     * Returns the username used to authenticate the user. Cannot return <code>null</code>.
-     *
-     * @return the username (never <code>null</code>)
-     */
     @Override
 //    @JsonIgnore
     public String getUsername() {
-        return this.username;
+        if (this.username != null) {
+            return this.username;
+        } else {
+            throw new RuntimeException("NULL VALUE EXCEPTION: this.username CANNOT BE NULL!");
+        }
     }
 
-    /**
-     * Indicates whether the user's account has expired. An expired account cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user's account is valid (ie non-expired),
-     * <code>false</code> if no longer valid (ie expired)
-     */
     @Override
 //    @JsonIgnore
     public boolean isAccountNonExpired() {
         return this.accountNonExpired;
     }
 
-    /**
-     * Indicates whether the user is locked or unlocked. A locked user cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
-     */
     @Override
 //    @JsonIgnore
     public boolean isAccountNonLocked() {
         return this.accountNonlocked;
     }
 
-    /**
-     * Indicates whether the user's credentials (password) has expired. Expired
-     * credentials prevent authentication.
-     *
-     * @return <code>true</code> if the user's credentials are valid (ie non-expired),
-     * <code>false</code> if no longer valid (ie expired)
-     */
     @Override
 //    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return this.credentialstNonExpired;
     }
 
-    /**
-     * Indicates whether the user is enabled or disabled. A disabled user cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
-     */
     @Override
 //    @JsonIgnore
     public boolean isEnabled() {

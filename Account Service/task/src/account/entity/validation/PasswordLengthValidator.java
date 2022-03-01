@@ -1,5 +1,8 @@
 package account.entity.validation;
 
+import account.exception.PasswordRequirementException;
+import account.exception.password.PasswordLengthValidationException;
+
 import javax.validation.ConstraintValidator;
         import javax.validation.ConstraintValidatorContext;
         import javax.validation.Validation;
@@ -23,15 +26,17 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
+            // TODO: should this throw a ConstraintValidationException?
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
+
 
             return false;
         } else  if (value.length() < min || value.length() > max) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE = " + value);
+            System.out.println("DEBUG ISVALID VALUE throw new PasswordLengthValidationException(); = " + value);
 
             return false;
         }

@@ -21,9 +21,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @ControllerAdvice
@@ -42,9 +41,27 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} instance
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object>
+    handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 //        return super.handleMethodArgumentNotValid(ex, headers, status, request);
-        Map<String, String>
+        Map<String, Object> responseEntityBody = new LinkedHashMap<>();
+        responseEntityBody.put("timestamp", new Date());
+        responseEntityBody.put("status", status.value());
+        responseEntityBody.put("error", status.getReasonPhrase());
+
+        List<String> violations = ex.getBindingResult().getFieldErrors()
+                .stream().map(fieldError -> fieldError.getDefaultMessage())
+                .collect(Collectors.toList());
+        if (violations.size() == 0) {
+            responseEntityBody.put("message", "ERROR: UNDEFINED MethodArgumentNotValidException ((violations.size() == 0))");
+        } else if (violations.size() == 1) {
+            responseEntityBody.put("message", violations.stream().findFirst().get());
+        } else {
+            responseEntityBody.put("message", violations.toString());
+
+        }
+
+        return new ResponseEntity<>(responseEntityBody, headers, status);
     }
 
     /**
@@ -83,13 +100,15 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
     public void userExistsExceptionHandler() {
 
     }
+
     @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Username/email not found")
     @ExceptionHandler(UsernameNotFoundException.class)
-    public void usernameNotFoundExceptionHandler(){}
+    public void usernameNotFoundExceptionHandler() {
+    }
 
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Transaction system exception")
     @ExceptionHandler(TransactionSystemException.class)
-    public ResponseEntity<String> transactionSystemExceptionnHandler(TransactionSystemException ex){
+    public ResponseEntity<String> transactionSystemExceptionnHandler(TransactionSystemException ex) {
         System.out.println("DEBUG Transaction System Exception Hander: getMessage " + ex.toString());
 //        throw new RuntimeException(ex.getOriginalException());
         String rootcauseMessage = ex.getMessage();
@@ -101,7 +120,7 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ConstraintViolationException.class})
-    public ResponseEntity<String> constraintViolationExceptionHandler(ConstraintViolationException ex){
+    public ResponseEntity<String> constraintViolationExceptionHandler(ConstraintViolationException ex) {
         System.out.println("ConstraintViolationException " + ex.getMessage() + "and its Class: " + ex.getClass());
 //        String message = "ConstraintViolationException" + ex.getMessage();"ConstraintViolationException" + ex.getMessage();
 //        String message = "";
@@ -122,7 +141,7 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
                 })
                 .orElse("DEBUG UNEXPECTED EXCEPTION DURING CONSTRAINTVIOLATIONS .getMessage()");
 
-        return new ResponseEntity<>(messages,  HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(messages, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -170,7 +189,6 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
 //    }
 
 
-
 //    /**
 //     * Build list of ValidationError from set of ConstraintViolation
 //     *
@@ -196,7 +214,6 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
 //                collect(toList());
 //    }
 //
-
 
 
 }

@@ -1,6 +1,7 @@
 package account.security.entity;
 
 import account.entity.validation.PasswordLengthValidation;
+import account.exception.PasswordRequirementException;
 import account.security.RegisteredUserGrantedAuthorityImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,16 +47,17 @@ public class UserDto implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     protected Set<GrantedAuthority> authorities;
 
-    @PasswordLengthValidation(message = "The password length must be at least 12!")
+
     @Transient
+    @PasswordLengthValidation(message = "The password length must be at least 12!")
     private String cleartextTransientPassword = "";
 
 
     public UserDto() {
         setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl()));
-        this.passwordDto = new PasswordDto();
+//        this.passwordDto = new PasswordDto();
 //        this.password = new PasswordDto(cleartextTransientPassword);
-        makeFullyDeactivated();
+//        makeFullyDeactivated();
     }
 
 //    public UserDetailsDto(String username, String transientPassword) {
@@ -110,12 +112,14 @@ public class UserDto implements UserDetails {
 //        }
 //    }
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
     public void setPasswordDto(PasswordDto passwordDto) {
         this.passwordDto = passwordDto;
     }
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
     public PasswordDto getPasswordDto() {
         return this.passwordDto;
     }
@@ -126,29 +130,47 @@ public class UserDto implements UserDetails {
     }
 
     public void updatePassword(String newCleartextPasswor) {
-        this.passwordDto.setHashedPassword(newCleartextPasswor);
-    }
-
-//    @JsonProperty(value="password", access = JsonProperty.Access.READ_ONLY)
-//    public String getCleartextTransientPassword() {
-//        return cleartextTransientPassword;
-//    }
-
-    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
-    public void setPassword(String cleartextTransientPassword) {
-        this.cleartextTransientPassword = cleartextTransientPassword;
-        passwordDto.setHashedPassword(this.cleartextTransientPassword);
-        if (passwordDto.isIsHashedPasswordReady()) {
-            this.makeFullyActivated();
-//            setCleartextTransientPassword(null);
+        if (this.passwordDto != null) {
+            this.passwordDto.setHashedPassword(newCleartextPasswor);
+        } else {
+            throw new PasswordRequirementException("ERROR: this.passwordDto NOT INITIZLIZED");
         }
     }
+
+    //    @JsonProperty(value="password", access = JsonProperty.Access.READ_ONLY)
+    public String getCleartextTransientPassword() {
+        return cleartextTransientPassword;
+    }
+
+    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE)
+    public void setCleartextTransientPassword(@PasswordLengthValidation String cleartextTransientPassword) {
+        this.setPassword(cleartextTransientPassword);
+    }
+
+//    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
+    public void setPassword(String cleartextTransientPassword) {
+        this.makeFullyDeactivated();
+        this.cleartextTransientPassword = cleartextTransientPassword;
+        this.passwordDto = new PasswordDto();
+        passwordDto.setHashedPassword(this.cleartextTransientPassword);
+        if (passwordDto.isHashedPasswordReady()) {
+            this.makeFullyActivated();
+//            setCleartextTransientPassword(null);
+        } else {
+            System.out.println("DEBUG PASSWORD DTO CREATION ERROR");
+            throw new PasswordRequirementException("ERROR: this.passwordDto SETTER failed isIsHashedPasswordReady");
+        }
+    }
+
+
+    // UserDetail
 
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.authorities != null) {
-        return this.authorities;
+            return this.authorities;
         } else {
             throw new RuntimeException("NULL VALUE EXCEPTION: this.authorities CANNOT BE NULL!");
         }

@@ -25,6 +25,7 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
         if (value == null || value.length() < min || value.length() > max) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+            System.out.println("DEBUG ISVALID VALUE = " + value);
 
             return false;
         } else {

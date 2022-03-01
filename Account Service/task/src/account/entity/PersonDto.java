@@ -2,7 +2,7 @@ package account.entity;
 
 import account.route.Api;
 import account.security.EmployeeGrantedAuthorityImpl;
-import account.security.entity.UserDetailsDto;
+import account.security.entity.UserDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Entity
-public class PersonDto extends UserDetailsDto {
+public class PersonDto extends UserDto {
 
     private static final String
             EMAIL_REGEXP = "@" + Api.VALID_DOMAINS.get("Corporate") + "$";

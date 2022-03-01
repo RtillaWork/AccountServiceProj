@@ -16,7 +16,7 @@ import java.util.Set;
 
 @MappedSuperclass
 @Validated
-public class UserDetailsDto implements UserDetails {
+public class UserDto implements UserDetails {
 
     public static final String NULL_USERNAME = "NULL_USERNAME";
 
@@ -51,7 +51,7 @@ public class UserDetailsDto implements UserDetails {
     private String cleartextTransientPassword = "";
 
 
-    public UserDetailsDto() {
+    public UserDto() {
         setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl()));
         this.passwordDto = new PasswordDto();
 //        this.password = new PasswordDto(cleartextTransientPassword);

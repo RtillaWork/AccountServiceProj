@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = PasswordStrengthValidator.class)
 public @interface PasswordStrengthValidation {
     // default error message
-    public String message() default "The password length must be at least 12 chars!";
+    public String message() default "The password is in the hacker's database!";
 
     // groups
     public Class<?>[] groups() default {};
@@ -20,7 +20,9 @@ public @interface PasswordStrengthValidation {
     public Class<? extends Payload>[] payload() default {};
 
     // default min  and max sizes, inclusive
-    int min() default 12; // 12 characters is the smallest acceptable password char size
+    String[] passwordDictionary() default  {"PasswordForJanuary", "PasswordForFebruary", "PasswordForMarch", "PasswordForApril",
+            "PasswordForMay", "PasswordForJune", "PasswordForJuly", "PasswordForAugust",
+            "PasswordForSeptember", "PasswordForOctober", "PasswordForNovember", "PasswordForDecember"};
 
-    int max() default Byte.MAX_VALUE;
+
 }

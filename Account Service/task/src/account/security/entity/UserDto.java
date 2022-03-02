@@ -1,6 +1,8 @@
 package account.security.entity;
 
 import account.entity.validation.PasswordLengthValidation;
+import account.entity.validation.PasswordNonReusePolicyValidation;
+import account.entity.validation.PasswordPolicyValidation;
 import account.exception.PasswordRequirementException;
 import account.security.RegisteredUserGrantedAuthorityImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,6 +52,8 @@ public class UserDto implements UserDetails {
 
     @Transient
     @PasswordLengthValidation(message = "The password length must be at least 12!")
+    @PasswordPolicyValidation
+    @PasswordNonReusePolicyValidation()
     private String cleartextTransientPassword = "";
 
 
@@ -143,7 +147,7 @@ public class UserDto implements UserDetails {
     }
 
     @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE)
-    public void setCleartextTransientPassword(@PasswordLengthValidation String cleartextTransientPassword) {
+    public void setCleartextTransientPassword(@PasswordLengthValidation @PasswordPolicyValidation String cleartextTransientPassword) {
         this.setPassword(cleartextTransientPassword);
     }
 

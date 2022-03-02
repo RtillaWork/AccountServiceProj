@@ -10,6 +10,7 @@ import org.springframework.transaction.TransactionSystemException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Service
 //@Transactional(Transactional.TxType.NEVER)
@@ -18,6 +19,7 @@ public class PasswordRepositoryService {
     @Autowired
     private PasswordRepository passwordRepository;
 
+//
 //    PersonDto findByPerson(PersonDto personDTO) {
 ////        PasswordDTO p = per.findByPerson(personDTO).orElseThrow();
 //        return null;
@@ -32,11 +34,12 @@ public class PasswordRepositoryService {
 //        return null;
 //
 //    }
-//
-//    PersonDto findByPrincipal(PersonDto personDTO) {
-//        return null;
-//
-//    }
+
+    PersonDto findByPrincipal(Principal principal) {
+        String username = principal.getName();
+        return null;
+
+    }
 
     public PasswordDto save( PasswordDto passwordDTO) { // throws PasswordRequirementException {
 

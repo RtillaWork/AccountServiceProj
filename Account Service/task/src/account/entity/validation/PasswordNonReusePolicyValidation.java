@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = PasswordNonReusePolicyValidator.class)
 public @interface PasswordNonReusePolicyValidation {
     // default error message
-    public String message() default "The password is in the hacker's database!";
+    public String message() default "The passwords must be different!";
 
     // groups
     public Class<?>[] groups() default {};
@@ -20,9 +20,7 @@ public @interface PasswordNonReusePolicyValidation {
     public Class<? extends Payload>[] payload() default {};
 
     // default min  and max sizes, inclusive
-    String[] passwordDictionary() default  {"PasswordForJanuary", "PasswordForFebruary", "PasswordForMarch", "PasswordForApril",
-            "PasswordForMay", "PasswordForJune", "PasswordForJuly", "PasswordForAugust",
-            "PasswordForSeptember", "PasswordForOctober", "PasswordForNovember", "PasswordForDecember"};
+    String nonReusePassword() default "";
 
 
 }

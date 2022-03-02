@@ -1,16 +1,33 @@
 package account.entity.validation;
 
+import account.security.PasswordEncoderImpl;
+import account.service.PasswordRepositoryService;
+import account.service.PersonRepositoryService;
+import org.hibernate.service.spi.InjectService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, String>  {
+public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, String> {
 
-    private Set<String> passwordDictionary = new HashSet<>();
+    @Autowired
+    PasswordEncoderImpl passwordEncoder;
+
+    @Autowired
+    PersonRepositoryService personRepositoryService;
+
+    //    @Inject private Principal principal;
+    private Principal principal;
+
+    private String nonReusePassword;
     private String message;
+
 
     /**
      * Implements the validation logic.
@@ -25,23 +42,48 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+
         if (value == null) {
             // TODO: should this throw a ConstraintValidationException?
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
-
             return false;
-        } else  if (passwordDictionary.contains(value)) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
+        } else if (!nonReusePassword.isEmpty()) {
+            // TODO Warning providing a nonReusePassword shortcircuits the last else check against DB prev password(s).
+            int isPasswordReused = passwordEncoder.passwordEncoder().matches(value, nonReusePassword) ? 1 : 0;
+            switch (isPasswordReused) {
+                case 1: {
+                    context.disableDefaultConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+                    System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
+                    return false;
+                    // break;
+                }
+                case 0: {
+                    return true;
+//                    break
+                }
+            }
 
-            return false;
+        } else {
+            String currentHashedPassword = personRepositoryService.findByUsername(principal.getName()).orElseThrow().getPassword();
+            int isPasswordReused = passwordEncoder.passwordEncoder().matches(value, currentHashedPassword) ? 1 : 0;
+            switch (isPasswordReused) {
+                case 1: {
+                    context.disableDefaultConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+                    System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
+                    return false;
+                    // break;
+                }
+                case 0: {
+                    return true;
+//                    break
+                }
+            }
         }
-        else {
-            return true;
-        }
+//        return false;
     }
 
 
@@ -61,7 +103,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Override
     public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        this.passwordDictionary =Set.of(constraintAnnotation.passwordDictionary());
+        this.nonReusePassword = constraintAnnotation.nonReusePassword();
         this.message = constraintAnnotation.message();
     }
 }

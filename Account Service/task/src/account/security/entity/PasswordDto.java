@@ -2,6 +2,7 @@ package account.security.entity;
 
 import account.entity.PersonDto;
 import account.entity.validation.PasswordLengthValidation;
+import account.entity.validation.PasswordPolicyValidation;
 import account.security.PasswordEncoderImpl;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,7 +60,7 @@ public class PasswordDto {
 
     @JsonIgnore
     @Validated
-    public void setHashedPassword(@Valid @PasswordLengthValidation String cleartextTransientPassword) {
+    public void setHashedPassword(@Valid @PasswordPolicyValidation @PasswordLengthValidation String cleartextTransientPassword) {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
 //        this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
         this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(cleartextTransientPassword);
@@ -81,7 +82,7 @@ public class PasswordDto {
     @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
 //, access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
-    public void setClearTextPassword(@PasswordLengthValidation(message = "The password length must be at least 12 chars! passdto")
+    public void setClearTextPassword(@PasswordPolicyValidation @PasswordLengthValidation(message = "The password length must be at least 12 chars! passdto")
 
                                              String clearTextPassword) {
         this.clearTextPassword = clearTextPassword;

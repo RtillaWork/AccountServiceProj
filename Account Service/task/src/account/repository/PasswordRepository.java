@@ -4,6 +4,7 @@ import account.security.entity.PasswordDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Repository
@@ -37,4 +38,6 @@ public interface PasswordRepository extends JpaRepository<PasswordDto, Long> {
      */
     @Override
     <S extends PasswordDto> S saveAndFlush(S entity);
+
+    PasswordDto findByPrincipal(Principal principal);
 }

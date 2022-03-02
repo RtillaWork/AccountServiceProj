@@ -41,7 +41,7 @@ public class PasswordPolicyValidator implements ConstraintValidator<PasswordPoli
         } else  if (weakPasswordDictionary.contains(value)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE throw new PasswordStrengthValidation(); = " + value);
+            System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
 
             return false;
         }

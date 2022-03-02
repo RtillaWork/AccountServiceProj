@@ -8,8 +8,8 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = PasswordStrengthValidator.class)
-public @interface PasswordStrengthValidation {
+@Constraint(validatedBy = PasswordNonReusePolicyValidator.class)
+public @interface PasswordNonReusePolicyValidation {
     // default error message
     public String message() default "The password is in the hacker's database!";
 

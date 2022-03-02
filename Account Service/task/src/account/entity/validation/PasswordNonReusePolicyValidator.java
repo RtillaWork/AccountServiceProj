@@ -3,17 +3,11 @@ package account.entity.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import account.exception.PasswordRequirementException;
-import account.exception.password.PasswordLengthValidationException;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Validation;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class PasswordStrengthValidator implements ConstraintValidator<PasswordStrengthValidation, String>  {
+public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, String>  {
 
     private Set<String> passwordDictionary = new HashSet<>();
     private String message;
@@ -41,7 +35,7 @@ public class PasswordStrengthValidator implements ConstraintValidator<PasswordSt
         } else  if (passwordDictionary.contains(value)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE throw new PasswordStrengthValidation(); = " + value);
+            System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
 
             return false;
         }
@@ -65,7 +59,7 @@ public class PasswordStrengthValidator implements ConstraintValidator<PasswordSt
      * @param constraintAnnotation annotation instance for a given constraint declaration
      */
     @Override
-    public void initialize(PasswordStrengthValidation constraintAnnotation) {
+    public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
         this.passwordDictionary =Set.of(constraintAnnotation.passwordDictionary());
         this.message = constraintAnnotation.message();

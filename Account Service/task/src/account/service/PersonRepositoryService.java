@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.transaction.RollbackException;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
+import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -63,22 +64,27 @@ public class PersonRepositoryService {
     public Optional<PersonDto> findByUsername(String username) {
         return findByEmail(username);
     }
-//
-//    public Optional<PersonDTO> findByPrincipal(Principal principal) {
-//        Optional<PersonDTO> person = findByUsername(principal.getName());
-//        return person;
-//    }
-//
-////    public Optional<PersonDTO>  updatePassword(Principal principal, PasswordDTO newPasswordDTO) {
-////        PersonDTO personDTO = findByPrincipal(principal).orElseThrow();
-////        if (newPasswordDTO.isValid()) {
-////            personDTO.setPassword(newPasswordDTO);
-////            Optional<PersonDTO> p = save(personDTO);
-////            return p;
-////        } else {
-////            return Optional.empty();
-////        }
-////    }
+
+    public Optional<PersonDto> findByPrincipal(Principal principal) {
+        Optional<PersonDto> person = findByUsername(principal.getName());
+        return person;
+    }
+
+    //
+    public PersonDto updatePassword(Principal principal, @Validated PasswordDto newPasswordDTO) {
+        PersonDto personDTO = findByPrincipal(principal).orElseThrow();
+        personDTO.updatePassword(newPasswordDTO.getClearTextPassword());
+        PersonDto p = save(personDTO);
+        return p;
+
+//        if (newPasswordDTO.isValid()) {
+//            personDTO.setPassword(newPasswordDTO);
+//            Optional<PersonDto> p = save(personDTO);
+//            return p;
+//        } else {
+//            return Optional.empty();
+//        }
+    }
 
 
 }

@@ -36,6 +36,7 @@ public class PasswordDto {
     private boolean hashedPasswordReady;
 
     @Transient
+    @JsonAlias("new_password")
     private String clearTextPassword;
 
 

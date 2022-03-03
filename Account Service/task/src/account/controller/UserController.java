@@ -2,6 +2,7 @@ package account.controller;
 
 import account.entity.PersonDto;
 //import account.exception.UserAlreadyExistsException;
+import account.route.v1.ChangePass;
 import account.route.v1.Signup;
 import account.security.entity.PasswordDto;
 import account.service.PersonRepositoryService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import java.security.Principal;
 
 @RestController
 @Validated
@@ -38,15 +40,15 @@ public class UserController {
         }
     }
 
-//    @PostMapping(path = ChangePass.PATH)
-//    @ResponseBody
-//    public ResponseEntity<PersonDTO> changePassword(@Valid @RequestBody PasswordDTO newPasswordDTO,
-//                                                    Principal principal) {
-//        PersonDTO p =  prs.updatePassword(principal, newPasswordDTO).orElseThrow();
-//        return new ResponseEntity<>(p, HttpStatus.OK);
-//
-//
-//    }
+    @PostMapping(path = ChangePass.PATH)
+    @ResponseBody
+    public ResponseEntity<PersonDto> changePassword(@Valid @RequestBody PasswordDto newPasswordDTO,
+                                                    Principal principal) {
+        PersonDto p =  prs.updatePassword(principal, newPasswordDTO);
+        return new ResponseEntity<>(p, HttpStatus.OK);
+
+
+    }
 }
 
 

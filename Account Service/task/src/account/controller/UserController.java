@@ -45,7 +45,7 @@ public class UserController {
     public ResponseEntity<PersonDto> changePassword(@Valid @RequestBody PasswordDto newPasswordDTO,
                                                     Principal principal) {
         System.out.println(" public ResponseEntity<PersonDto> changePassword( newPasswordDTO: " + newPasswordDTO.getClearTextPassword());
-        PersonDto p =  prs.updatePassword(principal, newPasswordDTO);
+        PersonDto p =  prs.update(principal, newPasswordDTO);
         return new ResponseEntity<>(p, HttpStatus.OK);
 
 

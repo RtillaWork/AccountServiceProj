@@ -33,13 +33,15 @@ public class PersonRepositoryService {
     //    @Transactional
     public PersonDto save(@Validated PersonDto personDTO) {
 //        System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
-        System.out.println("  PersonDto save( System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
+//        System.out.println("  PersonDto save( System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
 
         PasswordDto passwd = personDTO.getPasswordDto();
         passwd.setUser(personDTO);
 //        PersonDto p = personDTO;
         personDTO.make(new EmployeeGrantedAuthorityImpl());
         System.out.println("  PersonDto make());: " + personDTO.getUsername());
+        System.out.println("  PersonDto IS PASSWORDDTO NULL());: " + personDTO.getPasswordDto() == null ? " YES " : " NO, HASH IS: " +personDTO.getPasswordDto().getHashedPassword() );
+        System.out.println("  PersonDto IS PASSWORDDTO NULL());: " + personDTO.getPasswordDto() == null);
 
         PersonDto updatedPersonDto = personRepository.save(personDTO);
 
@@ -132,6 +134,15 @@ public class PersonRepositoryService {
 //            return Optional.empty();
 //        }
     }
+       public PersonDto update(Principal principal,  PasswordDto newPasswordDto) {
+           String newCleartextPassword = newPasswordDto.getClearTextPassword();
+           PersonDto personDTO = findByPrincipal(principal).orElseThrow();
+           personDTO.updatePassword(newCleartextPassword);
+           PersonDto p = personRepository.save(personDTO);
+           return p;
+    }
+
+
 
 
 }

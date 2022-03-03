@@ -28,20 +28,19 @@ public class PersonRepositoryService {
     @Autowired
     PasswordRepositoryService passwordRepositoryService;
 
-//    @Transactional
+    //    @Transactional
     public PersonDto save(@Validated PersonDto personDTO) {
 //        System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
-        System.out.println(" System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
+        System.out.println("  PersonDto save( System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
 
         PasswordDto passwd = personDTO.getPasswordDto();
         passwd.setUser(personDTO);
         PersonDto p = personDTO;
+        p.make(new EmployeeGrantedAuthorityImpl());
+        p = personRepository.save(personDTO);
 
 
-             p= personRepository.save(personDTO);
-
-
-return p;
+        return p;
 
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
@@ -50,14 +49,15 @@ return p;
 //        PersonDto p = personRepository.save(personDTO);
 //        return p;
 //        personDTO
-     }
-//
+    }
+
+    //
     public Optional<PersonDto> findByEmail(String username) {
         return personRepository.findByEmail(username.toLowerCase());
     }
 
     public Optional<PersonDto> findByEmail(PersonDto personDTO) {
-            return findByEmail(personDTO.getEmail());
+        return findByEmail(personDTO.getEmail());
     }
 
     public Optional<PersonDto> findByUsername(String username) {
@@ -79,10 +79,6 @@ return p;
 ////            return Optional.empty();
 ////        }
 ////    }
-
-
-
-
 
 
 }

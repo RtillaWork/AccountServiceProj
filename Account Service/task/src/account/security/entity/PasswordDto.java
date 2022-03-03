@@ -36,6 +36,8 @@ public class PasswordDto {
     private boolean hashedPasswordReady;
 
     @Transient
+    @PasswordPolicyValidation
+    @PasswordLengthValidation(message = "Password length must be 12 chars minimum!")
     @JsonAlias("new_password")
     private String clearTextPassword;
 
@@ -87,7 +89,7 @@ public class PasswordDto {
 
 //    @JsonProperty(value = "cleartextpassword", access = JsonProperty.Access.READ_WRITE)
 //, access = JsonProperty.Access.WRITE_ONLY)
-    @JsonAlias("new_password")
+//    @JsonAlias("new_password")
     public String getClearTextPassword() {
         return this.clearTextPassword;
     }
@@ -95,7 +97,7 @@ public class PasswordDto {
 //    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
     @JsonProperty(value = "new_password",access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
-    public void setClearTextPassword(@PasswordPolicyValidation @PasswordLengthValidation(message = "The password length must be at least 12 chars! passdto")
+    public void setClearTextPassword(@PasswordPolicyValidation @PasswordLengthValidation
 
                                              String clearTextPassword) {
         this.clearTextPassword = clearTextPassword;

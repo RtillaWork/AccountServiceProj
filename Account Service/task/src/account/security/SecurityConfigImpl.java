@@ -1,5 +1,6 @@
 package account.security;
 
+import account.route.v1.ChangePass;
 import account.route.v1.Payment;
 import account.route.v1.Signup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class SecurityConfigImpl extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, Signup.PATH).permitAll() // for user registration
                 // other matchers here
                 .antMatchers(HttpMethod.GET, Payment.PATH).authenticated() // for user registration
+                .antMatchers(HttpMethod.POST, ChangePass.PATH).authenticated() // for user registration
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // RESTful service, no session

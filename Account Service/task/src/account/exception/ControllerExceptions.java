@@ -48,6 +48,7 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
         responseEntityBody.put("timestamp", new Date());
         responseEntityBody.put("status", status.value());
         responseEntityBody.put("error", status.getReasonPhrase());
+        responseEntityBody.put("path", extractPathFromURI(request.getDescription(false)));
 
         List<String> violations = ex.getBindingResult().getFieldErrors()
                 .stream().map(fieldError -> fieldError.getDefaultMessage())
@@ -57,7 +58,8 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
         } else if (violations.size() == 1) {
             responseEntityBody.put("message", violations.stream().findFirst().get());
         } else {
-            responseEntityBody.put("message", violations.toString());
+//            responseEntityBody.put("message", violations.toString());
+            responseEntityBody.put("message", violations.stream().findFirst().get());
 
         }
 
@@ -215,5 +217,9 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
 //    }
 //
 
+    private String extractPathFromURI(String requestDescriptionWithURI) {
+        String[] path = requestDescriptionWithURI.split("uri=");
+        return path[1];
+    }
 
 }

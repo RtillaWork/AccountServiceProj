@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = PasswordLengthValidator.class)
 public @interface PasswordLengthValidation {
     // default error message
-    public String message() default "The password length must be at least 12 chars!";
+    public String message() default "Password length must be 12 chars minimum!";
 
     // groups
     public Class<?>[] groups() default {};

@@ -128,7 +128,8 @@ public class UserDto implements UserDetails {
         return this.passwordDto;
     }
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG
+    @JsonIgnore
     public String getPassword() {
         return this.passwordDto.getHashedPassword();
     }
@@ -146,7 +147,8 @@ public class UserDto implements UserDetails {
         return cleartextTransientPassword;
     }
 
-    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE)
+//    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
+    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     public void setCleartextTransientPassword(@PasswordLengthValidation @PasswordPolicyValidation String cleartextTransientPassword) {
         this.setPassword(cleartextTransientPassword);
     }
@@ -181,7 +183,7 @@ public class UserDto implements UserDetails {
     }
 
     @Override
-//    @JsonIgnore
+    @JsonIgnore
     public String getUsername() {
         if (this.username != null) {
             return this.username;
@@ -191,25 +193,25 @@ public class UserDto implements UserDetails {
     }
 
     @Override
-//    @JsonIgnore
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return this.accountNonExpired;
     }
 
     @Override
-//    @JsonIgnore
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return this.accountNonlocked;
     }
 
     @Override
-//    @JsonIgnore
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return this.credentialstNonExpired;
     }
 
     @Override
-//    @JsonIgnore
+    @JsonIgnore
     public boolean isEnabled() {
         return this.enabled;
     }

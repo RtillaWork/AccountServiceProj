@@ -1,24 +1,19 @@
 package account.entity.validation;
 
 import account.security.PasswordEncoderImpl;
-import account.security.entity.PasswordDto;
-import account.service.PasswordRepositoryService;
-import account.service.PersonRepositoryService;
-import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 
 public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, String> {
+
+    // this value should be the most random and represent an absence of prior passwords in DB, on initial User creation for ex.
+    public static final String NOTYET_OR_NULL_nonReusePassword = "DEBUG_NO_OR_INITIAL_CUSER_CREATION_NULL_PASSWORD";
 
     @Autowired
     PasswordEncoderImpl passwordEncoder;
@@ -29,7 +24,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     //    @Inject private Principal principal;
     private Principal principal;
 
-    private String nonReusePassword;
+    private String nonReusePassword = NOTYET_OR_NULL_nonReusePassword;
     private String message;
 
 
@@ -54,7 +49,12 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
-            isValid = false;
+            isValid = true;// TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
+
+        } else if (nonReusePassword == null || nonReusePassword == NOTYET_OR_NULL_nonReusePassword) {
+            // TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
+            // TODO WIP almost same as above, make valid to ignore annotation
+            isValid = true;
         } else {
             // TODO Warning providing a nonReusePassword shortcircuits the last else check against DB prev password(s).
             int isPasswordReused = passwordEncoder.passwordEncoder().matches(value, nonReusePassword) ? 1 : 0;
@@ -64,10 +64,10 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
                     context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
                     System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
                     isValid = false;
-                     break;
+                    break;
                 }
                 case 0: {
-                    isValid = false;
+                    isValid = true;
                     break;
                 }
             }
@@ -103,6 +103,15 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     }
 
     private String getCurrentUserPassword() {
-        return userDetailsService.loadUserByUsername(principal.getName()).getPassword();
+        String currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword();
+        if (currentUserPassword == null) {
+            System.out.println("currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword();" + currentUserPassword);
+            currentUserPassword = NOTYET_OR_NULL_nonReusePassword;
+            return currentUserPassword;
+        } else {
+            System.out.println(" return \"userDetailsService.loadUserByUsername(principal.getName()).getPassword();" + currentUserPassword);
+            return currentUserPassword;
+        }
+
     }
 }

@@ -37,7 +37,8 @@ public class PasswordPolicyValidator implements ConstraintValidator<PasswordPoli
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
 
-            return false;
+            // TODO the case of null password should be handled by a separate annotation, so ignore null buy retuirning true
+            return true;
         } else  if (weakPasswordDictionary.contains(value)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();

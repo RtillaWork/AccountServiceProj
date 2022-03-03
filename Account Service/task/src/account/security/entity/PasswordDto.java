@@ -63,7 +63,8 @@ public class PasswordDto {
     public void setHashedPassword(@Valid @PasswordPolicyValidation @PasswordLengthValidation String cleartextTransientPassword) {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
 //        this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
-        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(cleartextTransientPassword);
+//        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(cleartextTransientPassword);
+        this.hashedPassword =passwordEncoder.passwordEncoder().encode(cleartextTransientPassword);
 
         setHashedPasswordReady(true);
         System.out.println(" setIsHashedPasswordReady(true): " + clearTextPassword + " hashed: " + this.hashedPassword);

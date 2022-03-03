@@ -1,16 +1,20 @@
 package account.entity.validation;
 
 import account.security.PasswordEncoderImpl;
+import account.security.entity.PasswordDto;
 import account.service.PasswordRepositoryService;
 import account.service.PersonRepositoryService;
 import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -20,7 +24,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     PasswordEncoderImpl passwordEncoder;
 
     @Autowired
-    PersonRepositoryService personRepositoryService;
+    UserDetailsService userDetailsService;
 
     //    @Inject private Principal principal;
     private Principal principal;
@@ -43,13 +47,15 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
+        boolean isValid = false;
+
         if (value == null) {
             // TODO: should this throw a ConstraintValidationException?
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
-            return false;
-        } else if (!nonReusePassword.isEmpty()) {
+            isValid = false;
+        } else {
             // TODO Warning providing a nonReusePassword shortcircuits the last else check against DB prev password(s).
             int isPasswordReused = passwordEncoder.passwordEncoder().matches(value, nonReusePassword) ? 1 : 0;
             switch (isPasswordReused) {
@@ -57,33 +63,17 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
                     context.disableDefaultConstraintViolation();
                     context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
                     System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
-                    return false;
-                    // break;
+                    isValid = false;
+                     break;
                 }
                 case 0: {
-                    return true;
-//                    break
+                    isValid = false;
+                    break;
                 }
             }
 
-        } else {
-            String currentHashedPassword = personRepositoryService.findByUsername(principal.getName()).orElseThrow().getPassword();
-            int isPasswordReused = passwordEncoder.passwordEncoder().matches(value, currentHashedPassword) ? 1 : 0;
-            switch (isPasswordReused) {
-                case 1: {
-                    context.disableDefaultConstraintViolation();
-                    context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                    System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
-                    return false;
-                    // break;
-                }
-                case 0: {
-                    return true;
-//                    break
-                }
-            }
         }
-//        return false;
+        return isValid;
     }
 
 
@@ -103,7 +93,16 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Override
     public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        this.nonReusePassword = constraintAnnotation.nonReusePassword();
+        if (constraintAnnotation.nonReusePassword() != null) {
+            this.nonReusePassword = constraintAnnotation.nonReusePassword();
+        } else {
+            this.nonReusePassword = getCurrentUserPassword();
+        }
+
         this.message = constraintAnnotation.message();
+    }
+
+    private String getCurrentUserPassword() {
+        return userDetailsService.loadUserByUsername(principal.getName()).getPassword();
     }
 }

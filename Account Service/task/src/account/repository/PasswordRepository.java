@@ -30,14 +30,14 @@ public interface PasswordRepository extends JpaRepository<PasswordDto, Long> {
     @Override
     void flush();
 
-    /**
-     * Saves an entity and flushes changes instantly.
-     *
-     * @param entity
-     * @return the saved entity
-     */
-    @Override
-    <S extends PasswordDto> S saveAndFlush(S entity);
-
-    PasswordDto findByPrincipal(Principal principal);
+//    /**
+//     * Saves an entity and flushes changes instantly.
+//     *
+//     * @param entity
+//     * @return the saved entity
+//     */
+//    @Override
+//    <S extends PasswordDto> S saveAndFlush(S entity);
+//
+//    PasswordDto findByPrincipal(Principal principal);
 }

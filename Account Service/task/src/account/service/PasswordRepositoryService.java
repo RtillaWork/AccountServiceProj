@@ -58,4 +58,23 @@ public class PasswordRepositoryService {
 ////            throw new TransactionSystemException("DEBUG EXCEPTION TYPE TransactionSystemExceotion in PasswordRepositoryService");
 //        }
     }
+
+//    public PasswordDto update(PasswordDto passwordDTO, String cleartextPassword) { // throws PasswordRequirementException {
+//        passwordDTO.setHashedPassword(cleartextPassword);
+//        System.out.println("from passwordDto service SAVED passwordDTO.setHashedPassword(cleartextPassword) cleartext: " + cleartextPassword);
+//        PasswordDto password = passwordRepository.save(passwordDTO);
+//        return password;
+////        // validate passwordDTO
+////        try {
+////            return passwordRepository.saveAndFlush(passwordDTO);
+////        } catch (ConstraintViolationException ex) {
+////            throw ex;
+////        } catch (TransactionSystemException tex) {
+////            var ex= tex.getApplicationException();
+////            throw new PasswordRequirementException(
+////                    "DEBUG EXCEPTION TYPE TransactionSystemExceotion in PasswordRepositoryService",
+////                    ex);
+//////            throw new TransactionSystemException("DEBUG EXCEPTION TYPE TransactionSystemExceotion in PasswordRepositoryService");
+////        }
+//    }
 }

@@ -81,12 +81,13 @@ public class PersonDto extends UserDto {
 
 
     public void make(@Autowired GrantedAuthority grantedAuthority) {
-        setAuthorities(Set.of(grantedAuthority));
+
         // NOTE .email is case-insensitive
         // NOTE .email will never be null because of validation rules
         // NOTE run normalized(...) only one, by checking if .id has already been set != null
 
         if (this.getEmail() != null) {
+            setAuthorities(Set.of(grantedAuthority));
             setEmail(this.getEmail().toLowerCase());
         }
 

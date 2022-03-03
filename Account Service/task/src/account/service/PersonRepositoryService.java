@@ -5,6 +5,7 @@ import account.entity.PersonDto;
 import account.repository.PersonRepository;
 import account.security.EmployeeGrantedAuthorityImpl;
 import account.security.entity.PasswordDto;
+import io.micrometer.core.instrument.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,12 +37,41 @@ public class PersonRepositoryService {
 
         PasswordDto passwd = personDTO.getPasswordDto();
         passwd.setUser(personDTO);
-        PersonDto p = personDTO;
-        p.make(new EmployeeGrantedAuthorityImpl());
-        p = personRepository.save(personDTO);
+//        PersonDto p = personDTO;
+        personDTO.make(new EmployeeGrantedAuthorityImpl());
+        System.out.println("  PersonDto make());: " + personDTO.getUsername());
 
+        PersonDto updatedPersonDto = personRepository.save(personDTO);
 
-        return p;
+        return updatedPersonDto;
+
+//        return p;
+
+//        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
+//        personDTO.build(new EmployeeGrantedAuthorityImpl());
+//        personDTO.make(new EmployeeGrantedAuthorityImpl());
+//        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
+//        PersonDto p = personRepository.save(personDTO);
+//        return p;
+//        personDTO
+    }
+
+    //    @Transactional
+    public PersonDto save(@Validated PersonDto personDTO, @Validated PasswordDto passwordDto) {
+//        System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
+        System.out.println(" 2 args PersonDto save( System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
+
+        PasswordDto passwd = passwordDto; // personDTO.getPasswordDto();
+        passwd.setUser(personDTO);
+//        PersonDto p = personDTO;
+        personDTO.make(new EmployeeGrantedAuthorityImpl());
+        System.out.println(" 2 args PersonDto make());: " + personDTO.getUsername());
+
+        PersonDto updatedPersonDto = personRepository.save(personDTO);
+
+        return updatedPersonDto;
+
+//        return p;
 
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
 //        personDTO.build(new EmployeeGrantedAuthorityImpl());
@@ -71,10 +101,27 @@ public class PersonRepositoryService {
     }
 
     //
-    public PersonDto updatePassword(Principal principal, @Validated PasswordDto newPasswordDTO) {
+    public PersonDto updatePassword(Principal principal,  PasswordDto newPasswordDTO) {
         PersonDto personDTO = findByPrincipal(principal).orElseThrow();
+        System.out.println("public PersonDto updatePassword(: " + personDTO.getUsername());
+        if (personDTO.getPasswordDto().getClearTextPassword() == null) {
+            System.out.println("public PersonDto updatePassword ersonDTO.getPasswordDto().getClearTextPassword(): IS NULLLL");
+        } else {
+            System.out.println("public PersonDto updatePassword( personDTO.getPasswordDto().getClearTextPassword() : " + personDTO.getPasswordDto().getClearTextPassword());
+        }
+
+        System.out.println("public PersonDto  updatePassword newPasswordDTO.getClearTextPassword(): " + newPasswordDTO.getClearTextPassword());
+
+//        newPasswordDTO.setClearTextPassword(newPasswordDTO.getClearTextPassword());
         personDTO.updatePassword(newPasswordDTO.getClearTextPassword());
-        PersonDto p = save(personDTO);
+
+        System.out.println("newPasswordDTO.getClearTextPassword(): " + newPasswordDTO.getClearTextPassword());
+
+        System.out.println("personDTO.get Password(): " + personDTO.getPassword() + " personDTO.get username(): " + personDTO.getUsername() + " personDTO.get passwordDto clear text(): " + personDTO.getPasswordDto().getClearTextPassword() + " personDTO.get passwordDto get hashed EQUALS personDto.geaptssword  " + personDTO.getPasswordDto().getHashedPassword().equals(personDTO.getPassword()));
+//        PersonDto p = save(personDTO);
+        PersonDto p = save(personDTO); //, personDTO.getPasswordDto());
+
+        // personRepository.
         return p;
 
 //        if (newPasswordDTO.isValid()) {

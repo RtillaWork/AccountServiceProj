@@ -25,7 +25,7 @@ public class PasswordDto {
     private Long id;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "passwordDto")
+    @OneToOne(mappedBy = "passwordDto", fetch = FetchType.EAGER)
     private PersonDto user;
 
     @JsonIgnore
@@ -65,29 +65,42 @@ public class PasswordDto {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
 //        this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
 //        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(cleartextTransientPassword);
-        this.hashedPassword =passwordEncoder.passwordEncoder().encode(cleartextTransientPassword);
+        this.hashedPassword = passwordEncoder.passwordEncoder().encode(cleartextTransientPassword);
+//        this.hashedPassword = passwordEncoder.passwordEncoder().encode(this.clearTextPassword);
 
         setHashedPasswordReady(true);
-        System.out.println(" setIsHashedPasswordReady(true): " + clearTextPassword + " hashed: " + this.hashedPassword);
+        System.out.println(" setIsHashedPasswordReady(true): this.clearTextPassword" + this.clearTextPassword + " hashed: " + this.hashedPassword);
 //        setClearTextPassword(null);
 //        System.out.println("setClearTextPassword(null);");
 
     }
 
-    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
+
+    @JsonIgnore
+    @Validated
+    public void setHashedPassword() {
+        PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
+        this.hashedPassword = passwordEncoder.passwordEncoder().encode(this.getClearTextPassword());
+        setHashedPasswordReady(true);
+        System.out.println(" setIsHashedPasswordReady(true): this.clearTextPassword" + this.clearTextPassword + " hashed: " + this.hashedPassword);
+    }
+
+//    @JsonProperty(value = "cleartextpassword", access = JsonProperty.Access.READ_WRITE)
 //, access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
     public String getClearTextPassword() {
         return this.clearTextPassword;
     }
 
-    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
-//, access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
+    @JsonProperty(value = "new_password",access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
     public void setClearTextPassword(@PasswordPolicyValidation @PasswordLengthValidation(message = "The password length must be at least 12 chars! passdto")
 
                                              String clearTextPassword) {
         this.clearTextPassword = clearTextPassword;
+        this.setHashedPassword();
+
     }
 
 

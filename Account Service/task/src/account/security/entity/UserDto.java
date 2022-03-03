@@ -33,7 +33,7 @@ public class UserDto implements UserDetails {
 //    @NotNull
 //    @Valid
 //    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "password_id")
     @Valid
     protected PasswordDto passwordDto;
@@ -136,7 +136,8 @@ public class UserDto implements UserDetails {
 
     public void updatePassword(String newCleartextPasswor) {
         if (this.passwordDto != null) {
-            this.passwordDto.setHashedPassword(newCleartextPasswor);
+//            this.passwordDto.setHashedPassword(newCleartextPasswor);
+            this.passwordDto.setClearTextPassword(newCleartextPasswor);
         } else {
             throw new PasswordRequirementException("ERROR: this.passwordDto NOT INITIZLIZED");
         }
@@ -159,7 +160,8 @@ public class UserDto implements UserDetails {
         this.makeFullyDeactivated();
         this.cleartextTransientPassword = cleartextTransientPassword;
         this.passwordDto = new PasswordDto();
-        passwordDto.setHashedPassword(this.cleartextTransientPassword);
+//        passwordDto.setHashedPassword(this.cleartextTransientPassword);
+        passwordDto.setClearTextPassword(this.cleartextTransientPassword);
         if (passwordDto.isHashedPasswordReady()) {
             this.makeFullyActivated();
 //            setCleartextTransientPassword(null);

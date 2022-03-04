@@ -134,7 +134,7 @@ public class PersonRepositoryService {
 //            return Optional.empty();
 //        }
     }
-       public PersonDto update(Principal principal,  PasswordDto newPasswordDto) {
+       public PersonDto update(Principal principal, @Validated PasswordDto newPasswordDto) {
            String newCleartextPassword = newPasswordDto.getClearTextPassword();
            PersonDto personDTO = findByPrincipal(principal).orElseThrow();
            personDTO.updatePassword(newCleartextPassword);

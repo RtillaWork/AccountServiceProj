@@ -19,7 +19,7 @@ public @interface PasswordNonReusePolicyValidation {
     // payload
     public Class<? extends Payload>[] payload() default {};
 
-    // default min  and max sizes, inclusive
+    //
     String nonReusePassword() default "";
 
 

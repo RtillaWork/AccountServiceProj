@@ -1,13 +1,18 @@
 package account.entity.validation;
 
 import account.security.PasswordEncoderImpl;
+import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import java.security.Principal;
+import java.util.Arrays;
 
 
 public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, String> {
@@ -21,8 +26,12 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Autowired
     UserDetailsService userDetailsService;
 
-    //    @Inject private Principal principal;
-    private Principal principal;
+    Authentication auth;
+
+////    Principal principal = getPrincipal(getPrincipal());
+//
+//    //    @Inject private Principal principal;
+//    private Principal principal;
 
     private String nonReusePassword = NOTYET_OR_NULL_nonReusePassword;
     private String message;
@@ -68,10 +77,8 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
                     break;
                 }
                 case 0: {
-
                     isValid = true;
                     System.out.println("DEBUG ISVALID: " + isValid + " VALUE =" + value);
-
                     break;
                 }
             }
@@ -97,34 +104,46 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Override
     public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        if (!constraintAnnotation.nonReusePassword().isBlank()) {
-            System.out.println("!constraintAnnotation.nonReusePassword().isBlank()");
-            this.nonReusePassword = constraintAnnotation.nonReusePassword();
-        } else if (principal != null) {
-            System.out.println("principal != null");
-            this.nonReusePassword = getCurrentUserPassword();
-        } else {
-            System.out.println("this.nonReusePassword = NOTYET_OR_NULL_nonReusePassword;");
-            this.nonReusePassword = NOTYET_OR_NULL_nonReusePassword;
-        }
+        this.nonReusePassword = getCurrentUserPassword();
+
+//
+//        if (!constraintAnnotation.nonReusePassword().isBlank()) {
+//            System.out.println("!constraintAnnotation.nonReusePassword().isBlank()");
+//            this.nonReusePassword = constraintAnnotation.nonReusePassword();
+//        } else if (principal != null) {
+//            System.out.println("principal != null");
+//            this.nonReusePassword = getCurrentUserPassword();
+//        } else {
+//            System.out.println("this.nonReusePassword = NOTYET_OR_NULL_nonReusePassword;");
+//            this.nonReusePassword = NOTYET_OR_NULL_nonReusePassword;
+//        }
 
         this.message = constraintAnnotation.message();
     }
 
     private String getCurrentUserPassword() {
         String currentUserPassword = null;
+        Principal principal;
+        if (auth != null) {
+            principal = (Principal) auth.getPrincipal();
+        } else {
+            return null;
+        }
+        System.out.println("Principal principal = (Principal) auth.getPrincipal();: " + principal.toString());
 
         if (principal != null && principal.getName() != null) {
             System.out.println("principal != null && principal.getName() != null");
             currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword();
-        } else if (currentUserPassword == null) {
+        } else  {
             System.out.println("currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword(); " + currentUserPassword);
             currentUserPassword = NOTYET_OR_NULL_nonReusePassword;
-
-        } else {
-            System.out.println(" return \"userDetailsService.loadUserByUsername(principal.getName()).getPassword(); " + currentUserPassword);
 
         }
         return currentUserPassword;
     }
+
+//    void getPrincipal(@AuthenticationPrincipal Principal principal) {
+//        System.out.println("DEBUG getPrincipal(@AuthenticationPrincipal Principal principal): " + principal.toString());
+//        return principal;
+//    }
 }

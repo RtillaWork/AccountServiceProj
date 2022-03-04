@@ -3,9 +3,13 @@ package account.entity.validation;
 import account.security.PasswordEncoderImpl;
 import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.validation.ConstraintValidator;
@@ -13,6 +17,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Optional;
 
 
 public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, String> {
@@ -26,7 +31,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Autowired
     UserDetailsService userDetailsService;
 
-    Authentication auth;
+//    Authentication auth;
 
 ////    Principal principal = getPrincipal(getPrincipal());
 //
@@ -104,8 +109,8 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Override
     public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        this.nonReusePassword = getCurrentUserPassword();
-
+        this.nonReusePassword = getCurrentUserPassword().orElse(NOTYET_OR_NULL_nonReusePassword);
+        System.out.println("!constraintAnnotation.nonReusePassword().isBlank() " + !constraintAnnotation.nonReusePassword().isBlank());
 //
 //        if (!constraintAnnotation.nonReusePassword().isBlank()) {
 //            System.out.println("!constraintAnnotation.nonReusePassword().isBlank()");
@@ -121,25 +126,22 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
         this.message = constraintAnnotation.message();
     }
 
-    private String getCurrentUserPassword() {
+    private Optional<String> getCurrentUserPassword() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
+        }
+
+        System.out.println("AUTHENTICATION IS: " + auth.getPrincipal());
+        System.out.println(" UserDetails userDetails = userDetailsService. :" + userDetailsService);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName());
         String currentUserPassword = null;
-        Principal principal;
-        if (auth != null) {
-            principal = (Principal) auth.getPrincipal();
-        } else {
-            return null;
-        }
-        System.out.println("Principal principal = (Principal) auth.getPrincipal();: " + principal.toString());
+        currentUserPassword = userDetails.getPassword();
 
-        if (principal != null && principal.getName() != null) {
-            System.out.println("principal != null && principal.getName() != null");
-            currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword();
-        } else  {
-            System.out.println("currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword(); " + currentUserPassword);
-            currentUserPassword = NOTYET_OR_NULL_nonReusePassword;
+        System.out.println("Principal principal = (Principal) auth.getPrincipal();: " + currentUserPassword);
 
-        }
-        return currentUserPassword;
+        return Optional.ofNullable(currentUserPassword);
     }
 
 //    void getPrincipal(@AuthenticationPrincipal Principal principal) {

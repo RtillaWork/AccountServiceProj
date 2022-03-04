@@ -53,7 +53,7 @@ public class UserDto implements UserDetails {
     @Transient
     @PasswordLengthValidation(message = "Password length must be 12 chars minimum!")
     @PasswordPolicyValidation
-//    @PasswordNonReusePolicyValidation
+//    @PasswordNonReusePolicyValidation // (TODO NOTE irrelevant as the User created first time with its password)
     private String cleartextTransientPassword = "";
 
 

@@ -51,13 +51,14 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
             System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
             isValid = true;// TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
 
-        } else if (nonReusePassword == null || nonReusePassword == NOTYET_OR_NULL_nonReusePassword) {
+        } else if (nonReusePassword == null || NOTYET_OR_NULL_nonReusePassword.equals(nonReusePassword )) {
             // TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
             // TODO WIP almost same as above, make valid to ignore annotation
             isValid = true;
         } else {
             // TODO Warning providing a nonReusePassword shortcircuits the last else check against DB prev password(s).
             int isPasswordReused = passwordEncoder.passwordEncoder().matches(value, nonReusePassword) ? 1 : 0;
+            System.out.println(" DEBUG VALUE: " + value + " matches(value, nonReusePassword): " + isPasswordReused);
             switch (isPasswordReused) {
                 case 1: {
                     context.disableDefaultConstraintViolation();
@@ -67,7 +68,10 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
                     break;
                 }
                 case 0: {
+
                     isValid = true;
+                    System.out.println("DEBUG ISVALID: " + isValid + " VALUE =" + value);
+
                     break;
                 }
             }
@@ -93,25 +97,34 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Override
     public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        if (constraintAnnotation.nonReusePassword() != null) {
+        if (!constraintAnnotation.nonReusePassword().isBlank()) {
+            System.out.println("!constraintAnnotation.nonReusePassword().isBlank()");
             this.nonReusePassword = constraintAnnotation.nonReusePassword();
-        } else {
+        } else if (principal != null) {
+            System.out.println("principal != null");
             this.nonReusePassword = getCurrentUserPassword();
+        } else {
+            System.out.println("this.nonReusePassword = NOTYET_OR_NULL_nonReusePassword;");
+            this.nonReusePassword = NOTYET_OR_NULL_nonReusePassword;
         }
 
         this.message = constraintAnnotation.message();
     }
 
     private String getCurrentUserPassword() {
-        String currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword();
-        if (currentUserPassword == null) {
-            System.out.println("currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword();" + currentUserPassword);
-            currentUserPassword = NOTYET_OR_NULL_nonReusePassword;
-            return currentUserPassword;
-        } else {
-            System.out.println(" return \"userDetailsService.loadUserByUsername(principal.getName()).getPassword();" + currentUserPassword);
-            return currentUserPassword;
-        }
+        String currentUserPassword = null;
 
+        if (principal != null && principal.getName() != null) {
+            System.out.println("principal != null && principal.getName() != null");
+            currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword();
+        } else if (currentUserPassword == null) {
+            System.out.println("currentUserPassword = userDetailsService.loadUserByUsername(principal.getName()).getPassword(); " + currentUserPassword);
+            currentUserPassword = NOTYET_OR_NULL_nonReusePassword;
+
+        } else {
+            System.out.println(" return \"userDetailsService.loadUserByUsername(principal.getName()).getPassword(); " + currentUserPassword);
+
+        }
+        return currentUserPassword;
     }
 }

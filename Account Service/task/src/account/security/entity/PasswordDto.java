@@ -2,6 +2,7 @@ package account.security.entity;
 
 import account.entity.PersonDto;
 import account.entity.validation.PasswordLengthValidation;
+import account.entity.validation.PasswordNonReusePolicyValidation;
 import account.entity.validation.PasswordPolicyValidation;
 import account.security.PasswordEncoderImpl;
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -37,7 +38,8 @@ public class PasswordDto {
 
     @Transient
     @PasswordPolicyValidation
-    @PasswordLengthValidation(message = "Password length must be 12 chars minimum!")
+    @PasswordLengthValidation
+//    @PasswordNonReusePolicyValidation // (TODO NOTE: only relevant if (User, Password(s)) already created
     @JsonAlias("new_password")
     private String clearTextPassword;
 
@@ -63,7 +65,9 @@ public class PasswordDto {
 
     @JsonIgnore
     @Validated
-    public void setHashedPassword(@Valid @PasswordPolicyValidation @PasswordLengthValidation String cleartextTransientPassword) {
+    public void setHashedPassword(@Valid @PasswordPolicyValidation @PasswordLengthValidation
+//                                      @PasswordNonReusePolicyValidation
+                                              String cleartextTransientPassword) {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
 //        this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
 //        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(cleartextTransientPassword);
@@ -98,8 +102,9 @@ public class PasswordDto {
     @JsonProperty(value = "new_password",access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
     public void setClearTextPassword(@PasswordPolicyValidation @PasswordLengthValidation
+                                         //@PasswordNonReusePolicyValidation
 
-                                             String clearTextPassword) {
+                                                 String clearTextPassword) {
         this.clearTextPassword = clearTextPassword;
         this.setHashedPassword();
 

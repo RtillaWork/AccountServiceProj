@@ -23,7 +23,7 @@ import java.util.Optional;
 public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, String> {
 
     // this value should be the most random and represent an absence of prior passwords in DB, on initial User creation for ex.
-    public static final String NOTYET_OR_NULL_nonReusePassword = "DEBUG_NO_OR_INITIAL_CUSER_CREATION_NULL_PASSWORD";
+    private static final String NONEYET_OR_NULL_nonReusePassword = "DEBUG_NONEYET_OR_NULL_INITIAL_USER_CREATION__PASSWORD";
 
     @Autowired
     PasswordEncoderImpl passwordEncoder;
@@ -38,7 +38,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
 //    //    @Inject private Principal principal;
 //    private Principal principal;
 
-    private String nonReusePassword = NOTYET_OR_NULL_nonReusePassword;
+    private static String nonReusePassword; // = NOTYET_OR_NULL_nonReusePassword;
     private String message;
 
 
@@ -65,7 +65,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
             System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
             isValid = true;// TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
 
-        } else if (nonReusePassword == null || NOTYET_OR_NULL_nonReusePassword.equals(nonReusePassword )) {
+        } else if (nonReusePassword == null || NONEYET_OR_NULL_nonReusePassword.equals(nonReusePassword )) {
             // TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
             // TODO WIP almost same as above, make valid to ignore annotation
             isValid = true;
@@ -109,7 +109,17 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Override
     public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        this.nonReusePassword = getCurrentUserPassword().orElse(NOTYET_OR_NULL_nonReusePassword);
+        if (nonReusePassword == null) {
+            nonReusePassword = getCurrentUserPassword().orElse(NONEYET_OR_NULL_nonReusePassword);
+            this.message = constraintAnnotation.message();
+
+        } else if ( NONEYET_OR_NULL_nonReusePassword.equals(nonReusePassword)){
+            this.message = "THIS MESSAGE + " +  NONEYET_OR_NULL_nonReusePassword;
+        } else {
+            this.message = "THIS MESSAGE = UNKNOWN STATE NEITHER NULL NOR INITIALIZED";
+
+        }
+
         System.out.println("!constraintAnnotation.nonReusePassword().isBlank() " + !constraintAnnotation.nonReusePassword().isBlank());
 //
 //        if (!constraintAnnotation.nonReusePassword().isBlank()) {
@@ -123,7 +133,6 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
 //            this.nonReusePassword = NOTYET_OR_NULL_nonReusePassword;
 //        }
 
-        this.message = constraintAnnotation.message();
     }
 
     private Optional<String> getCurrentUserPassword() {
@@ -136,15 +145,14 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
         System.out.println(" UserDetails userDetails = userDetailsService. :" + userDetailsService);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName());
-        String currentUserPassword = null;
-        currentUserPassword = userDetails.getPassword();
+        String currentUserPassword = userDetails.getPassword();
 
         System.out.println(" currentUserPassword = userDetails.getPassword(); :" + currentUserPassword);
 
 
         System.out.println("Principal principal = (Principal) auth.getPrincipal();: " + currentUserPassword);
 
-        return Optional.ofNullable(currentUserPassword);
+        return Optional.of(currentUserPassword);
     }
 
 //    void getPrincipal(@AuthenticationPrincipal Principal principal) {

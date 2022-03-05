@@ -30,8 +30,7 @@ public class UserDto implements UserDetails {
     protected String username = NULL_USERNAME;
 
     //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-//    @NotNull
-//    @Valid
+
 //    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "password_id")
@@ -128,8 +127,8 @@ public class UserDto implements UserDetails {
         return this.passwordDto;
     }
 
-//    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG
+//    @JsonIgnore
     public String getPassword() {
         return this.passwordDto.getHashedPassword();
     }
@@ -150,7 +149,7 @@ public class UserDto implements UserDetails {
 
 //    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
     @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
-    public void setCleartextTransientPassword(@PasswordLengthValidation @PasswordPolicyValidation String cleartextTransientPassword) {
+    public void setCleartextTransientPassword(@Validated @PasswordLengthValidation @PasswordPolicyValidation String cleartextTransientPassword) {
         this.setPassword(cleartextTransientPassword);
     }
 

@@ -8,6 +8,7 @@ import account.security.PasswordEncoderImpl;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import net.bytebuddy.implementation.bind.annotation.FieldValue;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 
@@ -39,7 +40,7 @@ public class PasswordDto {
     @Transient
     @PasswordPolicyValidation
     @PasswordLengthValidation
-//    @PasswordNonReusePolicyValidation // (TODO NOTE: only relevant if (User, Password(s)) already created
+    @PasswordNonReusePolicyValidation // (TODO NOTE: only relevant if (User, Password(s)) already created
     @JsonAlias("new_password")
     private String clearTextPassword;
 
@@ -66,7 +67,7 @@ public class PasswordDto {
     @JsonIgnore
     @Validated
     public void setHashedPassword(@Valid @PasswordPolicyValidation @PasswordLengthValidation
-                                     // @PasswordNonReusePolicyValidation
+                                      @PasswordNonReusePolicyValidation
                                               String cleartextTransientPassword) {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
 //        this.hashedPassword = passwordEncoder.passwordEncoder().encode(clearTextPassword);
@@ -86,7 +87,8 @@ public class PasswordDto {
     @Validated
     public void setHashedPassword() {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
-        this.hashedPassword = passwordEncoder.passwordEncoder().encode(this.getClearTextPassword());
+//        this.hashedPassword = passwordEncoder.passwordEncoder().encode(this.getClearTextPassword());
+        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(this.getClearTextPassword());
         setHashedPasswordReady(true);
         System.out.println(" setIsHashedPasswordReady(true): this.clearTextPassword" + this.clearTextPassword + " hashed: " + this.hashedPassword);
     }
@@ -102,7 +104,7 @@ public class PasswordDto {
     @JsonProperty(value = "new_password",access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
     public void setClearTextPassword(@PasswordPolicyValidation @PasswordLengthValidation
-                                         // @PasswordNonReusePolicyValidation
+                                          @PasswordNonReusePolicyValidation
 
                                                  String clearTextPassword) {
         this.clearTextPassword = clearTextPassword;

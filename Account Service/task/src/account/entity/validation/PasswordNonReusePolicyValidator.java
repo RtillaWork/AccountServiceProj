@@ -139,6 +139,9 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
         String currentUserPassword = null;
         currentUserPassword = userDetails.getPassword();
 
+        System.out.println(" currentUserPassword = userDetails.getPassword(); :" + currentUserPassword);
+
+
         System.out.println("Principal principal = (Principal) auth.getPrincipal();: " + currentUserPassword);
 
         return Optional.ofNullable(currentUserPassword);

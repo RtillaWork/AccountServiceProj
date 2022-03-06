@@ -41,7 +41,7 @@ public class PasswordRepositoryService {
 
     }
 
-    public PasswordDto save( PasswordDto passwordDTO) { // throws PasswordRequirementException {
+    public PasswordDto save(PasswordDto passwordDTO) { // throws PasswordRequirementException {
 
         PasswordDto password = passwordRepository.save(passwordDTO);
         return password;
@@ -77,4 +77,8 @@ public class PasswordRepositoryService {
 //////            throw new TransactionSystemException("DEBUG EXCEPTION TYPE TransactionSystemExceotion in PasswordRepositoryService");
 ////        }
 //    }
+
+    public void delete(PasswordDto passwordDto) {
+        passwordRepository.delete(passwordDto);
+    }
 }

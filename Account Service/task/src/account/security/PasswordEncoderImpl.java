@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 @Service("passwordEncoderImpl")
 public class PasswordEncoderImpl {
+    public static final int BCRYPT_STRENGTH = 13;
 
     public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder(BCRYPT_STRENGTH);
+//        return NoOpPasswordEncoder.getInstance();
     }
 }

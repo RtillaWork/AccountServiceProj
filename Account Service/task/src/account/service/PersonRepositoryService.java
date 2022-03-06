@@ -140,6 +140,7 @@ public class PersonRepositoryService {
            PersonDto personDTO = findByPrincipal(principal).orElseThrow();
 //           PasswordDto passwordDto = personDTO.getPasswordDto();
            personDTO.updatePassword(newCleartextPassword);
+//           passwordRepositoryService.delete(personDTO.getPasswordDto());
            PersonDto p = personRepository.save(personDTO);
            return p;
     }

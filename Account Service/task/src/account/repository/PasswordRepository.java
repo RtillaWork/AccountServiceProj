@@ -40,4 +40,14 @@ public interface PasswordRepository extends JpaRepository<PasswordDto, Long> {
 //    <S extends PasswordDto> S saveAndFlush(S entity);
 //
 //    PasswordDto findByPrincipal(Principal principal);
+
+
+    /**
+     * Deletes a given entity.
+     *
+     * @param entity must not be {@literal null}.
+     * @throws IllegalArgumentException in case the given entity is {@literal null}.
+     */
+    @Override
+    void delete(PasswordDto entity);
 }

@@ -87,8 +87,8 @@ public class PasswordDto {
     @Validated
     public void setHashedPassword() {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
-//        this.hashedPassword = passwordEncoder.passwordEncoder().encode(this.getClearTextPassword());
-        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(this.getClearTextPassword());
+        this.hashedPassword = passwordEncoder.passwordEncoder().encode(this.getClearTextPassword());
+//        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(this.getClearTextPassword());
         setHashedPasswordReady(true);
         System.out.println(" setIsHashedPasswordReady(true): this.clearTextPassword" + this.clearTextPassword + " hashed: " + this.hashedPassword);
     }
@@ -103,7 +103,7 @@ public class PasswordDto {
 //    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
     @JsonProperty(value = "new_password",access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
-    public void setClearTextPassword(@PasswordPolicyValidation @PasswordLengthValidation
+    public void setClearTextPassword(@Valid @PasswordPolicyValidation @PasswordLengthValidation
                                           @PasswordNonReusePolicyValidation
 
                                                  String clearTextPassword) {

@@ -94,8 +94,9 @@ public class SecurityConfigImpl extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(udsImpl);
-        daoAuthenticationProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance()
-//                passwordEncoder.passwordEncoder()
+        daoAuthenticationProvider.setPasswordEncoder(
+//                NoOpPasswordEncoder.getInstance()
+                passwordEncoder.passwordEncoder()
         );
 
         auth.authenticationProvider(daoAuthenticationProvider);

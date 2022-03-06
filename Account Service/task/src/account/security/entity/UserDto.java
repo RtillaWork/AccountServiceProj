@@ -127,8 +127,8 @@ public class UserDto implements UserDetails {
         return this.passwordDto;
     }
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG
-//    @JsonIgnore
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG
+    @JsonIgnore
     public String getPassword() {
         return this.passwordDto.getHashedPassword();
     }

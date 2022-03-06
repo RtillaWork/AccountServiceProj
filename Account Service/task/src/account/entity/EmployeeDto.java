@@ -1,7 +1,6 @@
 package account.entity;
 
 import account.route.Api;
-import account.security.authority.EmployeeGrantedAuthorityImpl;
 import account.security.authority.RegisteredUserGrantedAuthorityImpl;
 import account.security.entity.UserDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Entity
-public class PersonDto extends UserDto {
+public class EmployeeDto extends UserDto {
 
     private static final String
             EMAIL_REGEXP = "@" + Api.VALID_DOMAINS.get("Corporate") + "$";
@@ -31,21 +30,21 @@ public class PersonDto extends UserDto {
     @Email(regexp = "^(.+)@acme.com$", message = "email must be valid")
     private String email;
 
-//    public PersonDto() {
+//    public EmployeeDto() {
 //       setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl()));
 //    }
-    public PersonDto() {
+    public EmployeeDto() {
        setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl()));
     }
 
-//    public PersonDto(String name, String lastname, String email, String password) {
+//    public EmployeeDto(String name, String lastname, String email, String password) {
 //        super(email, password);
 //        this.name = name;
 //        this.lastname = lastname;
 //        this.email = email;
 //    }
 //
-//    public PersonDto(String username, String password, String name, String lastname, String email) {
+//    public EmployeeDto(String username, String password, String name, String lastname, String email) {
 //        super(username, password);
 //        this.name = name;
 //        this.lastname = lastname;

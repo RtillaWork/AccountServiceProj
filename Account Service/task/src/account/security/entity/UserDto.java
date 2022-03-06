@@ -96,41 +96,39 @@ public class UserDto implements UserDetails {
 
     @JsonProperty(value = "password", access = JsonProperty.Access.READ_ONLY) // DEBUG
     public String getCleartextTransientPassword() {
-        return cleartextTransientPassword;
+        return this.cleartextTransientPassword;
     }
 
     //    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
-    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     public void setCleartextTransientPassword(@Validated
                                               @PasswordLengthValidation
                                               @PasswordPolicyValidation
                                                       String cleartextTransientPassword) {
-        this.setPassword(cleartextTransientPassword);
+        this.cleartextTransientPassword = cleartextTransientPassword;
     }
 
     //    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnore
+    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     public void setPassword(@Validated
                             @PasswordLengthValidation
                             @PasswordPolicyValidation
                                     String cleartextTransientPassword) {
         this.makeFullyDeactivated();
-        this.cleartextTransientPassword = cleartextTransientPassword;
+        this.setCleartextTransientPassword(cleartextTransientPassword);
         this.passwordDto = new PasswordDto();
-//        passwordDto.setHashedPassword(this.cleartextTransientPassword);
         passwordDto.setUser(this);
-        passwordDto.setClearTextPassword(this.cleartextTransientPassword);
+        passwordDto.setClearTextPassword(this.getCleartextTransientPassword());
         if (passwordDto.isHashedPasswordReady()) {
             this.makeFullyActivated();
 //            setCleartextTransientPassword(null);
         } else {
-            System.out.println("DEBUG PASSWORD DTO CREATION ERROR");
             throw new PasswordRequirementException("ERROR: this.passwordDto SETTER failed isIsHashedPasswordReady");
         }
     }
 
-
-    // UserDetail
+    // UserDetails
 
     @Override
     @JsonIgnore
@@ -219,17 +217,17 @@ public class UserDto implements UserDetails {
     }
 
     public void setRoleEmployee() {
-        setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl();
+        setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl()));
         makeFullyActivated();
     }
 
     public void setRoleIncompleteRegisteredUser() {
-        setAuthorities(Set.of(new IncompleteRegisteredUserGrantedAuthorityImpl();
+        setAuthorities(Set.of(new IncompleteRegisteredUserGrantedAuthorityImpl()));
         makeFullyDeactivated();
     }
 
     public void setRoleRegisteredUser() {
-        setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl();
+        setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl()));
         makeFullyActivated();
     }
 }

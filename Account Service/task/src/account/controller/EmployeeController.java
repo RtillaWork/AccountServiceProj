@@ -1,6 +1,6 @@
 package account.controller;
 
-import account.entity.PersonDto;
+import account.entity.EmployeeDto;
 import account.route.v1.Payment;
 import account.service.PersonRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +20,9 @@ public class EmployeeController {
 
     @GetMapping(path = Payment.PATH)
     @ResponseBody
-    public PersonDto getEmployeePayment(Principal principal) {
+    public EmployeeDto getEmployeePayment(Principal principal) {
 //        Optional<Person> employee = prs.findByUsername(principal.getName());
-        PersonDto p = prs.findByPrincipal(principal).orElseThrow();
+        EmployeeDto p = prs.findByPrincipal(principal).orElseThrow();
         return p;
     }
 }

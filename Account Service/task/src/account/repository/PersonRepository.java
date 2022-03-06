@@ -1,15 +1,15 @@
 package account.repository;
 
-import account.entity.PersonDto;
+import account.entity.EmployeeDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface PersonRepository extends JpaRepository<PersonDto, Long> {
-    Optional<PersonDto> findById(Long aLong);
-    Optional<PersonDto> findByEmail(String email);
+public interface PersonRepository extends JpaRepository<EmployeeDto, Long> {
+    Optional<EmployeeDto> findById(Long aLong);
+    Optional<EmployeeDto> findByEmail(String email);
 
     /**
      * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
@@ -20,7 +20,7 @@ public interface PersonRepository extends JpaRepository<PersonDto, Long> {
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
     @Override
-    <S extends PersonDto> S save(S entity);
+    <S extends EmployeeDto> S save(S entity);
 
 
 }

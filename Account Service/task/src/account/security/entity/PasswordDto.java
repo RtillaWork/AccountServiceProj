@@ -1,6 +1,6 @@
 package account.security.entity;
 
-import account.entity.PersonDto;
+import account.entity.EmployeeDto;
 import account.entity.validation.PasswordLengthValidation;
 import account.entity.validation.PasswordNonReusePolicyValidation;
 import account.entity.validation.PasswordPolicyValidation;
@@ -26,7 +26,7 @@ public class PasswordDto {
 
     @JsonIgnore
     @OneToOne(mappedBy = "passwordDto", fetch = FetchType.EAGER)
-    private PersonDto user;
+    private EmployeeDto user;
 
     @JsonIgnore
     private String hashedPassword;
@@ -115,13 +115,13 @@ public class PasswordDto {
 
     @JsonIgnore
 //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public PersonDto getUser() {
+    public EmployeeDto getUser() {
         return user;
     }
 
     @JsonIgnore
     public void setUser(UserDto user) {
-        this.user = (PersonDto) user;
+        this.user = (EmployeeDto) user;
     }
 
     //    @JsonIgnore

@@ -1,6 +1,6 @@
 package account.service;
 
-import account.entity.PersonDto;
+import account.entity.EmployeeDto;
 //import account.exception.UserAlreadyExistsException;
 import account.repository.PersonRepository;
 import account.security.authority.EmployeeGrantedAuthorityImpl;
@@ -24,116 +24,116 @@ public class PersonRepositoryService {
     PasswordRepositoryService passwordRepositoryService;
 
     //    @Transactional
-    public PersonDto save(@Validated PersonDto personDTO) {
-//        System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
-//        System.out.println("  PersonDto save( System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
+    public EmployeeDto save(@Validated EmployeeDto employeeDTO) {
+//        System.out.println(" System.out.println(employeeDTO.getCleartextTransientPassword());: " + employeeDTO.getCleartextTransientPassword());
+//        System.out.println("  EmployeeDto save( System.out.println(employeeDTO.getPasswordDto().getHashedPassword());: " + employeeDTO.getPasswordDto().getHashedPassword());
 
-        PasswordDto passwd = personDTO.getPasswordDto();
-        passwd.setUser(personDTO);
-//        PersonDto p = personDTO;
-        personDTO.make(new EmployeeGrantedAuthorityImpl());
-        System.out.println("  PersonDto make());: " + personDTO.getUsername());
-        System.out.println("  PersonDto IS PASSWORDDTO NULL());: " + personDTO.getPasswordDto() == null ? " YES " : " NO, HASH IS: " +personDTO.getPasswordDto().getHashedPassword() );
-        System.out.println("  PersonDto IS PASSWORDDTO NULL());: " + personDTO.getPasswordDto() == null);
+        PasswordDto passwd = employeeDTO.getPasswordDto();
+        passwd.setUser(employeeDTO);
+//        EmployeeDto p = employeeDTO;
+        employeeDTO.make(new EmployeeGrantedAuthorityImpl());
+        System.out.println("  EmployeeDto make());: " + employeeDTO.getUsername());
+        System.out.println("  EmployeeDto IS PASSWORDDTO NULL());: " + employeeDTO.getPasswordDto() == null ? " YES " : " NO, HASH IS: " + employeeDTO.getPasswordDto().getHashedPassword() );
+        System.out.println("  EmployeeDto IS PASSWORDDTO NULL());: " + employeeDTO.getPasswordDto() == null);
 
-        PersonDto updatedPersonDto = personRepository.save(personDTO);
+        EmployeeDto updatedEmployeeDto = personRepository.save(employeeDTO);
 
-        return updatedPersonDto;
+        return updatedEmployeeDto;
 
 //        return p;
 
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
-//        personDTO.build(new EmployeeGrantedAuthorityImpl());
-//        personDTO.make(new EmployeeGrantedAuthorityImpl());
-//        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
-//        PersonDto p = personRepository.save(personDTO);
+//        employeeDTO.build(new EmployeeGrantedAuthorityImpl());
+//        employeeDTO.make(new EmployeeGrantedAuthorityImpl());
+//        PasswordDto password = passwordDTOrs.save(employeeDTO.getPasswordDto());
+//        EmployeeDto p = personRepository.save(employeeDTO);
 //        return p;
-//        personDTO
+//        employeeDTO
     }
 
     //    @Transactional
-    public PersonDto save(@Validated PersonDto personDTO, @Validated PasswordDto passwordDto) {
-//        System.out.println(" System.out.println(personDTO.getCleartextTransientPassword());: " + personDTO.getCleartextTransientPassword());
-        System.out.println(" 2 args PersonDto save( System.out.println(personDTO.getPasswordDto().getHashedPassword());: " + personDTO.getPasswordDto().getHashedPassword());
+    public EmployeeDto save(@Validated EmployeeDto employeeDTO, @Validated PasswordDto passwordDto) {
+//        System.out.println(" System.out.println(employeeDTO.getCleartextTransientPassword());: " + employeeDTO.getCleartextTransientPassword());
+        System.out.println(" 2 args EmployeeDto save( System.out.println(employeeDTO.getPasswordDto().getHashedPassword());: " + employeeDTO.getPasswordDto().getHashedPassword());
 
-        PasswordDto passwd = passwordDto; // personDTO.getPasswordDto();
-        passwd.setUser(personDTO);
-//        PersonDto p = personDTO;
-        personDTO.make(new EmployeeGrantedAuthorityImpl());
-        System.out.println(" 2 args PersonDto make());: " + personDTO.getUsername());
+        PasswordDto passwd = passwordDto; // employeeDTO.getPasswordDto();
+        passwd.setUser(employeeDTO);
+//        EmployeeDto p = employeeDTO;
+        employeeDTO.make(new EmployeeGrantedAuthorityImpl());
+        System.out.println(" 2 args EmployeeDto make());: " + employeeDTO.getUsername());
 
-        PersonDto updatedPersonDto = personRepository.save(personDTO);
+        EmployeeDto updatedEmployeeDto = personRepository.save(employeeDTO);
 
-        return updatedPersonDto;
+        return updatedEmployeeDto;
 
 //        return p;
 
 //        person.init(passwordEncoder, new EmployeeGrantedAuthorityImpl());
-//        personDTO.build(new EmployeeGrantedAuthorityImpl());
-//        personDTO.make(new EmployeeGrantedAuthorityImpl());
-//        PasswordDto password = passwordDTOrs.save(personDTO.getPasswordDto());
-//        PersonDto p = personRepository.save(personDTO);
+//        employeeDTO.build(new EmployeeGrantedAuthorityImpl());
+//        employeeDTO.make(new EmployeeGrantedAuthorityImpl());
+//        PasswordDto password = passwordDTOrs.save(employeeDTO.getPasswordDto());
+//        EmployeeDto p = personRepository.save(employeeDTO);
 //        return p;
-//        personDTO
+//        employeeDTO
     }
 
     //
-    public Optional<PersonDto> findByEmail(String username) {
+    public Optional<EmployeeDto> findByEmail(String username) {
         return personRepository.findByEmail(username.toLowerCase());
     }
 
-    public Optional<PersonDto> findByEmail(PersonDto personDTO) {
-        return findByEmail(personDTO.getEmail());
+    public Optional<EmployeeDto> findByEmail(EmployeeDto employeeDTO) {
+        return findByEmail(employeeDTO.getEmail());
     }
 
-    public Optional<PersonDto> findByUsername(String username) {
+    public Optional<EmployeeDto> findByUsername(String username) {
         return findByEmail(username);
     }
 
-    public Optional<PersonDto> findByPrincipal(Principal principal) {
-        Optional<PersonDto> person = findByUsername(principal.getName());
+    public Optional<EmployeeDto> findByPrincipal(Principal principal) {
+        Optional<EmployeeDto> person = findByUsername(principal.getName());
         return person;
     }
 
     //
-    public PersonDto updatePassword(Principal principal,  PasswordDto newPasswordDTO) {
-        PersonDto personDTO = findByPrincipal(principal).orElseThrow();
-        System.out.println("public PersonDto updatePassword(: " + personDTO.getUsername());
-        if (personDTO.getPasswordDto().getClearTextPassword() == null) {
-            System.out.println("public PersonDto updatePassword ersonDTO.getPasswordDto().getClearTextPassword(): IS NULLLL");
+    public EmployeeDto updatePassword(Principal principal, PasswordDto newPasswordDTO) {
+        EmployeeDto employeeDTO = findByPrincipal(principal).orElseThrow();
+        System.out.println("public EmployeeDto updatePassword(: " + employeeDTO.getUsername());
+        if (employeeDTO.getPasswordDto().getClearTextPassword() == null) {
+            System.out.println("public EmployeeDto updatePassword ersonDTO.getPasswordDto().getClearTextPassword(): IS NULLLL");
         } else {
-            System.out.println("public PersonDto updatePassword( personDTO.getPasswordDto().getClearTextPassword() : " + personDTO.getPasswordDto().getClearTextPassword());
+            System.out.println("public EmployeeDto updatePassword( employeeDTO.getPasswordDto().getClearTextPassword() : " + employeeDTO.getPasswordDto().getClearTextPassword());
         }
 
-        System.out.println("public PersonDto  updatePassword newPasswordDTO.getClearTextPassword(): " + newPasswordDTO.getClearTextPassword());
+        System.out.println("public EmployeeDto  updatePassword newPasswordDTO.getClearTextPassword(): " + newPasswordDTO.getClearTextPassword());
 
 //        newPasswordDTO.setClearTextPassword(newPasswordDTO.getClearTextPassword());
-        personDTO.updatePassword(newPasswordDTO.getClearTextPassword());
+        employeeDTO.updatePassword(newPasswordDTO.getClearTextPassword());
 
         System.out.println("newPasswordDTO.getClearTextPassword(): " + newPasswordDTO.getClearTextPassword());
 
-        System.out.println("personDTO.get Password(): " + personDTO.getPassword() + " personDTO.get username(): " + personDTO.getUsername() + " personDTO.get passwordDto clear text(): " + personDTO.getPasswordDto().getClearTextPassword() + " personDTO.get passwordDto get hashed EQUALS personDto.geaptssword  " + personDTO.getPasswordDto().getHashedPassword().equals(personDTO.getPassword()));
-//        PersonDto p = save(personDTO);
-        PersonDto p = save(personDTO); //, personDTO.getPasswordDto());
+        System.out.println("employeeDTO.get Password(): " + employeeDTO.getPassword() + " employeeDTO.get username(): " + employeeDTO.getUsername() + " employeeDTO.get passwordDto clear text(): " + employeeDTO.getPasswordDto().getClearTextPassword() + " employeeDTO.get passwordDto get hashed EQUALS personDto.geaptssword  " + employeeDTO.getPasswordDto().getHashedPassword().equals(employeeDTO.getPassword()));
+//        EmployeeDto p = save(employeeDTO);
+        EmployeeDto p = save(employeeDTO); //, employeeDTO.getPasswordDto());
 
         // personRepository.
         return p;
 
 //        if (newPasswordDTO.isValid()) {
-//            personDTO.setPassword(newPasswordDTO);
-//            Optional<PersonDto> p = save(personDTO);
+//            employeeDTO.setPassword(newPasswordDTO);
+//            Optional<EmployeeDto> p = save(employeeDTO);
 //            return p;
 //        } else {
 //            return Optional.empty();
 //        }
     }
-       public PersonDto update(Principal principal, @Validated @NotNull PasswordDto newPasswordDto) {
+       public EmployeeDto update(Principal principal, @Validated @NotNull PasswordDto newPasswordDto) {
            String newCleartextPassword = newPasswordDto.getClearTextPassword();
-           PersonDto personDTO = findByPrincipal(principal).orElseThrow();
-//           PasswordDto passwordDto = personDTO.getPasswordDto();
-           personDTO.updatePassword(newCleartextPassword);
-//           passwordRepositoryService.delete(personDTO.getPasswordDto());
-           PersonDto p = personRepository.save(personDTO);
+           EmployeeDto employeeDTO = findByPrincipal(principal).orElseThrow();
+//           PasswordDto passwordDto = employeeDTO.getPasswordDto();
+           employeeDTO.updatePassword(newCleartextPassword);
+//           passwordRepositoryService.delete(employeeDTO.getPasswordDto());
+           EmployeeDto p = personRepository.save(employeeDTO);
            return p;
     }
 

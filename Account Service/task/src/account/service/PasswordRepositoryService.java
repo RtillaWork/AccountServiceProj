@@ -1,15 +1,11 @@
 package account.service;
 
-import account.entity.PersonDto;
-import account.exception.PasswordRequirementException;
+import account.entity.EmployeeDto;
 import account.repository.PasswordRepository;
 import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
 
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 import java.security.Principal;
 
 @Service
@@ -20,22 +16,22 @@ public class PasswordRepositoryService {
     private PasswordRepository passwordRepository;
 
 //
-//    PersonDto findByPerson(PersonDto personDTO) {
+//    EmployeeDto findByPerson(EmployeeDto personDTO) {
 ////        PasswordDTO p = per.findByPerson(personDTO).orElseThrow();
 //        return null;
 //
 //    }
 //
-//    PersonDto findByUserName(PersonDto personDTO) {
+//    EmployeeDto findByUserName(EmployeeDto personDTO) {
 //return null;
 //    }
 //
-//    PersonDto findByEmail(PersonDto personDTO) {
+//    EmployeeDto findByEmail(EmployeeDto personDTO) {
 //        return null;
 //
 //    }
 
-    PersonDto findByPrincipal(Principal principal) {
+    EmployeeDto findByPrincipal(Principal principal) {
         String username = principal.getName();
         return null;
 

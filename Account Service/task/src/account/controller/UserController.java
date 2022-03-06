@@ -1,6 +1,6 @@
 package account.controller;
 
-import account.entity.PersonDto;
+import account.entity.EmployeeDto;
 //import account.exception.UserAlreadyExistsException;
 import account.route.v1.ChangePass;
 import account.route.v1.Signup;
@@ -27,25 +27,25 @@ public class UserController {
 
     @PostMapping(path = Signup.PATH)
     @ResponseBody
-    public ResponseEntity<PersonDto> signup(@Valid @RequestBody PersonDto personDTO) {
-        if (personDTO == null) {
+    public ResponseEntity<EmployeeDto> signup(@Valid @RequestBody EmployeeDto employeeDTO) {
+        if (employeeDTO == null) {
             throw new ValidationException("EXCEPTION: person object is null");
-        } else  if (prs.findByEmail(personDTO).isPresent()) {
+        } else  if (prs.findByEmail(employeeDTO).isPresent()) {
             throw new DataIntegrityViolationException("EXCEPTION: email already exists");
         }
         else {
-            PersonDto p = prs.save(personDTO);
-//            PersonDTO p = personDTO; // temp deleteme
-            return new ResponseEntity<PersonDto>(p, HttpStatus.OK);
+            EmployeeDto p = prs.save(employeeDTO);
+//            PersonDTO p = employeeDTO; // temp deleteme
+            return new ResponseEntity<EmployeeDto>(p, HttpStatus.OK);
         }
     }
 
     @PostMapping(path = ChangePass.PATH)
     @ResponseBody
-    public ResponseEntity<PersonDto> changePassword(@Valid @RequestBody PasswordDto newPasswordDTO,
-                                                    Principal principal) {
-        System.out.println(" public ResponseEntity<PersonDto> changePassword( newPasswordDTO: " + newPasswordDTO.getClearTextPassword());
-        PersonDto p =  prs.update(principal, newPasswordDTO);
+    public ResponseEntity<EmployeeDto> changePassword(@Valid @RequestBody PasswordDto newPasswordDTO,
+                                                      Principal principal) {
+        System.out.println(" public ResponseEntity<EmployeeDto> changePassword( newPasswordDTO: " + newPasswordDTO.getClearTextPassword());
+        EmployeeDto p =  prs.update(principal, newPasswordDTO);
         return new ResponseEntity<>(p, HttpStatus.OK);
 
 

@@ -2,6 +2,9 @@ package account.controller;
 
 import account.entity.EmployeeDto;
 //import account.exception.UserAlreadyExistsException;
+import account.entity.validation.PasswordLengthValidation;
+import account.entity.validation.PasswordNonReusePolicyValidation;
+import account.entity.validation.PasswordPolicyValidation;
 import account.route.v1.ChangePass;
 import account.route.v1.Signup;
 import account.security.entity.PasswordDto;
@@ -27,7 +30,10 @@ public class UserController {
 
     @PostMapping(path = Signup.PATH)
     @ResponseBody
-    public ResponseEntity<EmployeeDto> signup(@Valid @RequestBody EmployeeDto employeeDTO) {
+    public ResponseEntity<EmployeeDto> signup(@Validated @Valid @PasswordPolicyValidation
+                                                  @PasswordLengthValidation
+                                                  @PasswordNonReusePolicyValidation
+                                                  @RequestBody EmployeeDto employeeDTO) {
         if (employeeDTO == null) {
             throw new ValidationException("EXCEPTION: person object is null");
         } else  if (prs.findByEmail(employeeDTO).isPresent()) {

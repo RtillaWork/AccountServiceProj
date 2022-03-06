@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.Locale;
@@ -24,7 +25,7 @@ public class EmployeeRepositoryService {
     @Autowired
     PasswordRepositoryService passwordRepositoryService;
 
-    public EmployeeDto save(EmployeeDto employeeDTO) {
+    public EmployeeDto save(@Valid EmployeeDto employeeDTO) {
 //        PasswordDto passwd = employeeDTO.getPasswordDto();
 //        passwd.setUser(employeeDTO);
         employeeDTO.setRoleEmployee();

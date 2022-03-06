@@ -48,7 +48,11 @@ public class PasswordDto {
 //        setHashedPasswordRandomOrDefault(false);
     }
 
-    public PasswordDto(@Valid String cleartextTransientPassword) {
+    public PasswordDto(@Valid
+                       @PasswordPolicyValidation
+                       @PasswordLengthValidation
+                       @PasswordNonReusePolicyValidation
+                               String cleartextTransientPassword) {
         this.setHashedPassword(cleartextTransientPassword);
     }
 
@@ -64,7 +68,9 @@ public class PasswordDto {
 
     @JsonIgnore
     @Validated
-    public void setHashedPassword(@Valid @PasswordPolicyValidation @PasswordLengthValidation
+    public void setHashedPassword(@Valid
+                                      @PasswordPolicyValidation
+                                      @PasswordLengthValidation
                                       @PasswordNonReusePolicyValidation
                                               String cleartextTransientPassword) {
         PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
@@ -101,7 +107,9 @@ public class PasswordDto {
 //    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
     @JsonProperty(value = "new_password",access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
-    public void setClearTextPassword(@Valid @PasswordPolicyValidation @PasswordLengthValidation
+    public void setClearTextPassword(@Valid
+                                         @PasswordPolicyValidation
+                                         @PasswordLengthValidation
                                           @PasswordNonReusePolicyValidation
 
                                                  String clearTextPassword) {

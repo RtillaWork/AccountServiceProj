@@ -1,6 +1,7 @@
 package account.security.entity;
 
 import account.entity.validation.PasswordLengthValidation;
+import account.entity.validation.PasswordNonReusePolicyValidation;
 import account.entity.validation.PasswordPolicyValidation;
 import account.exception.PasswordRequirementException;
 import account.security.authority.EmployeeGrantedAuthorityImpl;
@@ -45,7 +46,7 @@ public class UserDto implements UserDetails {
     protected Set<GrantedAuthority> authorities;
 
     @Transient
-    @PasswordLengthValidation(message = "Password length must be 12 chars minimum!")
+    @PasswordLengthValidation(message = "Password length must be 12 chars minimum userDto!")
     @PasswordPolicyValidation
 //    @PasswordNonReusePolicyValidation // (TODO NOTE irrelevant as the User created first time with its password)
     private String cleartextTransientPassword = "";
@@ -60,7 +61,10 @@ public class UserDto implements UserDetails {
         this.setCleartextTransientPassword(cleartextPassword);
         setRoleIncompleteRegisteredUser();
     }
-    public UserDto(@NotNull String username, @Valid PasswordDto passwordDto) {
+    public UserDto(@NotNull String username, @Valid   @PasswordPolicyValidation
+    @PasswordLengthValidation
+    @PasswordNonReusePolicyValidation
+            PasswordDto passwordDto) {
         this.username = username;
         this.passwordDto = passwordDto;
         setRoleRegisteredUser();
@@ -90,7 +94,11 @@ public class UserDto implements UserDetails {
         return this.passwordDto.getHashedPassword();
     }
 
-    public void updatePassword(String newCleartextPasswor) {
+    public void updatePassword(@Valid
+                               @PasswordPolicyValidation
+                               @PasswordLengthValidation
+                               @PasswordNonReusePolicyValidation
+                                       String newCleartextPasswor) {
         if (this.passwordDto != null) {
             this.passwordDto.setClearTextPassword(newCleartextPasswor);
         } else {

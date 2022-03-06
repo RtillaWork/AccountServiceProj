@@ -15,8 +15,8 @@ import java.util.Set;
 
 public class PasswordPolicyValidator implements ConstraintValidator<PasswordPolicyValidation, String>  {
 
-    private Set<String> weakPasswordDictionary = new HashSet<>();
-    private String message;
+    private static Set<String> weakPasswordDictionary = new HashSet<>();
+    private static String message;
 
     /**
      * Implements the validation logic.
@@ -36,7 +36,7 @@ public class PasswordPolicyValidator implements ConstraintValidator<PasswordPoli
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
 
-            System.err.println("PasswordPolicyValidator DEBUG ISVALID VALUE IS NULL = " + value);
+            System.err.println("FROM PasswordPolicyValidator DEBUG ISVALID VALUE IS NULL = " + value);
 
             // TODO the case of null password should be handled by a separate annotation, so ignore null buy retuirning true
             return true;
@@ -44,7 +44,7 @@ public class PasswordPolicyValidator implements ConstraintValidator<PasswordPoli
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
 
-            System.err.println("PasswordPolicyValidator DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
+            System.err.println("FROM PasswordPolicyValidator DEBUG ISVALID VALUE  return FALSE" + value);
 
             return false;
         }
@@ -70,7 +70,7 @@ public class PasswordPolicyValidator implements ConstraintValidator<PasswordPoli
     @Override
     public void initialize(PasswordPolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        this.weakPasswordDictionary =Set.of(constraintAnnotation.weakPasswordDictionary());
-        this.message = constraintAnnotation.message();
+        weakPasswordDictionary =Set.of(constraintAnnotation.weakPasswordDictionary());
+        message = constraintAnnotation.message();
     }
 }

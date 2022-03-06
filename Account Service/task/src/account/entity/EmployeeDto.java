@@ -5,21 +5,16 @@ import account.entity.validation.PasswordNonReusePolicyValidation;
 import account.entity.validation.PasswordPolicyValidation;
 import account.exception.PasswordRequirementException;
 import account.route.Api;
-import account.security.authority.RegisteredUserGrantedAuthorityImpl;
 import account.security.entity.PasswordDto;
 import account.security.entity.UserDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.util.Locale;
-import java.util.Set;
 
 @Entity
 @Validated
@@ -132,13 +127,13 @@ public class EmployeeDto extends UserDto {
 //        @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
     @JsonIgnore // PROD
 //    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
-    public void setPassword(@Validated
+    public void setPassword(@Valid
                             @PasswordLengthValidation
                             @PasswordPolicyValidation
                                     String cleartextTransientPassword) {
         this.makeFullyDeactivated();
         this.passwordDto = new PasswordDto();
-        passwordDto.setUser(this);
+        passwordDto.setUserDto(this);
         passwordDto.setClearTextPassword(cleartextTransientPassword);
         if (passwordDto.isHashedPasswordReady()) {
 //            this.makeFullyActivated();

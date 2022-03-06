@@ -15,26 +15,27 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
 
 @MappedSuperclass
-@Validated
 public class UserDto implements UserDetails {
 
-    public static final String NULL_USERNAME = "NULL_USERNAME";
+    public static final String UNIDENTIFIED_USER_USERNAME = "UNIDENTIFIED_USER_USERNAME";
+    public static final String UNIDENTIFIED_USER_PASSWORD = "UNIDENTIFIED_USER_PASSWORD";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    protected String username = NULL_USERNAME;
+    @NotBlank
+    protected String username; // = UNIDENTIFIED_USER_USERNAME;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "password_id")
-    @Valid
     protected PasswordDto passwordDto;
 
     protected boolean accountNonExpired;
@@ -49,13 +50,14 @@ public class UserDto implements UserDetails {
         setRoleIncompleteRegisteredUser();
     }
 
-    public UserDto(@NotNull String username, @Valid
+    public UserDto(@NotNull String username,
+//                   @Valid
 //    @PasswordPolicyValidation
 //    @PasswordLengthValidation
 //    @PasswordNonReusePolicyValidation
-            PasswordDto passwordDto) {
-        this.username = username;
-        this.passwordDto = passwordDto;
+                   PasswordDto passwordDto) {
+        this.setUsername(username);
+        this.setPasswordDto(passwordDto);
         setRoleRegisteredUser();
     }
 
@@ -69,6 +71,7 @@ public class UserDto implements UserDetails {
     @JsonIgnore
     public void setPasswordDto(@Valid PasswordDto passwordDto) {
         this.passwordDto = passwordDto;
+        // TODO SETROLEx here instead of UserDto(..., PasswordDto) ?
     }
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG, need to comment out user field in PasswordDto
@@ -83,16 +86,16 @@ public class UserDto implements UserDetails {
         return this.passwordDto.getHashedPassword();
     }
 
-
+    /////////////////////////////////////
     // UserDetails
-
+    ////////////////////////////////////
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.authorities != null) {
             return this.authorities;
         } else {
-            throw new RuntimeException("NULL VALUE EXCEPTION: this.authorities CANNOT BE NULL!");
+            throw new RuntimeException("FROM USERDTO NULL VALUE EXCEPTION: this.authorities CANNOT BE NULL!");
         }
     }
 
@@ -150,14 +153,14 @@ public class UserDto implements UserDetails {
         this.enabled = enabled;
     }
 
-
     public void setAuthorities(Set<GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
 
 
+    ////////////////////////////////////
     // Utility methods
-
+    ///////////////////////////////////
     public void makeFullyDeactivated() {
         this.accountNonExpired = false;
         this.accountNonlocked = false;

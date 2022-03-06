@@ -33,7 +33,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
 //    private Principal principal;
 
     private static Optional<String> currentUserPassword = Optional.empty(); // = NOTYET_OR_NULL_nonReusePassword;
-    private String message;
+    private static String message;
 
 
 
@@ -86,6 +86,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
 //            }
 //
 //        }
+        System.err.println("FROM PasswordNonReusePolicyValidator DEBUG RETURN TRUE ALWAYS");
         return isValid;
     }
 
@@ -107,7 +108,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
         setOnceCurrentUserPassword();
-        this.message = constraintAnnotation.message();
+        message = constraintAnnotation.message();
 
 //        if (nonReusePassword == null) {
 //            nonReusePassword = getCurrentUserPassword().orElse(NONEYET_OR_NULL_nonReusePassword);
@@ -145,10 +146,10 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
             UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName());
             currentUserPassword = Optional.of(userDetails.getPassword());
                         System.out.println("AUTHENTICATION IS: " + auth.getPrincipal());
-            System.out.println(" UserDetails userDetails = userDetailsService. :" + userDetailsService.getClass());
-            System.out.println(" UserDetails userDetails = auth.getName(). :" + auth.getName());
-            System.out.println(" UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName()). :" + userDetailsService.loadUserByUsername(auth.getName()));
-            System.out.println(" UserDetails userDetails = getPassword. :" + userDetails.getPassword());
+            System.err.println(" UserDetails userDetails = userDetailsService. :" + userDetailsService.getClass());
+            System.err.println(" UserDetails userDetails = auth.getName(). :" + auth.getName());
+            System.err.println(" UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName()). :" + userDetailsService.loadUserByUsername(auth.getName()));
+            System.err.println(" UserDetails userDetails = getPassword. :" + userDetails.getPassword());
 
         }
     }
@@ -174,8 +175,8 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
             UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName());
             String currentUserPassword = userDetails.getPassword();
 
-                    System.out.println(" currentUserPassword = userDetails.getPassword(); :" + currentUserPassword);
-            System.out.println("Principal principal = (Principal) auth.getPrincipal();: " + currentUserPassword);
+                    System.err.println(" currentUserPassword = userDetails.getPassword(); :" + currentUserPassword);
+            System.err.println("Principal principal = (Principal) auth.getPrincipal();: " + currentUserPassword);
 
             return Optional.of(currentUserPassword);
         }

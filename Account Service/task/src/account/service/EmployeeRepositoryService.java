@@ -74,7 +74,7 @@ public class EmployeeRepositoryService {
 //            return Optional.empty();
 //        }
     }
-       public EmployeeDto update(Principal principal, @Validated @NotNull PasswordDto newPasswordDto) {
+       public EmployeeDto update(Principal principal, @Validated PasswordDto newPasswordDto) {
            String newCleartextPassword = newPasswordDto.getClearTextPassword();
            EmployeeDto employeeDTO = findByPrincipal(principal).orElseThrow();
 //           PasswordDto passwordDto = employeeDTO.getPasswordDto();

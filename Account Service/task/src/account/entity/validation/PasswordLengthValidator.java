@@ -8,9 +8,9 @@ import javax.validation.ConstraintValidator;
         import javax.validation.Validation;
 
 public class PasswordLengthValidator implements ConstraintValidator<PasswordLengthValidation, String> {
-    private int min;
-    private int max;
-    private String message;
+    private static int min;
+    private static int max;
+    private static String message;
 
     /**
      * Implements the validation logic.
@@ -29,13 +29,15 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
             // TODO: should this throw a ConstraintValidationException?
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
+
+            System.err.println("FROM PasswordLengthValidator DEBUG ISVALID VALUE IS NULL = " + value);
 
             return false;
         } else  if (value.length() < min || value.length() > max) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE throw new PasswordLengthValidationException(); = " + value);
+
+            System.err.println("FROM PasswordLengthValidator DEBUG ISVALID VALUE throw new PasswordLengthValidationException(); = " + value);
 
             return false;
         }
@@ -61,8 +63,8 @@ public class PasswordLengthValidator implements ConstraintValidator<PasswordLeng
     @Override
     public void initialize(PasswordLengthValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        this.min = constraintAnnotation.min();
-        this.max = constraintAnnotation.max();
-        this.message = constraintAnnotation.message();
+        min = constraintAnnotation.min();
+        max = constraintAnnotation.max();
+        message = constraintAnnotation.message();
     }
 }

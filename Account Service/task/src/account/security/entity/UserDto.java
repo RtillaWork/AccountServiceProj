@@ -50,7 +50,7 @@ public class UserDto implements UserDetails {
         setRoleIncompleteRegisteredUser();
     }
 
-    public UserDto(@NotNull String username,
+    public UserDto(@NotBlank String username,
 //                   @Valid
 //    @PasswordPolicyValidation
 //    @PasswordLengthValidation

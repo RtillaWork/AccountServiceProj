@@ -31,8 +31,8 @@ public class UserController {
     @PostMapping(path = Signup.PATH)
     @ResponseBody
     public ResponseEntity<EmployeeDto> signup( @Valid
-                                                   @PasswordLengthValidation
-                                                   @PasswordPolicyValidation
+//                                                   @PasswordLengthValidation
+//                                                   @PasswordPolicyValidation
                                                    @RequestBody EmployeeDto employeeDTO) {
         if (employeeDTO == null) {
             throw new ValidationException("EXCEPTION: person object is null");

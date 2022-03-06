@@ -158,7 +158,7 @@ public class PasswordDto {
     }
 
     @JsonIgnore
-    public void setUserDto(@NotNull UserDto user) {
+    public void setUserDto(UserDto user) {
         this.userDto = (EmployeeDto) user;
     }
 

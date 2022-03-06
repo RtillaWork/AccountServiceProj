@@ -14,23 +14,22 @@ import org.springframework.validation.annotation.Validated;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-@Validated
 public class EmployeeDto extends UserDto {
 
     private static final String
             EMAIL_REGEXP = "@" + Api.VALID_DOMAINS.get("Corporate") + "$";
 
-
-    @NotEmpty
+    @NotBlank
     private String name;
 
-    @NotEmpty
+    @NotBlank
     private String lastname;
 
-    @NotEmpty
+    @NotBlank
     @Column(unique = true)
     @Email(regexp = "^(.+)@acme.com$", message = "email must be valid")
     private String email;

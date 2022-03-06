@@ -37,8 +37,8 @@ public class SecurityConfigImpl extends WebSecurityConfigurerAdapter {
                 .authorizeRequests() // manage access
                 .antMatchers(HttpMethod.POST, Signup.PATH).permitAll() // for user registration
                 // other matchers here
-                .antMatchers(HttpMethod.GET, Payment.PATH).authenticated() // for user registration
                 .antMatchers(HttpMethod.POST, ChangePass.PATH).authenticated() // for user registration
+                .antMatchers(HttpMethod.GET, Payment.PATH).hasRole("EMPLOYEE") // for user registration
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // RESTful service, no session

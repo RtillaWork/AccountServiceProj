@@ -2,6 +2,7 @@ package account.entity;
 
 import account.route.Api;
 import account.security.authority.EmployeeGrantedAuthorityImpl;
+import account.security.authority.RegisteredUserGrantedAuthorityImpl;
 import account.security.entity.UserDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,11 @@ public class PersonDto extends UserDto {
     @Email(regexp = "^(.+)@acme.com$", message = "email must be valid")
     private String email;
 
+//    public PersonDto() {
+//       setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl()));
+//    }
     public PersonDto() {
-       setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl()));
+       setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl()));
     }
 
 //    public PersonDto(String name, String lastname, String email, String password) {

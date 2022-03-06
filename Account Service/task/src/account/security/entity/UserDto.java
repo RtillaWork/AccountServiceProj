@@ -3,6 +3,8 @@ package account.security.entity;
 import account.entity.validation.PasswordLengthValidation;
 import account.entity.validation.PasswordPolicyValidation;
 import account.exception.PasswordRequirementException;
+import account.security.authority.EmployeeGrantedAuthorityImpl;
+import account.security.authority.IncompleteRegisteredUserGrantedAuthorityImpl;
 import account.security.authority.RegisteredUserGrantedAuthorityImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,25 +30,18 @@ public class UserDto implements UserDetails {
 
     protected String username = NULL_USERNAME;
 
-    //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "password_id")
     @Valid
     protected PasswordDto passwordDto;
 
     protected boolean accountNonExpired;
-
     protected boolean accountNonlocked;
-
     protected boolean credentialstNonExpired;
-
     protected boolean enabled;
 
     @ElementCollection(fetch = FetchType.EAGER)
     protected Set<GrantedAuthority> authorities;
-
 
     @Transient
     @PasswordLengthValidation(message = "Password length must be 12 chars minimum!")
@@ -56,63 +51,20 @@ public class UserDto implements UserDetails {
 
 
     public UserDto() {
-        setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl()));
-//        this.passwordDto = new PasswordDto();
-//        this.password = new PasswordDto(cleartextTransientPassword);
-//        makeFullyDeactivated();
+       setRoleIncompleteRegisteredUser();
     }
 
-//    public UserDetailsDto(String username, String transientPassword) {
-//        this.username = username;
-//        this.password = new PasswordDto(transientPassword);
-//        makeFullyActivated();
-//
-//    }
+    public UserDto(String username, @Valid PasswordDto passwordDto) {
+        this.username = username;
+        this.passwordDto = passwordDto;
+        setRoleRegisteredUser();
+    }
 
-//    public UserDetailsDto(String username, String transientPassword, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
-//
-//        this.username = username;
-//        this.password = new PasswordDto(transientPassword);
-//        this.accountNonExpired = accountNonExpired;
-//        this.accountNonlocked = accountNonlocked;
-//        this.credentialstNonExpired = credentialstNonExpired;
-//        this.enabled = enabled;
-//        setAuthorities(authorities);
-//    }
-//
-//    public UserDetailsDto(String username, PasswordDto password) {
-//        this.username = username;
-//        this.password = password;
-//        makeFullyActivated();
-//    }
-//
-//    public UserDetailsDto(String username, PasswordDto password, boolean accountNonExpired, boolean accountNonlocked, boolean credentialstNonExpired, boolean enabled, Set<GrantedAuthority> authorities) {
-//        this.username = username;
-//        this.password = password;
-//        this.accountNonExpired = accountNonExpired;
-//        this.accountNonlocked = accountNonlocked;
-//        this.credentialstNonExpired = credentialstNonExpired;
-//        this.enabled = enabled;
-//        setAuthorities(authorities);
-//    }
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public Long getId() {
         return id;
     }
-
-//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-//    public PasswordDto getPassword(boolean withHashRemoved) {
-//        withHashRemoved = false; // TODO verify if it's safe default
-//        String hash_removed = "HASH_REMOVED";
-//        if (withHashRemoved) {
-//            this.passwordDto.setHashedPassword(hash_removed);
-//            return this.passwordDto;
-//        }
-//        else {
-//            return this.passwordDto;
-//        }
-//    }
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
@@ -120,13 +72,13 @@ public class UserDto implements UserDetails {
         this.passwordDto = passwordDto;
     }
 
-    //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @JsonIgnore
+    //    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG, need to comment out user field in PasswordDto
+    @JsonIgnore // TODO NOTE watch out for deserialization overflow if removed
     public PasswordDto getPasswordDto() {
         return this.passwordDto;
     }
 
-//    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG
+    //    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG
     @JsonIgnore
     public String getPassword() {
         return this.passwordDto.getHashedPassword();
@@ -134,27 +86,34 @@ public class UserDto implements UserDetails {
 
     public void updatePassword(String newCleartextPasswor) {
         if (this.passwordDto != null) {
-//            this.passwordDto.setHashedPassword(newCleartextPasswor);
             this.passwordDto.setClearTextPassword(newCleartextPasswor);
         } else {
-            throw new PasswordRequirementException("ERROR: this.passwordDto NOT INITIZLIZED");
+            this.passwordDto = new PasswordDto();
+            this.passwordDto.setClearTextPassword(newCleartextPasswor);
+//            throw new PasswordRequirementException("ERROR: this.passwordDto NOT INITIAZLIZED"); ?
         }
     }
 
-    //    @JsonProperty(value="password", access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(value = "password", access = JsonProperty.Access.READ_ONLY) // DEBUG
     public String getCleartextTransientPassword() {
         return cleartextTransientPassword;
     }
 
-//    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
+    //    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
     @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
-    public void setCleartextTransientPassword(@Validated @PasswordLengthValidation @PasswordPolicyValidation String cleartextTransientPassword) {
+    public void setCleartextTransientPassword(@Validated
+                                              @PasswordLengthValidation
+                                              @PasswordPolicyValidation
+                                                      String cleartextTransientPassword) {
         this.setPassword(cleartextTransientPassword);
     }
 
-//    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
+    //    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnore
-    public void setPassword(String cleartextTransientPassword) {
+    public void setPassword(@Validated
+                            @PasswordLengthValidation
+                            @PasswordPolicyValidation
+                                    String cleartextTransientPassword) {
         this.makeFullyDeactivated();
         this.cleartextTransientPassword = cleartextTransientPassword;
         this.passwordDto = new PasswordDto();
@@ -257,5 +216,20 @@ public class UserDto implements UserDetails {
         this.accountNonlocked = true;
         this.credentialstNonExpired = true;
         this.enabled = true;
+    }
+
+    public void setRoleEmployee() {
+        setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl();
+        makeFullyActivated();
+    }
+
+    public void setRoleIncompleteRegisteredUser() {
+        setAuthorities(Set.of(new IncompleteRegisteredUserGrantedAuthorityImpl();
+        makeFullyDeactivated();
+    }
+
+    public void setRoleRegisteredUser() {
+        setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl();
+        makeFullyActivated();
     }
 }

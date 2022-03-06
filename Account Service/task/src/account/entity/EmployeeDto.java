@@ -92,14 +92,14 @@ public class EmployeeDto extends UserDto {
     }
 
 
-    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
-//    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY) // PROD
+//    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
+    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY) // PROD
     public String getCleartextTransientPassword() {
         return this.cleartextTransientPassword;
     }
 
-    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
-//    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY) // PROD
+//    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
+    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY) // PROD
     public void setCleartextTransientPassword(@Validated
 //                                              @PasswordLengthValidation
 //                                              @PasswordPolicyValidation

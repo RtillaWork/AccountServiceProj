@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.transaction.RollbackException;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
+import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
@@ -134,7 +135,7 @@ public class PersonRepositoryService {
 //            return Optional.empty();
 //        }
     }
-       public PersonDto update(Principal principal, @Validated PasswordDto newPasswordDto) {
+       public PersonDto update(Principal principal, @Validated @NotNull PasswordDto newPasswordDto) {
            String newCleartextPassword = newPasswordDto.getClearTextPassword();
            PersonDto personDTO = findByPrincipal(principal).orElseThrow();
 //           PasswordDto passwordDto = personDTO.getPasswordDto();

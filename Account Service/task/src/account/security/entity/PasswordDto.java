@@ -122,8 +122,8 @@ public class PasswordDto {
     }
 
     @JsonIgnore
-    public void setUser(PersonDto user) {
-        this.user = user;
+    public void setUser(UserDto user) {
+        this.user = (PersonDto) user;
     }
 
     //    @JsonIgnore

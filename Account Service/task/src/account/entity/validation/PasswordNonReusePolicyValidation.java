@@ -20,7 +20,7 @@ public @interface PasswordNonReusePolicyValidation {
     public Class<? extends Payload>[] payload() default {};
 
     //
-    String nonReusePassword() default "";
+//    String nonReusePassword() default "";
 
 
 }

@@ -160,6 +160,7 @@ public class UserDto implements UserDetails {
         this.cleartextTransientPassword = cleartextTransientPassword;
         this.passwordDto = new PasswordDto();
 //        passwordDto.setHashedPassword(this.cleartextTransientPassword);
+        passwordDto.setUser(this);
         passwordDto.setClearTextPassword(this.cleartextTransientPassword);
         if (passwordDto.isHashedPasswordReady()) {
             this.makeFullyActivated();

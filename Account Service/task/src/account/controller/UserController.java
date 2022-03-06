@@ -5,7 +5,7 @@ import account.entity.EmployeeDto;
 import account.route.v1.ChangePass;
 import account.route.v1.Signup;
 import account.security.entity.PasswordDto;
-import account.service.PersonRepositoryService;
+import account.service.EmployeeRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import java.security.Principal;
 public class UserController {
 
     @Autowired
-    PersonRepositoryService prs;
+    EmployeeRepositoryService prs;
 
 
     @PostMapping(path = Signup.PATH)

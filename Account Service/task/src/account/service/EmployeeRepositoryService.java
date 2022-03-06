@@ -2,7 +2,7 @@ package account.service;
 
 import account.entity.EmployeeDto;
 //import account.exception.UserAlreadyExistsException;
-import account.repository.PersonRepository;
+import account.repository.EmployeeRepository;
 import account.security.authority.EmployeeGrantedAuthorityImpl;
 import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,10 @@ import java.util.Optional;
 
 @Service
 //@Transactional(Transactional.TxType.NEVER)
-public class PersonRepositoryService {
+public class EmployeeRepositoryService {
 
     @Autowired
-    PersonRepository personRepository;
+    EmployeeRepository employeeRepository;
 
     @Autowired
     PasswordRepositoryService passwordRepositoryService;
@@ -36,7 +36,7 @@ public class PersonRepositoryService {
         System.out.println("  EmployeeDto IS PASSWORDDTO NULL());: " + employeeDTO.getPasswordDto() == null ? " YES " : " NO, HASH IS: " + employeeDTO.getPasswordDto().getHashedPassword() );
         System.out.println("  EmployeeDto IS PASSWORDDTO NULL());: " + employeeDTO.getPasswordDto() == null);
 
-        EmployeeDto updatedEmployeeDto = personRepository.save(employeeDTO);
+        EmployeeDto updatedEmployeeDto = employeeRepository.save(employeeDTO);
 
         return updatedEmployeeDto;
 
@@ -62,7 +62,7 @@ public class PersonRepositoryService {
         employeeDTO.make(new EmployeeGrantedAuthorityImpl());
         System.out.println(" 2 args EmployeeDto make());: " + employeeDTO.getUsername());
 
-        EmployeeDto updatedEmployeeDto = personRepository.save(employeeDTO);
+        EmployeeDto updatedEmployeeDto = employeeRepository.save(employeeDTO);
 
         return updatedEmployeeDto;
 
@@ -79,7 +79,7 @@ public class PersonRepositoryService {
 
     //
     public Optional<EmployeeDto> findByEmail(String username) {
-        return personRepository.findByEmail(username.toLowerCase());
+        return employeeRepository.findByEmail(username.toLowerCase());
     }
 
     public Optional<EmployeeDto> findByEmail(EmployeeDto employeeDTO) {
@@ -133,7 +133,7 @@ public class PersonRepositoryService {
 //           PasswordDto passwordDto = employeeDTO.getPasswordDto();
            employeeDTO.updatePassword(newCleartextPassword);
 //           passwordRepositoryService.delete(employeeDTO.getPasswordDto());
-           EmployeeDto p = personRepository.save(employeeDTO);
+           EmployeeDto p = employeeRepository.save(employeeDTO);
            return p;
     }
 

@@ -2,7 +2,7 @@ package account.controller;
 
 import account.entity.EmployeeDto;
 import account.route.v1.Payment;
-import account.service.PersonRepositoryService;
+import account.service.EmployeeRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ import java.security.Principal;
 public class EmployeeController {
 
     @Autowired
-    PersonRepositoryService prs;
+    EmployeeRepositoryService prs;
 
     @GetMapping(path = Payment.PATH)
     @ResponseBody

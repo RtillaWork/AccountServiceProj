@@ -1,13 +1,15 @@
 package account.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-public class RegisteredUserGrantedAuthorityImpl implements GrantedAuthority {
+
+@Component
+public class IncompleteRegisteredUserGrantedAuthorityImpl implements GrantedAuthority {
     /**
      * If the <code>GrantedAuthority</code> can be represented as a <code>String</code>
      * and that <code>String</code> is sufficient in precision to be relied upon for an
@@ -30,7 +32,7 @@ public class RegisteredUserGrantedAuthorityImpl implements GrantedAuthority {
     private Long id;
 
     @Column(name = "authority")
-    private String authority = "ROLE_FULLY_REGISTERED_USER";
+    private String authority = "ROLE_INCOMPLETE_REGISTERED_USER";
 
     public void setId(Long id) {
         this.id = id;
@@ -39,9 +41,9 @@ public class RegisteredUserGrantedAuthorityImpl implements GrantedAuthority {
     public Long getId() {
         return id;
     }
+
     @Override
     public String getAuthority() {
         return authority;
     }
 }
-

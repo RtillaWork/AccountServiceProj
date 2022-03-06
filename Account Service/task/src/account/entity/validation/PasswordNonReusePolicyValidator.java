@@ -63,37 +63,37 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
         boolean isValid = true;
         Optional<String> nonReusePassword = currentUserPassword; // getCurrentUserPassword();
 
-        if (value == null) {
-            // TODO: should this throw a ConstraintValidationException?
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
-            isValid = true;// TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
-
-        } else if (nonReusePassword.isEmpty()) {
-            // TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
-            // TODO WIP almost same as above, make valid to ignore annotation
-            isValid = true;
-        } else {
-            // TODO Warning providing a nonReusePassword shortcircuits the last else check against DB prev password(s).
-            int isPasswordReused = (value.equals(nonReusePassword.get()) ? 1 : 0); // passwordEncoderImpl.passwordEncoder().matches(value, nonReusePassword.get()) ? 1 : 0;
-            System.out.println(" DEBUG VALUE: " + value + " matches(value, nonReusePassword): " + isPasswordReused);
-            switch (isPasswordReused) {
-                case 1: {
-                    context.disableDefaultConstraintViolation();
-                    context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                    System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value + " nonresuepass: " + nonReusePassword.get());
-                    isValid = false;
-                    break;
-                }
-                case 0: {
-                    isValid = true;
-                    System.out.println("DEBUG ISVALID: " + isValid + " VALUE =" + value + " nonresuepass: " + nonReusePassword.get());
-                    break;
-                }
-            }
-
-        }
+//        if (value == null) {
+//            // TODO: should this throw a ConstraintValidationException?
+//            context.disableDefaultConstraintViolation();
+//            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+//            System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
+//            isValid = true;// TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
+//
+//        } else if (nonReusePassword.isEmpty()) {
+//            // TODO the case of null password should be handled by a separate annotation, so ignore null buy returning true
+//            // TODO WIP almost same as above, make valid to ignore annotation
+//            isValid = true;
+//        } else {
+//            // TODO Warning providing a nonReusePassword shortcircuits the last else check against DB prev password(s).
+//            int isPasswordReused = (value.equals(nonReusePassword.get()) ? 1 : 0); // passwordEncoderImpl.passwordEncoder().matches(value, nonReusePassword.get()) ? 1 : 0;
+//            System.out.println(" DEBUG VALUE: " + value + " matches(value, nonReusePassword): " + isPasswordReused);
+//            switch (isPasswordReused) {
+//                case 1: {
+//                    context.disableDefaultConstraintViolation();
+//                    context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+//                    System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value + " nonresuepass: " + nonReusePassword.get());
+//                    isValid = false;
+//                    break;
+//                }
+//                case 0: {
+//                    isValid = true;
+//                    System.out.println("DEBUG ISVALID: " + isValid + " VALUE =" + value + " nonresuepass: " + nonReusePassword.get());
+//                    break;
+//                }
+//            }
+//
+//        }
         return isValid;
     }
 

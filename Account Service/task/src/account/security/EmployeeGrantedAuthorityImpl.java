@@ -33,7 +33,7 @@ public class EmployeeGrantedAuthorityImpl implements GrantedAuthority {
     private Long id;
 
     @Column(name = "authority")
-    private String authority = "EMPLOYEE";
+    private String authority = "ROLE_EMPLOYEE";
 
     public void setId(Long id) {
         this.id = id;

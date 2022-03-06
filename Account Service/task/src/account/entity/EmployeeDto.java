@@ -2,12 +2,14 @@ package account.entity;
 
 import account.route.Api;
 import account.security.authority.RegisteredUserGrantedAuthorityImpl;
+import account.security.entity.PasswordDto;
 import account.security.entity.UserDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
@@ -30,26 +32,24 @@ public class EmployeeDto extends UserDto {
     @Email(regexp = "^(.+)@acme.com$", message = "email must be valid")
     private String email;
 
-//    public EmployeeDto() {
-//       setAuthorities(Set.of(new EmployeeGrantedAuthorityImpl()));
-//    }
+
     public EmployeeDto() {
-       setAuthorities(Set.of(new RegisteredUserGrantedAuthorityImpl()));
+        super();
     }
 
-//    public EmployeeDto(String name, String lastname, String email, String password) {
-//        super(email, password);
-//        this.name = name;
-//        this.lastname = lastname;
-//        this.email = email;
-//    }
-//
-//    public EmployeeDto(String username, String password, String name, String lastname, String email) {
-//        super(username, password);
-//        this.name = name;
-//        this.lastname = lastname;
-//        this.email = email;
-//    }
+    public EmployeeDto(String name, String lastname, String email, String cleartextPassword) {
+        super(email, cleartextPassword);
+        this.setName(name);
+        this.setLastname(lastname);
+        this.setEmail(email);
+    }
+
+    public EmployeeDto(String name, String lastname, String email, @Valid PasswordDto passwordDto) {
+        super(email, passwordDto);
+        this.setName(name);
+        this.setLastname(lastname);
+        this.setEmail(email);
+    }
 
     @JsonProperty(value="name")
     public String getName() {
@@ -79,30 +79,29 @@ public class EmployeeDto extends UserDto {
     @JsonProperty(value="email")
     public void setEmail(String email) {
         this.username = email;
-        this.email = email;
+        this.email =  email.toLowerCase();
     }
 
-
-    public void make(@Autowired GrantedAuthority grantedAuthority) {
-
-        // NOTE .email is case-insensitive
-        // NOTE .email will never be null because of validation rules
-        // NOTE run normalized(...) only one, by checking if .id has already been set != null
-
-        if (this.getEmail() != null) {
-            setAuthorities(Set.of(grantedAuthority));
-            setEmail(this.getEmail().toLowerCase());
-        }
-
-//        if (this.getPassword() != null) {
-//            setPassword(this.getPassword());
+//    public void make(@Autowired GrantedAuthority grantedAuthority) {
+//
+//        // NOTE .email is case-insensitive
+//        // NOTE .email will never be null because of validation rules
+//        // NOTE run normalized(...) only one, by checking if .id has already been set != null
+//
+//        if (this.getEmail() != null) {
+//            setAuthorities(Set.of(grantedAuthority));
+//            setEmail(this.getEmail().toLowerCase());
 //        }
 //
-//
-//        if (this.getId() != null) {
-//            setPassword(this.getPassword());
-//        }
-    }
+////        if (this.getPassword() != null) {
+////            setPassword(this.getPassword());
+////        }
+////
+////
+////        if (this.getId() != null) {
+////            setPassword(this.getPassword());
+////        }
+//    }
 
 
 //    public void normalized() {

@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -54,7 +55,12 @@ public class UserDto implements UserDetails {
        setRoleIncompleteRegisteredUser();
     }
 
-    public UserDto(String username, @Valid PasswordDto passwordDto) {
+    public UserDto(@NotNull String username, @NotNull String cleartextPassword) {
+        this.setUsername(username);
+        this.setCleartextTransientPassword(cleartextPassword);
+        setRoleIncompleteRegisteredUser();
+    }
+    public UserDto(@NotNull String username, @Valid PasswordDto passwordDto) {
         this.username = username;
         this.passwordDto = passwordDto;
         setRoleRegisteredUser();

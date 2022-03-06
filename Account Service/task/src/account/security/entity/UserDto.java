@@ -45,15 +45,14 @@ public class UserDto implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     protected Set<GrantedAuthority> authorities;
 
-
-
     public UserDto() {
-       setRoleIncompleteRegisteredUser();
+        setRoleIncompleteRegisteredUser();
     }
 
-    public UserDto(@NotNull String username, @Valid   @PasswordPolicyValidation
-    @PasswordLengthValidation
-    @PasswordNonReusePolicyValidation
+    public UserDto(@NotNull String username, @Valid
+//    @PasswordPolicyValidation
+//    @PasswordLengthValidation
+//    @PasswordNonReusePolicyValidation
             PasswordDto passwordDto) {
         this.username = username;
         this.passwordDto = passwordDto;
@@ -68,7 +67,7 @@ public class UserDto implements UserDetails {
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
-    public void setPasswordDto(PasswordDto passwordDto) {
+    public void setPasswordDto(@Valid PasswordDto passwordDto) {
         this.passwordDto = passwordDto;
     }
 

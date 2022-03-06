@@ -30,10 +30,8 @@ public class UserController {
 
     @PostMapping(path = Signup.PATH)
     @ResponseBody
-    public ResponseEntity<EmployeeDto> signup(@Validated @Valid @PasswordPolicyValidation
-                                                  @PasswordLengthValidation
-                                                  @PasswordNonReusePolicyValidation
-                                                  @RequestBody EmployeeDto employeeDTO) {
+    public ResponseEntity<EmployeeDto> signup( @Valid
+                                                   @RequestBody EmployeeDto employeeDTO) {
         if (employeeDTO == null) {
             throw new ValidationException("EXCEPTION: person object is null");
         } else  if (prs.findByEmail(employeeDTO).isPresent()) {

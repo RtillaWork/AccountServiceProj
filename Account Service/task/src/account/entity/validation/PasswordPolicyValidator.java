@@ -35,14 +35,16 @@ public class PasswordPolicyValidator implements ConstraintValidator<PasswordPoli
             // TODO: should this throw a ConstraintValidationException?
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE IS NULL = " + value);
+
+            System.err.println("PasswordPolicyValidator DEBUG ISVALID VALUE IS NULL = " + value);
 
             // TODO the case of null password should be handled by a separate annotation, so ignore null buy retuirning true
             return true;
         } else  if (weakPasswordDictionary.contains(value)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            System.out.println("DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
+
+            System.err.println("PasswordPolicyValidator DEBUG ISVALID VALUE throw new PasswordNonReusePolicyValidation(); = " + value);
 
             return false;
         }

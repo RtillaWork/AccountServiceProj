@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Set;
 
 @Entity
+@Validated
 public class EmployeeDto extends UserDto {
 
     private static final String
@@ -40,10 +41,10 @@ public class EmployeeDto extends UserDto {
     private String email;
 
     @Transient
-    @PasswordLengthValidation(message = "Password length must be 12 chars minimum userDto!")
     @PasswordPolicyValidation
+    @PasswordLengthValidation(message = "Password length must be 12 chars minimum userDto!")
 //    @PasswordNonReusePolicyValidation // (TODO NOTE irrelevant as the User created first time with its password)
-    private String cleartextTransientPassword = "";
+    private String cleartextTransientPassword;
 
     public EmployeeDto() {
         super();
@@ -97,18 +98,20 @@ public class EmployeeDto extends UserDto {
     }
 
 
-    @JsonProperty(value = "password", access = JsonProperty.Access.READ_ONLY) // DEBUG
+    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
+//    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY) // PROD
     public String getCleartextTransientPassword() {
         return this.cleartextTransientPassword;
     }
 
-    //    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
-    @JsonIgnore
+    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
+//    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY) // PROD
     public void setCleartextTransientPassword(@Validated
-                                              @PasswordLengthValidation
-                                              @PasswordPolicyValidation
+//                                              @PasswordLengthValidation
+//                                              @PasswordPolicyValidation
                                                       String cleartextTransientPassword) {
         this.cleartextTransientPassword = cleartextTransientPassword;
+        setPassword(this.cleartextTransientPassword);
     }
 
     public void updatePassword(@Valid
@@ -126,22 +129,23 @@ public class EmployeeDto extends UserDto {
     }
 
 
-    //    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
-    @JsonIgnore
-    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
+//        @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
+    @JsonIgnore // PROD
+//    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     public void setPassword(@Validated
                             @PasswordLengthValidation
                             @PasswordPolicyValidation
                                     String cleartextTransientPassword) {
         this.makeFullyDeactivated();
-        this.setCleartextTransientPassword(cleartextTransientPassword);
         this.passwordDto = new PasswordDto();
         passwordDto.setUser(this);
-        passwordDto.setClearTextPassword(this.getCleartextTransientPassword());
+        passwordDto.setClearTextPassword(cleartextTransientPassword);
         if (passwordDto.isHashedPasswordReady()) {
-            this.makeFullyActivated();
+//            this.makeFullyActivated();
 //            setCleartextTransientPassword(null);
+            setRoleEmployee();
         } else {
+            setRoleIncompleteRegisteredUser();
             throw new PasswordRequirementException("ERROR: this.passwordDto SETTER failed isIsHashedPasswordReady");
         }
     }

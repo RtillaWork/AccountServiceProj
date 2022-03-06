@@ -1,4 +1,4 @@
-package account.security;
+package account.security.authority;
 
 import org.springframework.security.core.GrantedAuthority;
 

@@ -1,10 +1,9 @@
 package account.security.entity;
 
 import account.entity.validation.PasswordLengthValidation;
-import account.entity.validation.PasswordNonReusePolicyValidation;
 import account.entity.validation.PasswordPolicyValidation;
 import account.exception.PasswordRequirementException;
-import account.security.RegisteredUserGrantedAuthorityImpl;
+import account.security.authority.RegisteredUserGrantedAuthorityImpl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;

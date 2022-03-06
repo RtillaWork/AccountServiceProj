@@ -1,7 +1,7 @@
 package account.entity;
 
 import account.route.Api;
-import account.security.EmployeeGrantedAuthorityImpl;
+import account.security.authority.EmployeeGrantedAuthorityImpl;
 import account.security.entity.UserDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;

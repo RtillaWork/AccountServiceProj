@@ -1,4 +1,4 @@
-package account.security;
+package account.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

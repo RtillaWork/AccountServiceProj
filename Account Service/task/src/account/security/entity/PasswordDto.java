@@ -4,12 +4,10 @@ import account.entity.PersonDto;
 import account.entity.validation.PasswordLengthValidation;
 import account.entity.validation.PasswordNonReusePolicyValidation;
 import account.entity.validation.PasswordPolicyValidation;
-import account.security.PasswordEncoderImpl;
+import account.security.config.PasswordEncoderImpl;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.bytebuddy.implementation.bind.annotation.FieldValue;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;

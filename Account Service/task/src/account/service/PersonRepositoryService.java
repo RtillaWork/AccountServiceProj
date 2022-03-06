@@ -3,23 +3,15 @@ package account.service;
 import account.entity.PersonDto;
 //import account.exception.UserAlreadyExistsException;
 import account.repository.PersonRepository;
-import account.security.EmployeeGrantedAuthorityImpl;
+import account.security.authority.EmployeeGrantedAuthorityImpl;
 import account.security.entity.PasswordDto;
-import io.micrometer.core.instrument.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.annotation.Validated;
 
-import javax.transaction.RollbackException;
-import javax.transaction.Transactional;
-import javax.validation.ConstraintViolation;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 //@Transactional(Transactional.TxType.NEVER)

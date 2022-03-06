@@ -1,4 +1,4 @@
-package account.security;
+package account.security.config;
 
 import account.service.PersonRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;

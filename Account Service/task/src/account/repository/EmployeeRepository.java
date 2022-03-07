@@ -22,5 +22,14 @@ public interface EmployeeRepository extends JpaRepository<EmployeeDto, Long> {
     @Override
     <S extends EmployeeDto> S save(S entity);
 
+    /**
+     * Saves an entity and flushes changes instantly.
+     *
+     * @param entity
+     * @return the saved entity
+     */
+    @Override
+    <S extends EmployeeDto> S saveAndFlush(S entity);
+
 
 }

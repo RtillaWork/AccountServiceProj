@@ -1,7 +1,6 @@
 package account.entity;
 
 import account.entity.validation.PasswordLengthValidation;
-import account.entity.validation.PasswordNonReusePolicyValidation;
 import account.entity.validation.PasswordPolicyValidation;
 import account.exception.PasswordRequirementException;
 import account.route.Api;
@@ -9,13 +8,11 @@ import account.security.entity.PasswordDto;
 import account.security.entity.UserDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class EmployeeDto extends UserDto {
@@ -38,14 +35,14 @@ public class EmployeeDto extends UserDto {
     @PasswordPolicyValidation
     @PasswordLengthValidation(message = "Password length must be 12 chars minimum userDto!")
 //    @PasswordNonReusePolicyValidation // (TODO NOTE irrelevant as the User created first time with its password)
-    private String cleartextTransientPassword;
+    private String cleartextPassword;
 
     public EmployeeDto() {
         super();
     }
 
     public EmployeeDto(String name, String lastname, String email, String cleartextPassword) {
-        this.setCleartextTransientPassword(cleartextPassword);
+        this.setCleartextPassword(cleartextPassword);
         this.setName(name);
         this.setLastname(lastname);
         this.setUsername(email);
@@ -94,30 +91,32 @@ public class EmployeeDto extends UserDto {
 
 //    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
     @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY) // PROD
-    public String getCleartextTransientPassword() {
-        return this.cleartextTransientPassword;
+    public String getCleartextPassword() {
+        return this.cleartextPassword;
     }
 
 //    @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
     @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY) // PROD
-    public void setCleartextTransientPassword(@Validated
+    public void setCleartextPassword(
+//            @Valid
 //                                              @PasswordLengthValidation
 //                                              @PasswordPolicyValidation
-                                                      String cleartextTransientPassword) {
-        this.cleartextTransientPassword = cleartextTransientPassword;
-        setPassword(this.cleartextTransientPassword);
+                                                      String cleartextPassword) {
+        this.cleartextPassword = cleartextPassword;
+        setPassword(this.cleartextPassword);
     }
 
-    public void updatePassword(@Valid
-                               @PasswordPolicyValidation
-                               @PasswordLengthValidation
-                               @PasswordNonReusePolicyValidation
+    public void updatePassword(
+//            @Valid
+//                               @PasswordPolicyValidation
+//                               @PasswordLengthValidation
+//                               @PasswordNonReusePolicyValidation
                                        String newCleartextPasswor) {
         if (this.passwordDto != null) {
-            this.passwordDto.setClearTextPassword(newCleartextPasswor);
+            this.passwordDto.setCleartextNewPassword(newCleartextPasswor);
         } else {
             this.passwordDto = new PasswordDto();
-            this.passwordDto.setClearTextPassword(newCleartextPasswor);
+            this.passwordDto.setCleartextNewPassword(newCleartextPasswor);
 //            throw new PasswordRequirementException("ERROR: this.passwordDto NOT INITIAZLIZED"); ?
         }
     }
@@ -126,14 +125,15 @@ public class EmployeeDto extends UserDto {
 //        @JsonProperty(value = "password", access = JsonProperty.Access.READ_WRITE) // DEBUG
     @JsonIgnore // PROD
 //    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
-    public void setPassword(@Valid
-                            @PasswordLengthValidation
-                            @PasswordPolicyValidation
+    public void setPassword(
+//            @Valid
+//                            @PasswordLengthValidation
+//                            @PasswordPolicyValidation
                                     String cleartextTransientPassword) {
         this.makeFullyDeactivated();
         this.passwordDto = new PasswordDto();
         passwordDto.setUserDto(this);
-        passwordDto.setClearTextPassword(cleartextTransientPassword);
+        passwordDto.setCleartextNewPassword(cleartextTransientPassword);
         if (passwordDto.isHashedPasswordReady()) {
 //            this.makeFullyActivated();
 //            setCleartextTransientPassword(null);

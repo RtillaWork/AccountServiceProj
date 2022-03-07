@@ -2,9 +2,6 @@ package account.controller;
 
 import account.entity.EmployeeDto;
 //import account.exception.UserAlreadyExistsException;
-import account.entity.validation.PasswordLengthValidation;
-import account.entity.validation.PasswordNonReusePolicyValidation;
-import account.entity.validation.PasswordPolicyValidation;
 import account.route.v1.ChangePass;
 import account.route.v1.Signup;
 import account.security.entity.PasswordDto;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 @Validated
@@ -39,25 +37,25 @@ public class UserController {
         } else if (prs.findByEmail(employeeDTO).isPresent()) {
             throw new DataIntegrityViolationException("EXCEPTION: email already exists");
         } else {
-            EmployeeDto p = prs.save(employeeDTO);
-//            PersonDTO p = employeeDTO; // temp deleteme
-            return new ResponseEntity<EmployeeDto>(p, HttpStatus.OK);
+            EmployeeDto e = prs.save(employeeDTO).get();
+//            PersonDTO e = employeeDTO; // temp deleteme
+            return new ResponseEntity<EmployeeDto>(e, HttpStatus.OK);
         }
     }
 
-    @PostMapping(path = ChangePass.PATH, consumes = "application/json", produces = "application/json" )
+    @PostMapping(path = ChangePass.PATH, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public ResponseEntity<EmployeeDto> changePassword(@Valid
+    public ResponseEntity<String> changePassword(@Valid
 //                                                      @PasswordLengthValidation
 //                                                      @PasswordPolicyValidation
 //                                                      @PasswordNonReusePolicyValidation
-                                                      @RequestBody PasswordDto newPasswordDTO,
-                                                      Principal principal) {
-        System.out.println(" public ResponseEntity<EmployeeDto> changePassword( newPasswordDTO: " + newPasswordDTO.getClearTextPassword());
-        EmployeeDto p = prs.update(principal, newPasswordDTO);
-        return new ResponseEntity<>(p, HttpStatus.OK);
-
-
+                                                 @RequestBody PasswordDto newPasswordDTO,
+                                                 Principal principal) {
+        System.err.println(" public ResponseEntity<EmployeeDto> changePassword( newPasswordDTO: " + newPasswordDTO.getCleartextNewPassword());
+        Optional<EmployeeDto> updatedWithPassword = prs.update(principal, newPasswordDTO);
+        // TODO : deal with Optional / get()
+        return new ResponseEntity<>(
+                ChangePass.responseBuilder(updatedWithPassword.get().getEmail()), HttpStatus.OK);
     }
 }
 

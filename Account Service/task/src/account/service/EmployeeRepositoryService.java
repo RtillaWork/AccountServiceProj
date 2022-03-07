@@ -3,16 +3,13 @@ package account.service;
 import account.entity.EmployeeDto;
 //import account.exception.UserAlreadyExistsException;
 import account.repository.EmployeeRepository;
-import account.security.authority.EmployeeGrantedAuthorityImpl;
 import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.security.Principal;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -25,11 +22,17 @@ public class EmployeeRepositoryService {
     @Autowired
     PasswordRepositoryService passwordRepositoryService;
 
-    public EmployeeDto save(@Valid EmployeeDto employeeDTO) {
+    public Optional<EmployeeDto> save(@Valid EmployeeDto employeeDTO) {
 //        PasswordDto passwd = employeeDTO.getPasswordDto();
 //        passwd.setUser(employeeDTO);
-        employeeDTO.setRoleEmployee();
-       EmployeeDto updatedEmployeeDto = employeeRepository.save(employeeDTO);
+        Optional<EmployeeDto> updatedEmployeeDto = Optional.empty();
+
+        try {
+            employeeDTO.setRoleEmployee();
+            updatedEmployeeDto = Optional.of(employeeRepository.save(employeeDTO));
+        } catch (IllegalArgumentException ex) {
+            throw ex;
+        }
         return updatedEmployeeDto;
     }
 
@@ -50,18 +53,18 @@ public class EmployeeRepositoryService {
         return employee;
     }
 
-    public EmployeeDto updatePassword(Principal principal, PasswordDto newPasswordDTO) {
+    public Optional<EmployeeDto> updatePassword(Principal principal, PasswordDto newPasswordDTO) {
         EmployeeDto employeeDTO = findByPrincipal(principal).orElseThrow();
-        if (employeeDTO.getPasswordDto().getClearTextPassword() == null) {
-            System.out.println("public EmployeeDto updatePassword ersonDTO.getPasswordDto().getClearTextPassword(): IS NULLLL");
+        if (employeeDTO.getPasswordDto().getCleartextNewPassword() == null) {
+            System.err.println("public EmployeeDto updatePassword ersonDTO.getPasswordDto().getClearTextPassword(): IS NULLLL");
         } else {
-            System.out.println("public EmployeeDto updatePassword( employeeDTO.getPasswordDto().getClearTextPassword() : " + employeeDTO.getPasswordDto().getClearTextPassword());
+            System.err.println("public EmployeeDto updatePassword( employeeDTO.getPasswordDto().getClearTextPassword() : " + employeeDTO.getPasswordDto().getCleartextNewPassword());
         }
 
 //        newPasswordDTO.setClearTextPassword(newPasswordDTO.getClearTextPassword());
-        employeeDTO.updatePassword(newPasswordDTO.getClearTextPassword());
+        employeeDTO.updatePassword(newPasswordDTO.getCleartextNewPassword());
         //        EmployeeDto p = save(employeeDTO);
-        EmployeeDto p = save(employeeDTO); //, employeeDTO.getPasswordDto());
+        Optional<EmployeeDto> p = save(employeeDTO); //, employeeDTO.getPasswordDto());
 
         // personRepository.
         return p;
@@ -74,18 +77,20 @@ public class EmployeeRepositoryService {
 //            return Optional.empty();
 //        }
     }
-       public EmployeeDto update(Principal principal, @Validated PasswordDto newPasswordDto) {
-           String newCleartextPassword = newPasswordDto.getClearTextPassword();
-           EmployeeDto employeeDTO = findByPrincipal(principal).orElseThrow();
+
+    public Optional<EmployeeDto> update(Principal principal, @Validated PasswordDto newPasswordDto) {
+        String newCleartextPassword = newPasswordDto.getCleartextNewPassword();
+        EmployeeDto employeeDTO = findByPrincipal(principal).orElseThrow();
 //           PasswordDto passwordDto = employeeDTO.getPasswordDto();
-           employeeDTO.updatePassword(newCleartextPassword);
+        employeeDTO.updatePassword(newCleartextPassword);
 //           passwordRepositoryService.delete(employeeDTO.getPasswordDto());
-           EmployeeDto p = employeeRepository.save(employeeDTO);
-           return p;
+        Optional<EmployeeDto> updatedWithPassword = Optional.empty();
+        try {
+            updatedWithPassword = Optional.of(employeeRepository.save(employeeDTO));
+        } catch (IllegalArgumentException ex) {
+            throw ex;
+        }
+        return updatedWithPassword;
     }
-
-
-
-
 }
 

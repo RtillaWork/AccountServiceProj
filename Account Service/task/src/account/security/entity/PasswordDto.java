@@ -12,10 +12,10 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Validated
+@Valid
 public class PasswordDto {
 
     // TODO DELETEME AFTER TESTING
@@ -36,13 +36,13 @@ public class PasswordDto {
     @Transient
     private boolean hashedPasswordReady;
 
+
+//    @JsonAlias("new_password")
     @Transient
     @PasswordPolicyValidation
     @PasswordLengthValidation
-    @PasswordNonReusePolicyValidation // (TODO NOTE: only relevant if (User, Password(s)) already created
-    @JsonAlias("new_password")
-    private String clearTextPassword;
-
+//    @PasswordNonReusePolicyValidation // (TODO NOTE: only relevant if (User, Password(s)) already created
+    private String cleartextNewPassword;
 
     public PasswordDto() {
 //        this.clearTextPassword = DEFAULT_CLEARTEXT_PASSWORD;
@@ -50,10 +50,11 @@ public class PasswordDto {
         initHashedPasswordNotReady();
     }
 
-    public PasswordDto(@Valid
-                       @PasswordPolicyValidation
-                       @PasswordLengthValidation
-                       @PasswordNonReusePolicyValidation
+    public PasswordDto(
+//            @Valid
+//                       @PasswordPolicyValidation
+//                       @PasswordLengthValidation
+//                       @PasswordNonReusePolicyValidation
                                String cleartextTransientPassword) {
         this.setHashedPassword(cleartextTransientPassword);
     }
@@ -71,15 +72,15 @@ public class PasswordDto {
     @JsonIgnore
 //    @Validated
     public void setHashedPassword(
-            @Valid
-            @PasswordPolicyValidation
-            @PasswordLengthValidation
-            @PasswordNonReusePolicyValidation
+//            @Valid
+//            @PasswordPolicyValidation
+//            @PasswordLengthValidation
+//            @PasswordNonReusePolicyValidation
                     String cleartextTransientPassword) {
 //        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(cleartextTransientPassword);
 //        this.hashedPassword = passwordEncoder.passwordEncoder().encode(cleartextTransientPassword);
         if (isHashedPasswordNotReady()) {
-            this.clearTextPassword = cleartextTransientPassword;
+            this.cleartextNewPassword = cleartextTransientPassword;
             this.setHashedPassword();
             setHashedPasswordReady(true);
             obfuscateClearTextPassword();
@@ -91,7 +92,7 @@ public class PasswordDto {
     public void setHashedPassword() {
         if (isHashedPasswordNotReady()) {
             PasswordEncoderImpl passwordEncoder = new PasswordEncoderImpl();
-            this.hashedPassword = passwordEncoder.passwordEncoder().encode(this.getClearTextPassword());
+            this.hashedPassword = passwordEncoder.passwordEncoder().encode(this.getCleartextNewPassword());
 //        this.hashedPassword = NoOpPasswordEncoder.getInstance().encode(this.getClearTextPassword());
             setHashedPasswordReady(true);
             obfuscateClearTextPassword();
@@ -100,10 +101,10 @@ public class PasswordDto {
 
     //    @JsonProperty(value = "cleartextpassword", access = JsonProperty.Access.READ_WRITE)
 //, access = JsonProperty.Access.WRITE_ONLY)
-//    @JsonAlias("new_password")
-    public String getClearTextPassword() {
+   @JsonAlias("new_password")
+    public String getCleartextNewPassword() {
         if (isHashedPasswordNotReady()) {
-            return this.clearTextPassword;
+            return this.cleartextNewPassword;
         } else {
             throw new RuntimeException("DEBUG FROM PasswordDto: call to getClearText while hashedPassword true: already read. PLease provide a new clearTextPassword");
         }
@@ -111,42 +112,45 @@ public class PasswordDto {
 
     //    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
     @JsonProperty(value = "new_password", access = JsonProperty.Access.WRITE_ONLY)
-    @JsonAlias("new_password")
-    public void setClearTextPassword(@Valid
-                                     @PasswordPolicyValidation
-                                     @PasswordLengthValidation
-                                     @PasswordNonReusePolicyValidation
-                                             String clearTextPassword) {
-        this.clearTextPassword = clearTextPassword;
+     @JsonAlias("new_password")
+    public void setCleartextNewPassword(
+//            @Valid
+//                                     @PasswordPolicyValidation
+//                                     @PasswordLengthValidation
+//                                     @PasswordNonReusePolicyValidation
+                                             String cleartextNewPassword) {
+        this.cleartextNewPassword = cleartextNewPassword;
         setHashedPasswordReady(false);
-        this.setHashedPassword(clearTextPassword);
+        this.setHashedPassword(cleartextNewPassword);
         obfuscateClearTextPassword();
     }
 
     //    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
     @JsonProperty(value = "new_password", access = JsonProperty.Access.WRITE_ONLY)
-    @JsonAlias("new_password")
-    public void setPassword(@Valid
-                            @PasswordPolicyValidation
-                            @PasswordLengthValidation
-                            @PasswordNonReusePolicyValidation
+//    @JsonAlias("new_password")
+    public void setPassword(
+//            @Valid
+//                            @PasswordPolicyValidation
+//                            @PasswordLengthValidation
+//                            @PasswordNonReusePolicyValidation
                                     String clearTextPassword) {
-        setClearTextPassword(clearTextPassword);
+        setCleartextNewPassword(clearTextPassword);
     }
 
     //    @JsonProperty(value = "Cleartextpassword", access = JsonProperty.Access.READ_WRITE)
     @JsonProperty(value = "new_password", access = JsonProperty.Access.WRITE_ONLY)
     @JsonAlias("new_password")
-    public void updatePassword(@Valid
-                               @PasswordPolicyValidation
-                               @PasswordLengthValidation
-                               @PasswordNonReusePolicyValidation
+    public void updatePassword(
+//            @Valid
+//                               @PasswordPolicyValidation
+//                               @PasswordLengthValidation
+//                               @PasswordNonReusePolicyValidation
                                        String clearTextPassword) {
-        this.setClearTextPassword(clearTextPassword);
+        this.setCleartextNewPassword(clearTextPassword);
     }
 
     public void obfuscateClearTextPassword() {
-        this.clearTextPassword = this.getHashedPassword();
+        this.cleartextNewPassword = this.getHashedPassword();
     }
 
     // Utility methods

@@ -28,30 +28,33 @@ public class UserController {
     EmployeeRepositoryService prs;
 
 
-    @PostMapping(path = Signup.PATH)
+    @PostMapping(path = Signup.PATH, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public ResponseEntity<EmployeeDto> signup( @Valid
+    public ResponseEntity<EmployeeDto> signup(@Valid
 //                                                   @PasswordLengthValidation
 //                                                   @PasswordPolicyValidation
-                                                   @RequestBody EmployeeDto employeeDTO) {
+                                              @RequestBody EmployeeDto employeeDTO) {
         if (employeeDTO == null) {
             throw new ValidationException("EXCEPTION: person object is null");
-        } else  if (prs.findByEmail(employeeDTO).isPresent()) {
+        } else if (prs.findByEmail(employeeDTO).isPresent()) {
             throw new DataIntegrityViolationException("EXCEPTION: email already exists");
-        }
-        else {
+        } else {
             EmployeeDto p = prs.save(employeeDTO);
 //            PersonDTO p = employeeDTO; // temp deleteme
             return new ResponseEntity<EmployeeDto>(p, HttpStatus.OK);
         }
     }
 
-    @PostMapping(path = ChangePass.PATH)
+    @PostMapping(path = ChangePass.PATH, consumes = "application/json", produces = "application/json" )
     @ResponseBody
-    public ResponseEntity<EmployeeDto> changePassword(@Valid @RequestBody PasswordDto newPasswordDTO,
+    public ResponseEntity<EmployeeDto> changePassword(@Valid
+//                                                      @PasswordLengthValidation
+//                                                      @PasswordPolicyValidation
+//                                                      @PasswordNonReusePolicyValidation
+                                                      @RequestBody PasswordDto newPasswordDTO,
                                                       Principal principal) {
         System.out.println(" public ResponseEntity<EmployeeDto> changePassword( newPasswordDTO: " + newPasswordDTO.getClearTextPassword());
-        EmployeeDto p =  prs.update(principal, newPasswordDTO);
+        EmployeeDto p = prs.update(principal, newPasswordDTO);
         return new ResponseEntity<>(p, HttpStatus.OK);
 
 

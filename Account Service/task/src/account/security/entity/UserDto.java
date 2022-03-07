@@ -22,6 +22,7 @@ import java.util.Set;
 
 
 @MappedSuperclass
+@Validated
 public class UserDto implements UserDetails {
 
     public static final String UNIDENTIFIED_USER_USERNAME = "UNIDENTIFIED_USER_USERNAME";
@@ -34,6 +35,7 @@ public class UserDto implements UserDetails {
     @NotBlank
     protected String username; // = UNIDENTIFIED_USER_USERNAME;
 
+//    @PasswordNonReusePolicyValidation
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "password_id")
     protected PasswordDto passwordDto;

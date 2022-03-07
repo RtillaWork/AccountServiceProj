@@ -1,6 +1,8 @@
 package account.entity.validation;
 
+import account.entity.EmployeeDto;
 import account.security.config.PasswordEncoderImpl;
+import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +16,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.Optional;
 
 
-public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, String> {
+public class PasswordNonReusePolicyValidator implements ConstraintValidator<PasswordNonReusePolicyValidation, PasswordDto> {
 
     // this value should be the most random and represent an absence of prior passwords in DB, on initial User creation for ex.
     private static final String NONEYET_OR_NULL_nonReusePassword = "DEBUG_NONEYET_OR_NULL_INITIAL_USER_CREATION__PASSWORD";
@@ -36,7 +38,6 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     private static String message;
 
 
-
     /**
      * Implements the validation logic.
      * The state of {@code value} must not be altered.
@@ -49,11 +50,16 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
      * @return {@code false} if {@code value} does not pass the constraint
      */
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public boolean isValid(PasswordDto passwordDto, ConstraintValidatorContext context) {
         PasswordEncoderImpl passwordEncoderImpl = new PasswordEncoderImpl();
-
         boolean isValid = true;
-        Optional<String> nonReusePassword = currentUserPassword; // getCurrentUserPassword();
+
+        if (passwordEncoderImpl.passwordEncoder()
+                .matches(passwordDto.getCleartextNewPassword(), passwordDto.getHashedPassword())
+        ) {
+            isValid = false;
+        }
+//        Optional<String> nonReusePassword = getCurrentUserPassword(passwordDto);
 
 //        if (value == null) {
 //            // TODO: should this throw a ConstraintValidationException?
@@ -86,7 +92,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
 //            }
 //
 //        }
-        System.err.println("FROM PasswordNonReusePolicyValidator DEBUG RETURN TRUE ALWAYS");
+            System.err.println("FROM PasswordNonReusePolicyValidator DEBUG RETURN TRUE ALWAYS");
         return isValid;
     }
 
@@ -107,7 +113,7 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
     @Override
     public void initialize(PasswordNonReusePolicyValidation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        setOnceCurrentUserPassword();
+//        setOnceCurrentUserPassword();
         message = constraintAnnotation.message();
 
 //        if (nonReusePassword == null) {
@@ -136,54 +142,21 @@ public class PasswordNonReusePolicyValidator implements ConstraintValidator<Pass
 //
     }
 
-    private void setOnceCurrentUserPassword() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (currentUserPassword.isPresent() || auth == null || auth instanceof AnonymousAuthenticationToken) {
-            return;
-        } else if (userDetailsService == null) {
-            return;
-        }else {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName());
-            currentUserPassword = Optional.of(userDetails.getPassword());
-                        System.out.println("AUTHENTICATION IS: " + auth.getPrincipal());
-            System.err.println(" UserDetails userDetails = userDetailsService. :" + userDetailsService.getClass());
-            System.err.println(" UserDetails userDetails = auth.getName(). :" + auth.getName());
-            System.err.println(" UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName()). :" + userDetailsService.loadUserByUsername(auth.getName()));
-            System.err.println(" UserDetails userDetails = getPassword. :" + userDetails.getPassword());
 
-        }
-    }
-
-
-    private Optional<String> getCurrentUserPassword() {
-//        UserDetailsService userDetailsService = new UserDetailsServiceImpl();
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth instanceof AnonymousAuthenticationToken) {
-            return Optional.empty();
-        }
-//        else if (userDetailsService == null) {
-//            return;
+//
+//    private Optional<String> getCurrentHashedPassword(PasswordDto passwordDto) {
+//        Optional<String> currentHashedPassword = Optional.empty();
+//       if (passwordDto != null && passwordDto.isHashedPasswordReady()) {
+//           currentHashedPassword = Optional.of(passwordDto.getHashedPassword());
+//       }
+//       return currentHashedPassword;
+//   }
+//
+//    private Optional<String> getCurrentCleartextNewPassword(PasswordDto passwordDto) {
+//        Optional<String> CurrentCleartextNewPassword = Optional.empty();
+//        if (passwordDto != null && passwordDto.getCleartextNewPassword()) {
+//            CurrentCleartextNewPassword = Optional.of(passwordDto.getCleartextNewPassword());
 //        }
-        else {
-
-//            System.out.println("AUTHENTICATION IS: " + auth.getPrincipal());
-//            System.out.println(" UserDetails userDetails = userDetailsService. :" + userDetailsService.getClass());
-//            System.out.println(" UserDetails userDetails = auth.getName(). :" + auth.getName());
-//            System.out.println(" UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName()). :" + userDetailsService.loadUserByUsername(auth.getName()));
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(auth.getName());
-            String currentUserPassword = userDetails.getPassword();
-
-                    System.err.println(" currentUserPassword = userDetails.getPassword(); :" + currentUserPassword);
-            System.err.println("Principal principal = (Principal) auth.getPrincipal();: " + currentUserPassword);
-
-            return Optional.of(currentUserPassword);
-        }
-    }
-
-//    void getPrincipal(@AuthenticationPrincipal Principal principal) {
-//        System.out.println("DEBUG getPrincipal(@AuthenticationPrincipal Principal principal): " + principal.toString());
-//        return principal;
+//        return CurrentCleartextNewPassword;
 //    }
 }

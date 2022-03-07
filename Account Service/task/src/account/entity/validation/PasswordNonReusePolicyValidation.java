@@ -5,7 +5,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE, ElementType.TYPE})
+@Target({ ElementType.TYPE, ElementType.TYPE_PARAMETER, ElementType.ANNOTATION_TYPE, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(validatedBy = PasswordNonReusePolicyValidator.class)

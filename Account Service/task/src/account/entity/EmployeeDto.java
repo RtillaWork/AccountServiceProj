@@ -1,6 +1,7 @@
 package account.entity;
 
 import account.entity.validation.PasswordLengthValidation;
+import account.entity.validation.PasswordNonReusePolicyValidation;
 import account.entity.validation.PasswordPolicyValidation;
 import account.exception.PasswordRequirementException;
 import account.route.Api;
@@ -15,6 +16,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Entity
+//@PasswordNonReusePolicyValidation
 public class EmployeeDto extends UserDto {
 
     private static final String

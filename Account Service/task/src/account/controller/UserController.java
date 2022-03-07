@@ -52,6 +52,7 @@ public class UserController {
                                                  @RequestBody PasswordDto newPasswordDTO,
                                                  Principal principal) {
         System.err.println(" public ResponseEntity<EmployeeDto> changePassword( newPasswordDTO: " + newPasswordDTO.getCleartextNewPassword());
+
         Optional<EmployeeDto> updatedWithPassword = prs.update(principal, newPasswordDTO);
         // TODO : deal with Optional / get()
         return new ResponseEntity<>(

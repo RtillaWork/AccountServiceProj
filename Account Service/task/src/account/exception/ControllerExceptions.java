@@ -1,6 +1,7 @@
 package account.exception;
 
 import account.exception.password.PasswordLengthValidationException;
+import account.exception.password.PasswordReuseException;
 import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -178,17 +179,16 @@ public class ControllerExceptions extends ResponseEntityExceptionHandler {
 //
 //    }
 
-//    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The password is in the hacker's database!")
+    //    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The password is in the hacker's database!")
 //    @ExceptionHandler(PasswordPresentInDictionaryException.class)
 //    public void passwordPresentInDictionaryExceptionHandler(){
 //
 //    }
 //
-//    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The passwords must be different!")
-//    @ExceptionHandler(PasswordReuseException.class)
-//    public void passwordReuseExceptionHandler(){
-//
-//    }
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "The passwords must be different!")
+    @ExceptionHandler(PasswordReuseException.class)
+    public void passwordReuseExceptionHandler() {
+    }
 
 
 //    /**

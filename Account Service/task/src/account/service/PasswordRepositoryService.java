@@ -6,6 +6,7 @@ import account.security.entity.PasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Validator;
 import java.security.Principal;
 
 @Service
@@ -14,6 +15,9 @@ public class PasswordRepositoryService {
 
     @Autowired
     private PasswordRepository passwordRepository;
+
+    @Autowired
+    Validator validator;
 
 //
 //    EmployeeDto findByPerson(EmployeeDto personDTO) {
@@ -36,6 +40,15 @@ public class PasswordRepositoryService {
         return null;
 
     }
+
+//    public PasswordDto update(PasswordDto passwordDto, PasswordDto newPasswordDto) {
+//        return update( passwordDto,  newPasswordDto.getCleartextNewPassword());
+//    }
+//
+//    public PasswordDto update(PasswordDto passwordDto,String newCleartextPassword) {
+//        passwordDto.setCleartextNewPassword(newCleartextPassword);
+//        validator.validate(passwordDto)
+//    }
 
     public PasswordDto save(PasswordDto passwordDTO) { // throws PasswordRequirementException {
 

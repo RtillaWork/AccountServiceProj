@@ -1,9 +1,5 @@
 package account.security.entity;
 
-import account.entity.validation.PasswordLengthValidation;
-import account.entity.validation.PasswordNonReusePolicyValidation;
-import account.entity.validation.PasswordPolicyValidation;
-import account.exception.PasswordRequirementException;
 import account.security.authority.EmployeeGrantedAuthorityImpl;
 import account.security.authority.IncompleteRegisteredUserGrantedAuthorityImpl;
 import account.security.authority.RegisteredUserGrantedAuthorityImpl;
@@ -25,8 +21,8 @@ import java.util.Set;
 @Validated
 public class UserDto implements UserDetails {
 
-    public static final String UNIDENTIFIED_USER_USERNAME = "UNIDENTIFIED_USER_USERNAME";
-    public static final String UNIDENTIFIED_USER_PASSWORD = "UNIDENTIFIED_USER_PASSWORD";
+    public static final String VOID_USER_USERNAME = "VOID_USER_USERNAME";
+    public static final String VOID_USER_PASSWORD = "VOID_USER_PASSWORD";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -40,10 +36,10 @@ public class UserDto implements UserDetails {
     @JoinColumn(name = "password_id")
     protected PasswordDto passwordDto;
 
-    protected boolean accountNonExpired;
-    protected boolean accountNonlocked;
-    protected boolean credentialstNonExpired;
-    protected boolean enabled;
+    protected boolean accountNonExpired = false;
+    protected boolean accountNonlocked = false;
+    protected boolean credentialstNonExpired = false;
+    protected boolean enabled = false;
 
     @ElementCollection(fetch = FetchType.EAGER)
     protected Set<GrantedAuthority> authorities;
@@ -52,16 +48,16 @@ public class UserDto implements UserDetails {
         setRoleIncompleteRegisteredUser();
     }
 
-    public UserDto(@NotBlank String username,
-//                   @Valid
-//    @PasswordPolicyValidation
-//    @PasswordLengthValidation
-//    @PasswordNonReusePolicyValidation
-                   PasswordDto passwordDto) {
-        this.setUsername(username);
-        this.setPasswordDto(passwordDto);
-        setRoleRegisteredUser();
-    }
+//    public UserDto(@NotBlank String username,
+////                   @Valid
+////    @PasswordPolicyValidation
+////    @PasswordLengthValidation
+////    @PasswordNonReusePolicyValidation
+//                   PasswordDto passwordDto) {
+//        this.setUsername(username);
+//        this.setPasswordDto(passwordDto);
+//        setRoleRegisteredUser();
+//    }
 
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -71,9 +67,18 @@ public class UserDto implements UserDetails {
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
-    public void setPasswordDto(@Valid PasswordDto passwordDto) {
-        this.passwordDto = passwordDto;
-        // TODO SETROLEx here instead of UserDto(..., PasswordDto) ?
+    public void setPasswordDto(@NotNull PasswordDto newPasswordDto) {
+                    this.passwordDto = passwordDto;
+
+//        // same User object
+//        if ( this == newPasswordDto.getUserDto()) {
+//            this.passwordDto = passwordDto;
+//        } else if (newPasswordDto.isNewCleartextPasswordChanged()) {
+//            this.setPassword(newPasswordDto.getCleartextNewPassword());
+//        } else {
+//            throw new IllegalArgumentException();
+//        }
+//        // TODO SETROLEx here instead of UserDto(..., PasswordDto) ?
     }
 
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG, need to comment out user field in PasswordDto
@@ -85,7 +90,7 @@ public class UserDto implements UserDetails {
     //    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // DEBUG
     @JsonIgnore
     public String getPassword() {
-        return this.passwordDto.getHashedPassword();
+        return (isCredentialsNonExpired() ? this.passwordDto.getHashedPassword() : VOID_USER_PASSWORD);
     }
 
     /////////////////////////////////////

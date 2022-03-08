@@ -50,14 +50,16 @@ public class EmployeeDto extends UserDto {
         this.setUsername(email);
         this.setEmail(email);
         setRoleIncompleteRegisteredUser();
+
+        // TODO setRoleEmployee where?
     }
 
-    public EmployeeDto(String name, String lastname, String email, @Valid PasswordDto passwordDto) {
-        super(email, passwordDto);
-        this.setName(name);
-        this.setLastname(lastname);
-        this.setEmail(email);
-    }
+//    public EmployeeDto(String name, String lastname, String email, @Valid PasswordDto passwordDto) {
+//        super(email, passwordDto);
+//        this.setName(name);
+//        this.setLastname(lastname);
+//        this.setEmail(email);
+//    }
 
     @JsonProperty(value = "name")
     public String getName() {
@@ -132,18 +134,21 @@ public class EmployeeDto extends UserDto {
 //                            @PasswordLengthValidation
 //                            @PasswordPolicyValidation
                                     String cleartextTransientPassword) {
-        this.makeFullyDeactivated();
-        this.passwordDto = new PasswordDto();
-        passwordDto.setUserDto(this);
-        passwordDto.setCleartextNewPassword(cleartextTransientPassword);
-        if (passwordDto.isHashedPasswordReady()) {
-//            this.makeFullyActivated();
-//            setCleartextTransientPassword(null);
-            setRoleEmployee();
-        } else {
-            setRoleIncompleteRegisteredUser();
-            throw new PasswordRequirementException("ERROR: this.passwordDto SETTER failed isIsHashedPasswordReady");
-        }
+//if (this.getPassword() )
+
+//        older
+//        this.makeFullyDeactivated();
+//        this.passwordDto = new PasswordDto();
+//        passwordDto.setUserDto(this);
+//        passwordDto.setCleartextNewPassword(cleartextTransientPassword);
+//        if (passwordDto.isHashedPasswordReady()) {
+////            this.makeFullyActivated();
+////            setCleartextTransientPassword(null);
+//            setRoleEmployee();
+//        } else {
+//            setRoleIncompleteRegisteredUser();
+//            throw new PasswordRequirementException("ERROR: this.passwordDto SETTER failed isIsHashedPasswordReady");
+//        }
     }
 
 

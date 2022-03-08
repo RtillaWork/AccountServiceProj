@@ -52,6 +52,10 @@ public class PasswordDto {
     @PasswordLengthValidation
     private String cleartextNewPassword;
 
+    @Transient
+    private String hashedNewPassword;
+
+
     public PasswordDto() {
         if ( this.userDto != null && this.getHashedPassword().equals(EXPIRED_OR_DEFAULT_HASHED_PASSWORD)) {
             this.userDto.setCredentialstNonExpired(false);
